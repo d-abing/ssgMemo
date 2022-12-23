@@ -1,11 +1,11 @@
 package com.example.ssgmemo
 
-import android.content.Context
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 
-open class OnSwipeTouchListener(ctx: Context) : View.OnTouchListener {
+open class OnSwipeTouchListener(view: MainActivity) : View.OnTouchListener {
 
     private val gestureDetector: GestureDetector
 
@@ -15,7 +15,7 @@ open class OnSwipeTouchListener(ctx: Context) : View.OnTouchListener {
     }
 
     init {
-        gestureDetector = GestureDetector(ctx, GestureListener())
+        gestureDetector = GestureDetector(view, GestureListener())
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -61,6 +61,16 @@ open class OnSwipeTouchListener(ctx: Context) : View.OnTouchListener {
             }
 
             return result
+        }
+
+        override fun onScroll(
+            e1: MotionEvent?,
+            e2: MotionEvent?,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            Log.d("스크롤","" +distanceX +":" + distanceY )
+            return super.onScroll(e1, e2, distanceX, distanceY)
         }
 
 
