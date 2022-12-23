@@ -18,6 +18,11 @@ class MainActivity : AppCompatActivity() {
         var startX = 0f
         var startY = 0f
 
+        val displayX = windowManager.defaultDisplay.width.toFloat()
+        val displayY = windowManager.defaultDisplay.height.toFloat()
+        val centerX: Float = displayX / 2
+        val centerY: Float = displayY / 2
+
         binding.memomo.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -37,15 +42,23 @@ class MainActivity : AppCompatActivity() {
                 MotionEvent.ACTION_UP -> {
                     if(v.x > 500){
                         Toast.makeText(this@MainActivity,"오른쪽으로",Toast.LENGTH_SHORT).show()
+                        v.x = centerX - 230
+                        v.y = centerY - 200
                     }
                     if(v.x < 0){
                         Toast.makeText(this@MainActivity,"왼쪽으로",Toast.LENGTH_SHORT).show()
+                        v.x = centerX - 230
+                        v.y = centerY - 200
                     }
                     if(v.y > 1147){
                         Toast.makeText(this@MainActivity,"아래로",Toast.LENGTH_SHORT).show()
+                        v.x = centerX - 230
+                        v.y = centerY - 200
                     }
                     if(v.y < 463){
                         Toast.makeText(this@MainActivity,"위로",Toast.LENGTH_SHORT).show()
+                        v.x = centerX - 230
+                        v.y = centerY - 200
                     }
                 }
             }
