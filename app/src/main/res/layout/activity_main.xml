@@ -17,9 +17,9 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"></LinearLayout>
+        app:layout_constraintVertical_bias="1.0"/>
 
-    <View
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="230dp"
         android:layout_height="269dp"
@@ -29,7 +29,6 @@
         android:layout_marginBottom="247dp"
         android:layout_weight="1"
         android:clickable="true"
-        android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
