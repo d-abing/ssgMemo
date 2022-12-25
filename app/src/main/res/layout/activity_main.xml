@@ -10,7 +10,7 @@
         android:id="@+id/memomo"
         android:layout_width="155dp"
         android:layout_height="160dp"
-        android:background="#00FFFFFF"
+        android:background="#FFFFFF"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,13 +69,15 @@
 
     <ImageButton
         android:id="@+id/btn_setting"
-        android:layout_width="54dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
+        android:background="#FFFFFF"
+        android:scaleType="fitXY"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_manage" />
+        app:srcCompat="@drawable/settings" />
 
     <ImageView
         android:id="@+id/arrow_top"
@@ -116,4 +118,13 @@
         app:layout_constraintEnd_toStartOf="@+id/memomo"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/arrow_left" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="410dp"
+        android:layout_height="130dp"
+        app:srcCompat="@drawable/ssgtitle"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-11dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

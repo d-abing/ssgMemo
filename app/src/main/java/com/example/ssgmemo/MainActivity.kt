@@ -1,5 +1,6 @@
 package com.example.ssgmemo
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -40,25 +41,27 @@ class MainActivity : AppCompatActivity() {
                     Log.d("event xy","${v.x},${v.y}")
                 }
                 MotionEvent.ACTION_UP -> {
-                    if(v.x > 500){
-                        Toast.makeText(this@MainActivity,"오른쪽으로",Toast.LENGTH_SHORT).show()
+                    if(v.x > 500 && 463 < v.y && v.y < 1147){
+                        Toast.makeText(this@MainActivity,"쓰기",Toast.LENGTH_SHORT).show()
                         v.x = centerX - 230
                         v.y = centerY - 200
                     }
-                    if(v.x < 0){
-                        Toast.makeText(this@MainActivity,"왼쪽으로",Toast.LENGTH_SHORT).show()
+                    if(v.x < 0 && 463 < v.y && v.y < 1147){
+                        v.x = centerX - 230
+                        v.y = centerY - 200
+                        val intent = Intent(this, ClassifyActivity::class.java)
+                        startActivity(intent)
+                    }
+                    if(v.y > 1147 && v.x > 0 && v.x < 500){
+                        Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
                         v.x = centerX - 230
                         v.y = centerY - 200
                     }
-                    if(v.y > 1147){
-                        Toast.makeText(this@MainActivity,"아래로",Toast.LENGTH_SHORT).show()
+                    if(v.y < 463 && v.x > 0 && v.x < 500){
                         v.x = centerX - 230
                         v.y = centerY - 200
-                    }
-                    if(v.y < 463){
-                        Toast.makeText(this@MainActivity,"위로",Toast.LENGTH_SHORT).show()
-                        v.x = centerX - 230
-                        v.y = centerY - 200
+                        val intent = Intent(this, StatisticsActivity::class.java)
+                        startActivity(intent)
                     }
                 }
             }
