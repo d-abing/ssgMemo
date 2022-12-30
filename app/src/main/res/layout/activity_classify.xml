@@ -25,8 +25,8 @@
 
     <ImageButton
         android:id="@+id/memo"
-        android:layout_width="215dp"
-        android:layout_height="240dp"
+        android:layout_width="284dp"
+        android:layout_height="233dp"
         android:background="#FFFFFF"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.199"
-        app:srcCompat="@drawable/memomo" />
+        app:srcCompat="@drawable/memomo_non_background" />
 
     <Button
         android:id="@+id/btnSave"
