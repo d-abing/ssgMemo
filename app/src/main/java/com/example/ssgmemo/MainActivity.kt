@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity,"쓰기",Toast.LENGTH_SHORT).show()
                         v.x = centerX - 230
                         v.y = centerY - 200
-                        val intent = Intent(this, MemoActivity::class.java)
+                        val intent = Intent(this, WriteActivity::class.java)
                         startActivity(intent)
                     }
                     if(v.x < 0 && 463 < v.y && v.y < 1147){
