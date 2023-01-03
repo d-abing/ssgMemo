@@ -8,16 +8,16 @@
 
     <ImageButton
         android:id="@+id/memomo"
-        android:layout_width="232dp"
-        android:layout_height="212dp"
+        android:layout_width="173dp"
+        android:layout_height="170dp"
         android:background="#FFFFFF"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.445"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47"
+        app:layout_constraintVertical_bias="0.499"
         app:srcCompat="@drawable/memomo_non_background" />
 
     <TextView
@@ -93,6 +93,7 @@
         android:id="@+id/arrow_right"
         android:layout_width="63dp"
         android:layout_height="74dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/memomo"
         app:layout_constraintTop_toTopOf="parent"

@@ -55,9 +55,11 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                     if(v.y > 1147 && v.x > 0 && v.x < 500){
-                        Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
                         v.x = centerX - 230
                         v.y = centerY - 200
+                        val intent = Intent(this, ViewCtrgActivity::class.java)
+                        startActivity(intent)
                     }
                     if(v.y < 463 && v.x > 0 && v.x < 500){
                         v.x = centerX - 230

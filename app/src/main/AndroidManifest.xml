@@ -13,14 +13,14 @@
         android:theme="@style/Theme.SsgMemo"
         tools:targetApi="31">
         <activity
-            android:name=".WriteActivity"
+            android:name=".ViewCtrgActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity2"
+            android:name=".WriteActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

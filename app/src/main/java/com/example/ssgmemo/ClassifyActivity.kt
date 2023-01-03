@@ -20,29 +20,30 @@ class ClassifyActivity : AppCompatActivity() {
         // 메모 list
         val memoList = helper.selectMemoList()
         var index = 0
-        if ( memoList != null ) {
+        if ( memoList.isNotEmpty() ) {
             binding.memoTitle.text = memoList.elementAt(index).title
-        }
-
-        binding.btnNext.setOnClickListener {
-            index++
-            if (index != memoList.size ) {
-                binding.memoTitle.text = memoList.elementAt(index).title
-            } else {
-                index--
-                Toast.makeText(this@ClassifyActivity,"마지막 메모입니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.btnPrevious.setOnClickListener {
-            index--
-            if (index != -1) {
-                binding.memoTitle.text = memoList.elementAt(index).title
-            } else {
+            binding.btnNext.setOnClickListener {
                 index++
-                Toast.makeText(this@ClassifyActivity,"첫 번째 메모입니다.", Toast.LENGTH_SHORT).show()
+                if (index != memoList.size ) {
+                    binding.memoTitle.text = memoList.elementAt(index).title
+                } else {
+                    index--
+                    Toast.makeText(this@ClassifyActivity,"마지막 메모입니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            binding.btnPrevious.setOnClickListener {
+                index--
+                if (index != -1) {
+                    binding.memoTitle.text = memoList.elementAt(index).title
+                } else {
+                    index++
+                    Toast.makeText(this@ClassifyActivity,"첫 번째 메모입니다.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+
+
 
         // 카테고리 list
         val adapter = RecyclerAdapter()
