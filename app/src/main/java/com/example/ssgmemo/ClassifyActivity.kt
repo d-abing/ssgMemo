@@ -36,7 +36,7 @@ class ClassifyActivity : AppCompatActivity() {
             binding.btnNext.setOnClickListener { // 다음 버튼을 누르면
                 vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
                 index++
-                if (index <= memoList.size - 1 ) {  // index가 memoList.size - 1 보다 작을 때 까지
+                if (index <= memoList.size - 1 ) {
                     binding.btnPrevious.visibility = View.VISIBLE
                     binding.memoTitle.text = memoList.elementAt(index).title
                     binding.memoContent.text = memoList.elementAt(index).content
