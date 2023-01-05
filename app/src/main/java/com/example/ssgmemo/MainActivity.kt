@@ -1,5 +1,6 @@
 package com.example.ssgmemo
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 //                        Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
                         v.x = centerX - 230
                         v.y = centerY - 200
-                        val intent = Intent(this, ViewCtrgActivity::class.java)
+                        val intent = Intent(this, ViewCtgrActivity::class.java)
                         startActivity(intent)
                     }
                     if(v.y < 463 && v.x > 0 && v.x < 500){

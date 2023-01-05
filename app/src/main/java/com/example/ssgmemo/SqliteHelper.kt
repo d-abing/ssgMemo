@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 class SqliteHelper(context: Context, name: String, version: Int):
 	SQLiteOpenHelper(context, name, null, version) {
@@ -94,6 +95,30 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
 		val sql = "select * from memo"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+
+			list.add(Memo(idx, title, content, datetime, ctgr))
+		}
+		rs.close()
+		rd.close()
+
+		return list
+	}
+	@SuppressLint("Range")
+	fun selectMemoList(ctgr:String): MutableList<Memo> {
+		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
+		val list = mutableListOf<Memo>()
+		Log.d("ctgr","${ctgr}")
+		val sql = "select * from memo where ctgr = '"+ ctgr +"' "
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 

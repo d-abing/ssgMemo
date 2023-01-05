@@ -5,14 +5,13 @@
     android:layout_width="100dp"
     android:layout_height="120dp">
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ImageView
         android:id="@+id/ctgr_btn"
 
         android:layout_width="87dp"
         android:layout_height="95dp"
 
         android:background="@drawable/item_ctgr_button"
-        android:text="text"
         android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,4 +19,15 @@
         app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtCtgr2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="카테고링 이름"
+        app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
+        app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
+        app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
+        app:layout_constraintTop_toTopOf="@+id/ctgr_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

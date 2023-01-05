@@ -46,7 +46,7 @@ class ClassifyActivity : AppCompatActivity() {
 
 
         // 카테고리 list
-        val adapter = RecyclerAdapter()
+        val adapter = RecyclerAdapter(this)
         adapter.helper = helper
 
         adapter.listData.addAll(helper.selectCtgrList())

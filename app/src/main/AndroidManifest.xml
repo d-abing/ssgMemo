@@ -13,7 +13,14 @@
         android:theme="@style/Theme.SsgMemo"
         tools:targetApi="31">
         <activity
-            android:name=".ViewCtrgActivity"
+            android:name=".ViewContentActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ViewCtgrActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
