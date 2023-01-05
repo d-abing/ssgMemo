@@ -117,8 +117,11 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun selectMemoList(ctgr:String): MutableList<Memo> {
 		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
-		Log.d("ctgr","${ctgr}")
-		val sql = "select * from memo where ctgr = '"+ ctgr +"' "
+		var sql = "select * from memo where ctgr = '"+ ctgr +"' "
+		if (ctgr == "isnull"){
+			sql = "select * from memo where ctgr isnull "
+		}
+		Log.d("ctgr","${sql}")
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 
@@ -144,6 +147,27 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		val sql = "delete from ctgr"
 		wd.execSQL(sql)
 		wd.close()
+	}
+
+	@SuppressLint("Range")
+	fun isUnknownMemoExist(): Boolean{
+		var result: Boolean = false
+		var flag: Int? = null
+		val sql = "select exists(select * from memo where ctgr ISNULL) as b"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		while (rs.moveToNext()) {
+			flag = rs.getInt(rs.getColumnIndex("b"))
+		}
+
+		if (flag == 1){
+			result = true
+		}
+
+		rs.close()
+		rd.close()
+		Log.d("육회비빔이","${flag}")
+		return result
 	}
 
 	

@@ -15,9 +15,14 @@ class ViewCtgrActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val adapter = RecyclerAdapter(this)
+        val unknownCtgr = Ctgr(0, "미분류", 11111111)
+
         adapter.helper = helper
         binding.textView2
         adapter.listData.addAll(helper.selectCtgrList())
+        if (helper.isUnknownMemoExist()){
+            adapter.listData.add(unknownCtgr)
+        }
         // helper.selectMemo()의 리턴값인 리스트를 통째로 listData 리스트에 넣음
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정

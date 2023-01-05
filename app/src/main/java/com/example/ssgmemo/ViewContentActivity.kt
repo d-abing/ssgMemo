@@ -18,20 +18,20 @@ class ViewContentActivity : AppCompatActivity() {
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
+        val unknownMemoList = helper.selectMemoList("isnull")
         val adapter = RecyclerAdapter(this)
+
         adapter.helper = helper
-        adapter.listData.addAll(memoList)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
 
+        if (title == "0"){
+            adapter.listData.addAll(unknownMemoList)
+        }else{
+            adapter.listData.addAll(memoList)
+        }
 
         Log.d("왜","${adapter.listData}")
-
-
-
-
-
-
 
     }
 }
