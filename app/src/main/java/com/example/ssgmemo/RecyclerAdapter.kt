@@ -2,13 +2,13 @@ package com.example.ssgmemo
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.get
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
-import java.text.SimpleDateFormat
 
 class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.Holder>() {
 	var listData = mutableListOf<Ctgr>()
@@ -40,18 +40,36 @@ class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.Holder>() {
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
 
-		var mCtgr: Ctgr? = null
+		init {
+			binding?.root!!.setOnClickListener {
+				(binding as RecyclerViewItemBinding).imageView.setImageResource(R.drawable.opened_box)
+
+				helper?.updateMemoCtgr( (binding as RecyclerViewItemBinding).midx.text.toString().toInt(),
+					(binding as RecyclerViewItemBinding).cidx.text.toString().toInt())
+				Toast.makeText(binding.root.context
+					, "cidx=${(binding as RecyclerViewItemBinding).cidx.text}"
+					, Toast.LENGTH_LONG).show()
+			}
+		}
+
+		/*companion object {
+			fun setMidx(midx: Int) {
+
+			}
+		}*/
+
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")){
 				(binding as RecyclerViewItemBinding).txtCtgr.text = ctgr.name
-				binding.imageView.setImageResource(R.drawable.box)
-				this.mCtgr = ctgr
+				binding.imageView.setImageResource(R.drawable.closed_box)
+				binding.midx.visibility = View.INVISIBLE
+				binding.cidx.text = ctgr.idx.toString()
+				binding.cidx.visibility = View.INVISIBLE
 			} else if(parentName.equals("recyclerCtgr2")){
 				(binding as RecyclerCtgrViewItemBinding).ctgrBtn.text =ctgr.name
-				this.mCtgr = ctgr
 			}
 
-			// 메모 삭제시 추가되는 부분으로 삭제할 메모 객체를 mMemo에 저장
+
 		}
 	}
 }

@@ -1,14 +1,19 @@
 package com.example.ssgmemo
 
+import android.R
 import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 
@@ -23,9 +28,12 @@ class ClassifyActivity : AppCompatActivity() {
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
 
+
         // 메모 list
         val memoList = helper.selectMemoList()
         var index = 0
+        binding.idx.text = memoList.elementAt(index).idx.toString()
+
         binding.btnPrevious.visibility = View.INVISIBLE // 첫 글에서는 이전으로 가기 버튼 안보이게
         if (memoList.size <= 1) binding.btnNext.visibility = View.INVISIBLE // 글이 하나 이하면 다음으로 가기 버튼 안보이게
 
@@ -59,6 +67,8 @@ class ClassifyActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            binding.memoContent.setMovementMethod(ScrollingMovementMethod())
         }
 
 
@@ -91,5 +101,6 @@ class ClassifyActivity : AppCompatActivity() {
             adapter.listData.clear()
             adapter.notifyDataSetChanged()    // 어댑터 갱신
         }
+
     }
 }

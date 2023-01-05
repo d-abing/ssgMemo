@@ -48,6 +48,17 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 	}
 
+	fun updateMemoCtgr(memoidx: Int, ctgr: Int) {
+		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+		val values = ContentValues()
+		values.put("ctgr", ctgr)
+		// 테이블에서 변경할 값들을 컬럼명과 함께 저장
+
+		val wd = writableDatabase
+		wd.update("memo", values, "idx = ${memoidx}", null)
+		wd.close()
+	}
+
 	@SuppressLint("Range")
 	fun selectCtgrMap(): MutableMap<String,Int> {
 		// 카테고리 맵 // 쓰기에서 카테고리 불러올 때 사용
