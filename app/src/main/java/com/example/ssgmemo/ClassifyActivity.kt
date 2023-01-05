@@ -49,6 +49,7 @@ class ClassifyActivity : AppCompatActivity() {
             binding.btnPrevious.setOnClickListener {
                 vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
                 index--
+                binding.btnNext.visibility = View.VISIBLE
                 if ( memoList.size -1 > index && index >= 0) {
                     binding.memoTitle.text = memoList.elementAt(index).title
                     binding.memoContent.text = memoList.elementAt(index).content
