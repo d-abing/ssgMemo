@@ -50,9 +50,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	}
 
 	@SuppressLint("Range")
-	fun selectCtgrMap(): MutableMap<String,Int> {
+	fun selectCtgrMap(): MutableMap<Int,String> {
 		// 카테고리 맵 // 쓰기에서 카테고리 불러올 때 사용
-		val map = mutableMapOf<String,Int>()
+		val map = mutableMapOf<Int,String>()
 		val sql = "select name, idx from ctgr "
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
@@ -61,7 +61,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
 			val name = rs.getString(rs.getColumnIndex("name"))
 			val idx = rs.getLong(rs.getColumnIndex("idx"))
-			map.put(name, idx.toInt())
+			map[idx.toInt()] = name
 		}
 		rs.close()
 		rd.close()

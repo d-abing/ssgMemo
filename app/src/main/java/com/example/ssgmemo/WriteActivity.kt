@@ -19,22 +19,29 @@ class WriteActivity : AppCompatActivity() {
         val btnSave = findViewById<ImageButton>(R.id.saveContent)
         var ctgr:Int? = null
 
-        val ctgrList:MutableList<String> =  helper.selectCtgrMap().keys.toMutableList()
+        val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
+
+        fun <K, V> getKey(map: Map<K, V>, target: V): K {
+            return map.keys.first { target == map[it] };
+        }
+
         ctgrList.add(0,"카테고리")
         spinner.adapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, ctgrList)
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(spinner.getItemAtPosition(position).toString() !="카테고리") {
-                    val value = spinner.getItemAtPosition(position).toString()
-                    ctgr = helper.selectCtgrMap()[value] as Int?
-                    Log.d("test","${ctgr}")
-                }else{
-                    ctgr = null
+                override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
-            }
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if(spinner.getItemAtPosition(position).toString() !="카테고리") {
+                        val value = spinner.getItemAtPosition(position)
+                        // 카테고리 이름.. = 벨류 값...
+                        ctgr = getKey(helper.selectCtgrMap(), value)
+                        Log.d("값값","${ctgr}")
+
+                    }else{
+                        ctgr = null
+                    }
+                }
         }
 
         btnSave.setOnClickListener {
@@ -44,7 +51,6 @@ class WriteActivity : AppCompatActivity() {
                 title.text = ""
                 content.text = ""
                 spinner.setSelection(0)
-
             }
         }
 
