@@ -50,7 +50,7 @@
         android:layout_width="313dp"
         android:layout_height="41dp"
         android:layout_marginTop="60dp"
-        android:text="메모가 없습니다"
+        android:text="아직 메모가 없어요"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,22 +92,15 @@
 
     <TextView
         android:id="@+id/memoContent"
-        android:layout_width="313dp"
-        android:layout_height="242dp"
+        android:layout_width="282dp"
+        android:layout_height="292dp"
         android:layout_marginTop="28dp"
+        android:scrollbars="vertical"
         android:text="쓰기를 이용해 메모를 작성해 보세요"
         android:textSize="20dp"
-        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memoTitle" />
-
-    <TextView
-        android:id="@+id/idx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

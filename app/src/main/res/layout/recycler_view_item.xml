@@ -32,11 +32,14 @@
 
     <TextView
         android:id="@+id/midx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="19dp"
+        android:layout_height="21dp"
+        android:text="1" />
 
     <TextView
         android:id="@+id/cidx"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="19dp"
+        tools:layout_editor_absoluteY="2dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
