@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewCtrgActivity">
+    android:background="@drawable/background"
+    tools:context=".viewCtgrActivity">
 
     <TextView
         android:id="@+id/textView2"

@@ -13,7 +13,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	override fun onCreate(db: SQLiteDatabase?) {
 		// 앱이 설치되어 SQLiteOpenHelper 클래스가 최초로 사용되는 순간 호출됨
 		// 전체 앱에서 가장 처음 한 번만 수행되며, 대부분 테이블을 생성하는 코드를 작성
-		val sql = "create table ctgr (idx integer primary key, name text, datetime integer)"
+		val sql = "create table ctgr (idx integer primary key, name text, datetime integer, midx integer)"
 		db?.execSQL(sql)
 		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, FOREIGN KEY (ctgr) references ctgr(ctgr) ON UPDATE CASCADE ON DELETE CASCADE)"
 		db?.execSQL(sql1)
@@ -23,15 +23,15 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 	fun insertCtgr(ctgr: Ctgr) {
 		val wd = writableDatabase
-		val sql = "insert into ctgr (name, datetime) values " +
-				"('${ctgr.name}', ${ctgr.datetime})"
+		val sql = "insert into ctgr (name, datetime, midx) values " +
+				"('${ctgr.name}', ${ctgr.datetime}, ${ctgr.midx})"
 		wd.execSQL(sql)
 		wd.close()
 	}
 	fun insertMemo(memo: Memo) {
 		val wd = writableDatabase
 		val sql = "insert into memo (title,content,datetime,ctgr) values " +
-				"('${memo.title}', '${memo.content}', ${memo.datetime}, ${memo.ctgr})"
+				"('${memo.title}', '${memo.content}', ${memo.datetime}, ${memo.ctgr} )"
 		wd.execSQL(sql)
 		wd.close()
 	}
@@ -46,6 +46,28 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		val wd = writableDatabase
 		wd.update("ctgr", values, "idx = ${ctgr.idx}", null)
 		// wd.update("memo", values, "idx = ?", arrayOf("${memo.idx}")
+		wd.close()
+	}
+
+	fun updateItemCtgr(midx: Long?) {
+		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+		val values = ContentValues()
+		values.put("midx", midx)
+		// 테이블에서 변경할 값들을 컬럼명과 함께 저장
+
+		val wd = writableDatabase
+		wd.update("ctgr", values, null, null)
+		wd.close()
+	}
+
+	fun updateMemoCtgr(memoidx: Long, ctgr: Long) {
+		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+		val values = ContentValues()
+		values.put("ctgr", ctgr)
+		// 테이블에서 변경할 값들을 컬럼명과 함께 저장
+
+		val wd = writableDatabase
+		wd.update("memo", values, "idx = ${memoidx}", null)
 		wd.close()
 	}
 
@@ -82,7 +104,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val idx = rs.getLong(rs.getColumnIndex("idx"))
 			val name = rs.getString(rs.getColumnIndex("name"))
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
-			list.add(Ctgr(idx, name, datetime))
+			val midx = rs.getLong(rs.getColumnIndex("midx"))
+			list.add(Ctgr(idx, name, datetime, midx))
 		}
 		rs.close()
 		rd.close()
@@ -173,7 +196,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	
 }
 
-data class Ctgr(var idx: Long?, var name: String, var datetime: Long)
+data class Ctgr(var idx: Long?, var name: String, var datetime: Long, var midx: Long?)
 data class Memo(var idx: Long?, var title: String, var content: String,var datetime: Long, var ctgr: Int?)
 // memo 테이블의 레코드 하나를 저장할 수 있는 데이터 클래스
 // idx는 primary key이므로 자동증가값으로 설정되어 값이 없을 수도 있으므로 null값을 허용(?)
