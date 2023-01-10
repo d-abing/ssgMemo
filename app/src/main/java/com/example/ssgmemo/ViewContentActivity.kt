@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
 
-class ViewContentActivity : AppCompatActivity() {
+class ViewContentActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityViewContentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +19,7 @@ class ViewContentActivity : AppCompatActivity() {
         // list
         val memoList = helper.selectMemoList(title!!)
         val unknownMemoList = helper.selectMemoList("isnull")
-        val adapter = RecyclerAdapter(this)
+        val adapter = RecyclerAdapter(this, this)
 
         adapter.helper = helper
         binding.recyclerContent1.adapter = adapter
@@ -33,5 +33,9 @@ class ViewContentActivity : AppCompatActivity() {
 
         Log.d("왜","${adapter.listData}")
 
+    }
+
+    override fun callback(cidx: Long) {
+        TODO("Not yet implemented")
     }
 }

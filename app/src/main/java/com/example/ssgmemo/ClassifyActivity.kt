@@ -15,74 +15,53 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
 
-class ClassifyActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityClassifyBinding
+class ClassifyActivity : AppCompatActivity(), CallbackListener {
+    lateinit var binding: ActivityClassifyBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
+    var midx: Long? = null
+    var pagerAdapter: ViewPagerAdapter? = null // pagerAdapter 생성
+    var memoList: MutableList<Memo>? = null
+    var tmp_position: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityClassifyBinding.inflate(layoutInflater)
+        binding = ActivityClassifyBinding.inflate(layoutInflater) // 바인딩
         setContentView(binding.root)
+        // val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator; // 진동
 
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
-        val adapter = RecyclerAdapter()
-
-        // 메모 list
-
-        var memoList : MutableList<Memo> = helper.selectMemoList()
-        var index = 0
-
-        binding.btnPrevious.visibility = View.INVISIBLE // 첫 글에서는 이전으로 가기 버튼 안보이게
-        if (memoList.size <= 1) binding.btnNext.visibility = View.INVISIBLE // 글이 하나 이하면 다음으로 가기 버튼 안보이게
-
-        if ( memoList.isNotEmpty() ) { // 메모리스트가 비어있지 않으면
-
-            binding.memoTitle.text = memoList.elementAt(index).title  // memoList의 첫 번째 글 제목이 표시되도록
-            binding.memoContent.text = memoList.elementAt(index).content // memoList의 첫 번째 글 내용이 표시되도록
-
-            binding.btnNext.setOnClickListener { // 다음 버튼을 누르면
-                vibrator.vibrate(VibrationEffect.createOneShot(200, 50)); // 진동
-                index++
-                if (index <= memoList.size - 1 ) {
-                    binding.btnPrevious.visibility = View.VISIBLE // 이전으로 가기 버튼 보이게
-                    binding.memoTitle.text = memoList.elementAt(index).title // 다음 글 제목 보여주기
-                    binding.memoContent.text = memoList.elementAt(index).content // 다음 내용 보여주기
-
-                    helper.updateItemCtgr(memoList.elementAt(index).idx)    // 새로운 레코드를 ctgr 테이블에 insert
-                    adapter.listData.clear()
-                    adapter.listData.addAll(helper.selectCtgrList())
-
-                    if (index == memoList.size - 1) {
-                        binding.btnNext.visibility = View.INVISIBLE // 마지막 글일 경우 다음으로 가기 버튼 안보이게
-                    }
-                }
+        // < 메모 list >
+        pagerAdapter = ViewPagerAdapter()
+        memoList = helper.selectUnclassifiedMemoList() // 분류되지 않은 memoList 가져오기
+        pagerAdapter!!.listData.addAll(memoList!!)
+        binding.viewpager.adapter = pagerAdapter // memoList 뷰페이저에 pagerAdapter 등록
+        binding.viewpager.registerOnPageChangeCallback( object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                midx = memoList!![position].idx
+                tmp_position = position
             }
 
-            binding.btnPrevious.setOnClickListener {
-                vibrator.vibrate(VibrationEffect.createOneShot(200, 50)); // 진동
-                index--
-                binding.btnNext.visibility = View.VISIBLE // 다음으로 가기 버튼 보이게
-                if ( memoList.size -1 > index && index >= 0) {
-                    binding.memoTitle.text = memoList.elementAt(index).title // 이전 글 제목 보여주기
-                    binding.memoContent.text = memoList.elementAt(index).content // 이전 글 내용 보여주기
-
-                    if (index == 0) {
-                        binding.btnPrevious.visibility = View.INVISIBLE // 처음 글일 경우 이전으로 가기 버튼 안보이게
-                    }
-                }
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
             }
 
-            binding.memoContent.setMovementMethod(ScrollingMovementMethod()) // 글 내용이 길어질 경우 스크롤이 가능하도록 설정
-        }
+            override fun onPageScrolled(position: Int,
+                                        positionOffset: Float,
+                                        positionOffsetPixels: Int) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+            }
+        })
 
 
-        // 카테고리 list
 
+        // < 카테고리 list >
+        val adapter = RecyclerAdapter(this, this)
         adapter.helper = helper
-
         adapter.listData.addAll(helper.selectCtgrList())
         // helper.selectMemo()의 리턴값인 리스트를 통째로 listData 리스트에 넣음
         binding.recyclerCtgr1.adapter = adapter
@@ -91,7 +70,7 @@ class ClassifyActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             if (binding.ctgrName.text.toString().isNotEmpty()) {
-                val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis(), memoList.elementAt(0).idx )
+                val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis()) // [수정희망]
                 // ctgr 테이블에 저장할 레코드를 Ctgr형 인스턴스 ctgr로 생성
                 helper.insertCtgr(ctgr)    // 새로운 레코드를 ctgr 테이블에 insert
 
@@ -108,6 +87,21 @@ class ClassifyActivity : AppCompatActivity() {
             adapter.listData.clear()
             adapter.notifyDataSetChanged()    // 어댑터 갱신
         }
+    }
 
+    override fun callback(cidx: Long) {
+        helper.updateMemoCtgr(midx, cidx)
+        pagerAdapter!!.listData.clear()
+        var memoList2 = helper.selectUnclassifiedMemoList()
+        pagerAdapter!!.listData.addAll(memoList2!!)
+        pagerAdapter!!.notifyDataSetChanged()
+
+        if (memoList!!.size > tmp_position + 1) {
+            tmp_position++
+            midx = memoList!![tmp_position].idx
+        } else if (memoList2!!.size != 1 ) {
+            tmp_position == 0
+            midx = memoList!![tmp_position].idx
+        }
     }
 }

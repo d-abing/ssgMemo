@@ -2,10 +2,11 @@ package com.example.ssgmemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.telecom.Call
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 
-class ViewCtgrActivity : AppCompatActivity() {
+class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityViewCtgrBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
 
@@ -14,7 +15,7 @@ class ViewCtgrActivity : AppCompatActivity() {
         binding = ActivityViewCtgrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = RecyclerAdapter(this)
+        val adapter = RecyclerAdapter(this, this)
         val unknownCtgr = Ctgr(0, "미분류", 11111111)
 
         adapter.helper = helper
@@ -29,5 +30,9 @@ class ViewCtgrActivity : AppCompatActivity() {
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
 
 
+    }
+
+    override fun callback(cidx: Long) {
+        TODO("Not yet implemented")
     }
 }
