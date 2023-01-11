@@ -71,6 +71,22 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 	}
 
+	fun updateMemo(memo: Memo) {
+		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+		val db = this.writableDatabase
+		val title = memo.title.toString()
+		val content = memo.content.toString()
+		val datetime = System.currentTimeMillis()
+		val contentValues = ContentValues().apply {
+
+			put("title", title)
+			put("content", content)
+			put("datetime", datetime)
+		}
+		Log.d("결과","${title}")
+		db.update("memo", contentValues, "idx = ${memo.idx}", null)
+	}
+
 	@SuppressLint("Range")
 	fun selectCtgrMap(): MutableMap<Int,String> {
 		// 카테고리 맵 // 쓰기에서 카테고리 불러올 때 사용
@@ -162,6 +178,29 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rd.close()
 
 		return list
+	}
+
+	@SuppressLint("Range")
+	fun selectMemo(idx:String): Memo {
+		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
+		var memo:Memo? = null
+		var sql = "select * from memo where idx = '"+ idx +"' "
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+			memo = Memo(idx, title, content, datetime, ctgr)
+		}
+		rs.close()
+		rd.close()
+
+		return memo as Memo
 	}
 
 	fun deleteCtgr() {

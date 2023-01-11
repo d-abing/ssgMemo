@@ -28,17 +28,21 @@ class ClassifyActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
-        val adapter = RecyclerAdapter()
+        val adapter = RecyclerAdapter(this)
 
         // 메모 list
 
         var memoList : MutableList<Memo> = helper.selectMemoList()
         var index = 0
+        var startMidx : Long? = null
+
 
         binding.btnPrevious.visibility = View.INVISIBLE // 첫 글에서는 이전으로 가기 버튼 안보이게
         if (memoList.size <= 1) binding.btnNext.visibility = View.INVISIBLE // 글이 하나 이하면 다음으로 가기 버튼 안보이게
 
         if ( memoList.isNotEmpty() ) { // 메모리스트가 비어있지 않으면
+
+            startMidx =  memoList.elementAt(0).idx
 
             binding.memoTitle.text = memoList.elementAt(index).title  // memoList의 첫 번째 글 제목이 표시되도록
             binding.memoContent.text = memoList.elementAt(index).content // memoList의 첫 번째 글 내용이 표시되도록
@@ -91,7 +95,7 @@ class ClassifyActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             if (binding.ctgrName.text.toString().isNotEmpty()) {
-                val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis(), memoList.elementAt(0).idx )
+                val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis(), startMidx)
                 // ctgr 테이블에 저장할 레코드를 Ctgr형 인스턴스 ctgr로 생성
                 helper.insertCtgr(ctgr)    // 새로운 레코드를 ctgr 테이블에 insert
 

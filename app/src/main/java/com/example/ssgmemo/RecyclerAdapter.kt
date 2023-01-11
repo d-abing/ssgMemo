@@ -4,23 +4,16 @@ import android.content.Intent
 import android.os.Looper
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.location.GnssAntennaInfo.Listener
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
-import java.util.logging.Handler
 
 
 class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapter.Holder>() {
@@ -42,10 +35,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		} else if(parentName.equals("recyclerContent1")){
 			binding =
 				RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
-
 		}
-
-
 		return Holder(binding)
 	}
 
@@ -58,6 +48,12 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 			holder.setMemo(resultMemo)
 		}
 	}
+	fun test (){
+		val binding = RecyclerContentItem1Binding.inflate(LayoutInflater.from(context))
+		val holder = Holder(binding)
+		Log.d("결과","${binding.titleItem.text}")
+		holder.test1()
+	}
 
 	@SuppressLint("ResourceType")
 	override fun getItemCount(): Int {
@@ -69,11 +65,9 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		init {
 			var isOpen:Boolean = false
 			val myThread = Thread {Thread.sleep(3000)
-
 			}
 			binding?.root!!.setOnClickListener { // 아이템 클릭 시
 				(binding as RecyclerViewItemBinding).imageView.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
-
 				if (!isOpen){
 					isOpen = true
 					myThread.start()
@@ -81,8 +75,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					binding.imageView.setImageResource(R.drawable.closed_box)
 					notifyDataSetChanged()
 				}
-
-
 				helper?.updateMemoCtgr((binding as RecyclerViewItemBinding).midx.text.toString().toLong(),
 					(binding as RecyclerViewItemBinding).cidx.text.toString().toLong()) // Memo의 Ctgr 없데이트
 
@@ -100,10 +92,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				binding.midx.text = ctgr.midx.toString()
 				binding.cidx.text = ctgr.idx.toString()
 				binding.cidx.visibility = View.INVISIBLE
-			} else if(parentName.equals("recyclerCtgr2")){
-				(binding as RecyclerCtgrViewItemBinding).ctgrBtn.text =ctgr.name
-				binding.imageView.setImageResource(R.drawable.box)
-
 			} else if (parentName.equals("recyclerCtgr2")) {
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text = ctgr.name
 				itemView.setOnClickListener {
@@ -113,13 +101,20 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					context.startActivity(intent)
 				}
 			}
-
 		}
 		fun setMemo(resultMemo: Memo) {
 			(binding as RecyclerContentItem1Binding).titleItem.text = resultMemo.title
 			itemView.setOnClickListener {
-				Log.d("ggggg","${resultMemo.idx}")
+				val intent = Intent(context, EditActivity::class.java)
+				intent.putExtra("memoIdx", "${resultMemo.idx}")
+				context.startActivity(intent)
 			}
+		}
+
+		fun test1(){
+			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text = ctgr.name
+			Log.d("결과","${binding.titleItem.text}")
+
 		}
 	}
 }
