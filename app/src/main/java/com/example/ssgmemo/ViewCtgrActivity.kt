@@ -1,24 +1,21 @@
 package com.example.ssgmemo
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 
-class ViewCtgrActivity : AppCompatActivity() {
+class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityViewCtgrBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityViewCtgrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = RecyclerAdapter(this)
-        val unknownCtgr = Ctgr(0, "미분류", 11111111,null)
+        val adapter = RecyclerAdapter(this, this)
+        val unknownCtgr = Ctgr(0, "미분류", 11111111)
 
         adapter.helper = helper
         binding.textView2
@@ -42,5 +39,9 @@ class ViewCtgrActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
+    }
+
+    override fun callback(cidx: Long) {
+        TODO("Not yet implemented")
     }
 }
