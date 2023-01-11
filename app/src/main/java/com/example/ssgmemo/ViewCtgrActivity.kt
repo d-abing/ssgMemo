@@ -2,6 +2,7 @@ package com.example.ssgmemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 
@@ -29,7 +30,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
 
         binding.button.setOnClickListener {
-            val adapter = RecyclerAdapter(this)
+            val adapter = RecyclerAdapter(this,this)
             adapter.test()
 
             binding.recyclerCtgr2.adapter = adapter

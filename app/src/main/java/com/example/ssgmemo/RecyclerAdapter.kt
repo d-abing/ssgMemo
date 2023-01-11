@@ -102,8 +102,8 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 		}
 
 		fun test1(){
-			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text = ctgr.name
-			Log.d("결과","${binding.titleItem.text}")
+			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text
+			Log.d("결과","${binding.txtCtgr2.text}")
 
 		}
 	}
