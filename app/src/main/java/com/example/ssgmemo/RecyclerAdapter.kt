@@ -1,18 +1,15 @@
 package com.example.ssgmemo
 
-import android.content.Intent
-import android.os.Looper
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.GnssAntennaInfo.Listener
+import android.content.Intent
+import android.os.Vibrator
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
@@ -25,6 +22,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	var listData = mutableListOf<Any>()
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
+
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
@@ -62,14 +60,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
 
-		init {
-			binding?.root!!.setOnClickListener { // 아이템 클릭 시
-				(binding as RecyclerViewItemBinding).box.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
-				// 시간지나면 박스가 다시 닫혔으면 좋겠는데..
-
-				callbackListener.callback((binding as RecyclerViewItemBinding).cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
-			}
-		}
 
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
@@ -77,6 +67,13 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				binding.box.setImageResource(R.drawable.closed_box)
 				binding.cidx.text = ctgr.idx.toString()
 				binding.cidx.visibility = View.INVISIBLE
+				itemView.setOnClickListener {
+					(binding as RecyclerViewItemBinding).box.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
+					val handler = android.os.Handler()
+					handler.postDelayed( Runnable { binding.box.setImageResource(R.drawable.closed_box)}, 500) // 0.5초 후에 다시 닫아주기
+
+					callbackListener.callback((binding as RecyclerViewItemBinding).cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
+				}
 			} else if (parentName.equals("recyclerCtgr2")) {
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text = ctgr.name
 				itemView.setOnClickListener {

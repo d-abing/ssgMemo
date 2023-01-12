@@ -2,6 +2,7 @@ package com.example.ssgmemo
 
 import android.R
 import android.content.Context
+import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -26,13 +27,14 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     var midx: Long? = null
     var pagerAdapter: ViewPagerAdapter? = null // pagerAdapter 생성
     var memoList: MutableList<Memo>? = null
+    var memoList2: MutableList<Memo>? = null
     var tmp_position: Int = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityClassifyBinding.inflate(layoutInflater) // 바인딩
         setContentView(binding.root)
-        // val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator; // 진동
 
         // < 메모 list >
         pagerAdapter = ViewPagerAdapter()
@@ -42,8 +44,16 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         binding.viewpager.registerOnPageChangeCallback( object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                midx = memoList!![position].idx
-                tmp_position = position
+                if(memoList2 != null && memoList2!!.isNotEmpty()) {
+                    midx = memoList2!![position].idx
+                    tmp_position = position
+
+                } else {
+                    midx = memoList!![position].idx
+                    tmp_position = position
+                }
+                // Log.d("midx", "페이지 변경됨, midx : $midx")
+                // Log.d("midx", "페이지 변경됨, tmp_position : $tmp_position")
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -90,18 +100,28 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     }
 
     override fun callback(cidx: Long) {
-        helper.updateMemoCtgr(midx, cidx)
-        pagerAdapter!!.listData.clear()
-        var memoList2 = helper.selectUnclassifiedMemoList()
-        pagerAdapter!!.listData.addAll(memoList2!!)
-        pagerAdapter!!.notifyDataSetChanged()
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
+        vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
 
-        if (memoList!!.size > tmp_position + 1) {
-            tmp_position++
-            midx = memoList!![tmp_position].idx
-        } else if (memoList2!!.size != 1 ) {
-            tmp_position == 0
-            midx = memoList!![tmp_position].idx
+        if (memoList!!.isNotEmpty()) {
+            helper.updateMemoCtgr(midx, cidx)
+            pagerAdapter!!.listData.clear()
+            memoList2 = helper.selectUnclassifiedMemoList()
+            pagerAdapter!!.listData.addAll(memoList2!!)
+            pagerAdapter!!.notifyDataSetChanged()
+            // Log.d("midx", "changed midx : $midx")
+
+            if(memoList2 != null && memoList2!!.isNotEmpty()) {
+                if (memoList2!!.size > tmp_position) { // 마지막 메모가 아니라면
+                    // Log.d("midx", "마지막메모x")
+                } else { // 마지막 메모라면
+                    tmp_position = 0
+                    // Log.d("midx", "마지막메모o")
+                }
+                midx = memoList2!![tmp_position].idx
+                // Log.d("midx", "tmp_position : $tmp_position")
+                // Log.d("midx", "midx : $midx")
+            }
         }
     }
 }
