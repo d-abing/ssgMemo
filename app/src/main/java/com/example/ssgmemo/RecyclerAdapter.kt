@@ -53,12 +53,12 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			holder.setMemo(resultMemo)
 		}
 	}
-	fun test (){
-		val binding = RecyclerContentItem1Binding.inflate(LayoutInflater.from(context))
-		val holder = Holder(binding)
-		Log.d("결과","${binding.titleItem.text}")
-		holder.test1()
-	}
+//	fun test (){
+//		val binding = RecyclerContentItem1Binding.inflate(LayoutInflater.from(context))
+//		val holder = Holder(binding)
+//		Log.d("결과","${binding.titleItem.text}")
+//		holder.test1()
+//	}
 
 	@SuppressLint("ResourceType")
 	override fun getItemCount(): Int {
@@ -101,10 +101,10 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			}
 		}
 
-		fun test1(){
-			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text
-			Log.d("결과","${binding.txtCtgr2.text}")
-
-		}
+//		fun test1(){
+//			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text
+//			Log.d("결과","${binding.txtCtgr2.text}")
+//
+//		}
 	}
 }
