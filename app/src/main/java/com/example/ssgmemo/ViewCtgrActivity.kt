@@ -17,33 +17,13 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding = ActivityViewCtgrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = RecyclerSwipeAdapter(this)
-        val unknownCtgr = Ctgr(0, "미분류", 11111111)
-        val itemTouchHelper = ItemTouchHelper(object :ItemTouchHelper.Callback(){
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ): Int {
-                TODO("Not yet implemented")
-            }
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                TODO("Not yet implemented")
-            }
-
-
-        })
-
+        val adapter = RecyclerSwipeAdapter()
         adapter.helper = helper
-        binding.textView2
+
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+
+        val unknownCtgr = Ctgr(0, "미분류", 11111111)
+
         adapter.itemList = helper.selectCtgrList().toMutableList()
         if (helper.isUnknownMemoExist()){
             adapter.itemList.add(unknownCtgr)
@@ -52,7 +32,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
-        itemTouchHelper.attachToRecyclerView(binding.recyclerCtgr2)
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerCtgr2)
 
 //        편집 버튼 클릭시 어뎁터 다시 적용
 //        binding.button.setOnClickListener {

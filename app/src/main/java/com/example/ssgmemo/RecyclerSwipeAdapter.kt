@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 
-class RecyclerSwipeAdapter(var itemList: MutableList<Any>): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>() {
+class RecyclerSwipeAdapter(): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
+    lateinit var itemList: MutableList<Any>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
         var binding =
             RecyclerCtgrViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,6 +31,24 @@ class RecyclerSwipeAdapter(var itemList: MutableList<Any>): RecyclerView.Adapter
             }
 
         }
+    }
+
+    override fun onItemMove(from: Int, to: Int) : Boolean {
+        val data = itemList[from]
+        //리스트 갱신
+        itemList.removeAt(from)
+        itemList.add(to,data)
+
+        // from에서 to 위치로 아이템 위치 변경
+        notifyItemMoved(from,to)
+        return true
+    }
+
+    // 아이템 스와이프되면 호출되는 메소드
+    override fun onItemSwipe(position: Int) {
+        // 리스트 아이템 삭제
+        itemList.removeAt(position)
+        notifyItemRemoved(position)
     }
 
 
