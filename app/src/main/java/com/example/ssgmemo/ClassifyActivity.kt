@@ -1,25 +1,13 @@
 package com.example.ssgmemo
 
-import android.R
 import android.content.Context
-import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
-import com.example.ssgmemo.databinding.RecyclerViewItemBinding
 
 class ClassifyActivity : AppCompatActivity(), CallbackListener {
     lateinit var binding: ActivityClassifyBinding
@@ -66,7 +54,6 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
             }
         })
-
 
 
         // < 카테고리 list >

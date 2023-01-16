@@ -13,6 +13,8 @@
         android:layout_height="95dp"
 
         android:background="@drawable/item_ctgr_button"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
         android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,14 +23,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.64" />
 
-    <TextView
+    <EditText
         android:id="@+id/txtCtgr2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="116dp"
+        android:layout_height="56dp"
+        android:background="@null"
+        android:clickable="false"
+        android:gravity="center"
         android:text="카테고링 이름"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
         app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
-        app:layout_constraintTop_toTopOf="@+id/ctgr_btn" />
+        app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
+        app:layout_constraintVertical_bias="0.41" />
+
+    <ImageButton
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/repair"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.188"
+        app:srcCompat="@drawable/delete" />
+
+    <ImageButton
+        android:id="@+id/repair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.188"
+        app:srcCompat="@drawable/repair" />
+
+    <TextView
+        android:id="@+id/txtCtgr3"
+        android:layout_width="116dp"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="카테고링 이름"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
+        app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
+        app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
+        app:layout_constraintVertical_bias="0.41" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

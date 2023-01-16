@@ -25,7 +25,7 @@ class RecyclerSwipeAdapter(): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(
     inner class Holder(val binding: RecyclerCtgrViewItemBinding): RecyclerView.ViewHolder(binding?.root!!){
         fun bind(item: Any) {
             if (item is Ctgr){
-                binding.txtCtgr2.text = item.name
+                binding.txtCtgr2.setText(item.name)
             } else {
                 item as Memo
             }
@@ -50,6 +50,4 @@ class RecyclerSwipeAdapter(): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(
         itemList.removeAt(position)
         notifyItemRemoved(position)
     }
-
-
 }

@@ -3,13 +3,12 @@ package com.example.ssgmemo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.Vibrator
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnKeyListener
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
@@ -21,6 +20,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	var listData = mutableListOf<Any>()
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
+	var flag :Boolean = false
 
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -80,13 +80,55 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					callbackListener.callback((binding as RecyclerViewItemBinding).cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
 				}
 			} else if (parentName.equals("recyclerCtgr2")) {
-				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text = ctgr.name
+				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
+				binding.txtCtgr3.text = ctgr.name
+				itemView.setOnLongClickListener {
+					if(flag){
+						binding.delete.visibility = View.INVISIBLE
+						binding.repair.visibility = View.INVISIBLE
+						flag=false
+					}else{
+						binding.delete.visibility = View.VISIBLE
+						binding.repair.visibility = View.VISIBLE
+						flag=true
+					}
+					binding.delete.setOnClickListener {
+						helper?.deleteCtgr(ctgr.idx.toString())
+						listData.clear()
+						notifyDataSetChanged()
+					}
+					binding.repair.setOnClickListener {
+						binding.txtCtgr3.visibility = View.INVISIBLE
+						binding.txtCtgr2.visibility = View.VISIBLE
+						binding.txtCtgr2.isEnabled = true
+						binding.txtCtgr2.selectionEnd
+					}
+					return@setOnLongClickListener true
+				}
+				binding.txtCtgr2.setOnKeyListener(object : OnKeyListener{
+					override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
+						Log.d("tttt","ttttt")
+						if (p2 != null) {
+							if (p2.action == KeyEvent.KEYCODE_ENTER && p2.action==KeyEvent.ACTION_UP){
+
+								binding.txtCtgr2.isEnabled = false
+								helper?.updateCtgrName(ctgr.idx.toString(),binding.txtCtgr2.text.toString())
+								notifyDataSetChanged()
+								return true
+							}
+						}
+						return false
+					}
+
+				})
+
 				itemView.setOnClickListener {
 					val intent = Intent(context, ViewContentActivity::class.java)
 					intent.putExtra("title", "${ctgr.idx}")
 					intent.putExtra("ctgrname", "${ctgr.name}")
 					context.startActivity(intent)
 				}
+
 			}
 		}
 		fun setMemo(resultMemo: Memo) {

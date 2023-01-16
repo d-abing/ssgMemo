@@ -76,6 +76,17 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		db.update("memo", contentValues, "idx = ${memo.idx}", null)
 	}
 
+	fun updateCtgrName(idx: String, title: String) {
+		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+		val db = this.writableDatabase
+		val contentValues = ContentValues().apply {
+
+			put("title", title)
+
+		}
+		db.update("memo", contentValues, "idx = ${idx}", null)
+	}
+
 	@SuppressLint("Range")
 	fun selectCtgrMap(): MutableMap<Int,String> {
 		// 카테고리 맵 // 쓰기에서 카테고리 불러올 때 사용
@@ -190,6 +201,14 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rd.close()
 
 		return memo as Memo
+	}
+
+	fun deleteCtgr(idx: String) {
+		//카테고리 삭제 메소드
+		val wd = writableDatabase
+		val sql = "delete from ctgr where idx = '" + idx + " '"
+		wd.execSQL(sql)
+		wd.close()
 	}
 
 	fun deleteCtgr() {

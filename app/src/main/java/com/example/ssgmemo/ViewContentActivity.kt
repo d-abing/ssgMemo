@@ -3,7 +3,6 @@ package com.example.ssgmemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
 
 class ViewContentActivity : AppCompatActivity(), CallbackListener {
