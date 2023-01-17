@@ -80,11 +80,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
 		val db = this.writableDatabase
 		val contentValues = ContentValues().apply {
-
-			put("title", title)
-
+			put("name", title)
 		}
-		db.update("memo", contentValues, "idx = ${idx}", null)
+		db.update("ctgr", contentValues, "idx = ${idx}", null)
 	}
 
 	@SuppressLint("Range")

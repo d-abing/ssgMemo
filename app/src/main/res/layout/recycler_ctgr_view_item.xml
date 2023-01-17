@@ -69,6 +69,7 @@
         android:layout_width="116dp"
         android:layout_height="56dp"
         android:gravity="center"
+        android:singleLine="true"
         android:text="카테고링 이름"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"

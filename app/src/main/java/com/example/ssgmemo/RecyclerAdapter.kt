@@ -51,12 +51,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			holder.setMemo(resultMemo)
 		}
 	}
-//	fun test (){
-//		val binding = RecyclerContentItem1Binding.inflate(LayoutInflater.from(context))
-//		val holder = Holder(binding)
-//		Log.d("결과","${binding.titleItem.text}")
-//		holder.test1()
-//	}
 
 	@SuppressLint("ResourceType")
 	override fun getItemCount(): Int {
@@ -66,6 +60,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
 
 
+		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
 				(binding as RecyclerViewItemBinding).txtCtgr.text = ctgr.name
@@ -105,22 +100,25 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					}
 					return@setOnLongClickListener true
 				}
-				binding.txtCtgr2.setOnKeyListener(object : OnKeyListener{
-					override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
-						Log.d("tttt","ttttt")
-						if (p2 != null) {
-							if (p2.action == KeyEvent.KEYCODE_ENTER && p2.action==KeyEvent.ACTION_UP){
-
-								binding.txtCtgr2.isEnabled = false
-								helper?.updateCtgrName(ctgr.idx.toString(),binding.txtCtgr2.text.toString())
-								notifyDataSetChanged()
-								return true
-							}
-						}
-						return false
+				// 수정 완료 후 엔터 클릭 시
+				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
+					// 엔터 그리고 키 업일 때만 적용
+					if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP){
+						// db update 문
+						helper?.updateCtgrName(ctgr.idx.toString(),binding.txtCtgr2.text.toString())
+						// 플레인 텍스트 값 변경
+						binding.txtCtgr3.text = binding.txtCtgr2.text
+						ctgr.name = binding.txtCtgr2.text.toString()
+						// 데이터 변경 알림
+						listData.set(adapterPosition,ctgr)
+						this@RecyclerAdapter.notifyDataSetChanged()
+						// 에디터와 플레인을 번갈아 가면서 노출
+						binding.txtCtgr2.visibility = View.INVISIBLE
+						binding.txtCtgr3.visibility = View.VISIBLE
+						return@setOnKeyListener true
 					}
-
-				})
+					return@setOnKeyListener false
+				}
 
 				itemView.setOnClickListener {
 					val intent = Intent(context, ViewContentActivity::class.java)
@@ -128,7 +126,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					intent.putExtra("ctgrname", "${ctgr.name}")
 					context.startActivity(intent)
 				}
-
 			}
 		}
 		fun setMemo(resultMemo: Memo) {
@@ -139,11 +136,5 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				context.startActivity(intent)
 			}
 		}
-
-//		fun test1(){
-//			(binding as RecyclerCtgrViewItemBinding).txtCtgr2.text
-//			Log.d("결과","${binding.txtCtgr2.text}")
-//
-//		}
 	}
 }
