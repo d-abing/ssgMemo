@@ -26,30 +26,21 @@
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="8dp"
         android:onClick="insert"
         android:text="카테고리 추가"
-        app:layout_constraintEnd_toStartOf="@+id/btnDel"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewpager" />
 
     <EditText
         android:id="@+id/ctgrName"
-        android:layout_width="190dp"
-        android:layout_height="46dp"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="카테고리명"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/btnSave"
-        app:layout_constraintTop_toBottomOf="@+id/viewpager" />
-
-    <Button
-        android:id="@+id/btnDel"
-        android:layout_width="66dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:text="삭제"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewpager" />
 
     <androidx.viewpager2.widget.ViewPager2

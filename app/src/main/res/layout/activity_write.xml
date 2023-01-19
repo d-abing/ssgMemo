@@ -5,62 +5,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:scrollbarSize="24sp"
     tools:context=".WriteActivity">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/content"
-        android:layout_width="357dp"
-        android:layout_height="593dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="4dp"
-        android:background="@null"
-        android:cursorVisible="true"
-        android:gravity="top"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/category"
-        android:layout_width="146dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/content"
+        android:layout_width="165dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="116dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/writeTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.611"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/writeContent"
+        android:layout_width="358dp"
+        android:layout_height="561dp"
+        android:layout_marginTop="24dp"
+        android:background="@null"
+        android:cursorVisible="true"
+        android:gravity="top"
+        android:lineSpacingExtra="5sp"
+        android:textColorHint="#FFFFFF"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="57dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/diligent"
+        android:text="제목"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.087"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="81dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/diligent"
+        android:text="카테고리"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/saveContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="68dp"
         android:layout_marginTop="60dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.918"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="#00FFFFFF"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toEndOf="@+id/category"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/save" />
 
     <EditText
         android:id="@+id/writeTitle"
-        android:layout_width="189dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="297dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="제목을 입력해 주세요"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.015"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/category" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

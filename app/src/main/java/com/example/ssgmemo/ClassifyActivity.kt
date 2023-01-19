@@ -78,12 +78,6 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 binding.ctgrName.setText("")
             }
         }
-
-        binding.btnDel.setOnClickListener {
-            helper?.deleteCtgr()   // ctgr 테이블의 레코드 삭제
-            adapter.listData.clear()
-            adapter.notifyDataSetChanged()    // 어댑터 갱신
-        }
     }
 
     override fun callback(cidx: Long) {

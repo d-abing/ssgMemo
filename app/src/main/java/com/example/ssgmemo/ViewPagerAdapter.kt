@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.PagerAdapter.POSITION_NONE
-import com.example.ssgmemo.databinding.MemoListItemBinding
+import com.example.ssgmemo.databinding.RecyclerMemolistItemBinding
 
 
 class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
     var listData = mutableListOf<Memo>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : Holder {
-        var binding: ViewBinding = MemoListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        var binding: ViewBinding = RecyclerMemolistItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return Holder(binding)
     }
@@ -26,7 +26,7 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
 
     inner class Holder(val binding: ViewBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun setMemo(memo: Memo) {
-            (binding as MemoListItemBinding).memoTitle.text = memo.title
+            (binding as RecyclerMemolistItemBinding).memoTitle.text = memo.title
             binding.memoContent.text = memo.content
         }
     }
