@@ -68,7 +68,7 @@
         app:srcCompat="@drawable/arrow_left" />
 
     <TextView
-        android:id="@+id/statistics"
+        android:id="@+id/throwout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/diligent"
@@ -96,7 +96,7 @@
         app:layout_constraintVertical_bias="0.591" />
 
     <TextView
-        android:id="@+id/view"
+        android:id="@+id/gather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/diligent"

@@ -1,6 +1,7 @@
 package com.example.ssgmemo
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,7 @@ class WriteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_write)
         val spinner = findViewById<Spinner>(R.id.category)
         val title = findViewById<TextView>(R.id.writeTitle)
-        val content = findViewById<TextView>(R.id.content)
+        val content = findViewById<TextView>(R.id.writeContent)
         val btnSave = findViewById<ImageButton>(R.id.saveContent)
         var ctgr:Int? = null
 
@@ -51,6 +52,11 @@ class WriteActivity : AppCompatActivity() {
                 title.text = ""
                 content.text = ""
                 spinner.setSelection(0)
+
+                if (ctgr == null) {
+                    val intent = Intent(this, WriteActivity2::class.java)
+                    startActivity(intent)
+                }
             }
         }
 
