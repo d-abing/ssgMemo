@@ -15,7 +15,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		// 전체 앱에서 가장 처음 한 번만 수행되며, 대부분 테이블을 생성하는 코드를 작성
 		val sql = "create table ctgr (idx integer primary key, name text, datetime integer)"
 		db?.execSQL(sql)
-		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, FOREIGN KEY (ctgr) references ctgr(ctgr) ON UPDATE CASCADE ON DELETE CASCADE)"
+		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, FOREIGN KEY (ctgr) references ctgr(idx) ON UPDATE CASCADE ON DELETE CASCADE)"
 		db?.execSQL(sql1)
 	}
 	override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) { }

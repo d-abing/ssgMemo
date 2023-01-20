@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.fragment.app.Fragment
 
 class WriteActivity : AppCompatActivity() {
     val helper = SqliteHelper(this, "ssgMemo", 1)
@@ -17,7 +18,7 @@ class WriteActivity : AppCompatActivity() {
         val spinner = findViewById<Spinner>(R.id.category)
         val title = findViewById<TextView>(R.id.writeTitle)
         val content = findViewById<TextView>(R.id.writeContent)
-        val btnSave = findViewById<ImageButton>(R.id.saveContent)
+        val btnSave = findViewById<Button>(R.id.saveContent)
         var ctgr:Int? = null
 
         val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
@@ -26,14 +27,14 @@ class WriteActivity : AppCompatActivity() {
             return map.keys.first { target == map[it] };
         }
 
-        ctgrList.add(0,"카테고리")
+        ctgrList.add(0,"미분류")
         spinner.adapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, ctgrList)
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if(spinner.getItemAtPosition(position).toString() !="카테고리") {
+                    if(spinner.getItemAtPosition(position).toString() !="미분류") {
                         val value = spinner.getItemAtPosition(position)
                         // 카테고리 이름.. = 벨류 값...
                         ctgr = getKey(helper.selectCtgrMap(), value)
@@ -45,20 +46,33 @@ class WriteActivity : AppCompatActivity() {
                 }
         }
 
-        btnSave.setOnClickListener {
+       btnSave.setOnClickListener {
             if (content.text.toString().isNotEmpty()){
-                val memo = Memo(null, title.text.toString(), content.text.toString(), System.currentTimeMillis(),ctgr)
+                var mTitle = ""
+                if ( title.text.toString() == "" ) {
+                    mTitle = "빈 제목"
+                } else {
+                    mTitle = title.text.toString()
+                }
+                val memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr)
                 helper.insertMemo(memo)
                 title.text = ""
                 content.text = ""
                 spinner.setSelection(0)
 
-                if (ctgr == null) {
+               /* if (ctgr == null) {
                     val intent = Intent(this, WriteActivity2::class.java)
                     startActivity(intent)
-                }
+                }*/
             }
         }
+        setFragment()
+    }
 
+    private fun setFragment() {
+        val fontFragment: Fragment = FontFragment()
+        val trans = supportFragmentManager.beginTransaction()
+        trans.add(R.id.frameLayout, fontFragment)
+        trans.commit()
     }
 }

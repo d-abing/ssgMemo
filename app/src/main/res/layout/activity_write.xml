@@ -12,34 +12,18 @@
         android:id="@+id/category"
         android:layout_width="165dp"
         android:layout_height="31dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="116dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.611"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/writeContent"
-        android:layout_width="358dp"
-        android:layout_height="561dp"
-        android:layout_marginTop="24dp"
-        android:background="@null"
-        android:cursorVisible="true"
-        android:gravity="top"
-        android:lineSpacingExtra="5sp"
-        android:textColorHint="#FFFFFF"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
-
     <TextView
         android:id="@+id/textView6"
         android:layout_width="57dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/diligent"
         android:text="제목"
         android:textSize="24sp"
@@ -52,7 +36,7 @@
         android:id="@+id/textView3"
         android:layout_width="81dp"
         android:layout_height="30dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="28dp"
         android:fontFamily="@font/diligent"
         android:text="카테고리"
         android:textSize="24sp"
@@ -61,28 +45,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/saveContent"
-        android:layout_width="30dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="60dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitXY"
-        app:layout_constraintStart_toEndOf="@+id/category"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/save" />
-
     <EditText
         android:id="@+id/writeTitle"
         android:layout_width="297dp"
         android:layout_height="43dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/category" />
+
+    <Button
+        android:id="@+id/saveContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="생각모으기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/category"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/writeContent"
+        android:layout_width="344dp"
+        android:layout_height="373dp"
+        android:layout_marginTop="24dp"
+        android:background="#EDC089"
+        android:cursorVisible="true"
+        android:gravity="top"
+        android:lineSpacingExtra="5sp"
+        android:textColorHint="#FFFFFF"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.563"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writeTitle"
+        app:layout_constraintVertical_bias="0.017" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="53dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"></FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
