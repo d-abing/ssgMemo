@@ -15,7 +15,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="116dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.611"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,41 +52,48 @@
         android:layout_marginTop="12dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 
-    <Button
+    <ImageButton
         android:id="@+id/saveContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_marginTop="20dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitXY"
+        android:src="@drawable/save1"
         android:text="생각모으기"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.771"
         app:layout_constraintStart_toEndOf="@+id/category"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/writeContent"
-        android:layout_width="344dp"
-        android:layout_height="373dp"
+        android:layout_width="362dp"
+        android:layout_height="592dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="24dp"
-        android:background="#EDC089"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="#1AEDC089"
         android:cursorVisible="true"
         android:gravity="top"
         android:lineSpacingExtra="5sp"
         android:textColorHint="#FFFFFF"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.563"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/writeTitle"
-        app:layout_constraintVertical_bias="0.017" />
+        app:layout_constraintVertical_bias="0.0" />
 
+    <!--
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
@@ -95,6 +102,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"></FrameLayout>
-
+     -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

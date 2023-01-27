@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.ssgmemo.databinding.RecyclerViewItemBinding
 
 class WriteActivity : AppCompatActivity() {
     val helper = SqliteHelper(this, "ssgMemo", 1)
@@ -18,7 +19,7 @@ class WriteActivity : AppCompatActivity() {
         val spinner = findViewById<Spinner>(R.id.category)
         val title = findViewById<TextView>(R.id.writeTitle)
         val content = findViewById<TextView>(R.id.writeContent)
-        val btnSave = findViewById<Button>(R.id.saveContent)
+        val btnSave = findViewById<ImageButton>(R.id.saveContent)
         var ctgr:Int? = null
 
         val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
@@ -60,19 +61,19 @@ class WriteActivity : AppCompatActivity() {
                 content.text = ""
                 spinner.setSelection(0)
 
-               /* if (ctgr == null) {
-                    val intent = Intent(this, WriteActivity2::class.java)
-                    startActivity(intent)
-                }*/
+                btnSave.setImageResource(R.drawable.save2)
+                val handler = android.os.Handler()
+                handler.postDelayed( Runnable { btnSave.setImageResource(R.drawable.save1)}, 200) // 0.5초 후에 다시 닫아주기
+
             }
         }
-        setFragment()
+//        setFragment()
     }
-
+/*
     private fun setFragment() {
         val fontFragment: Fragment = FontFragment()
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.frameLayout, fontFragment)
         trans.commit()
-    }
+    }*/
 }

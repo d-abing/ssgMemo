@@ -44,32 +44,32 @@ class MainActivity : AppCompatActivity() {
                     if(v.x > 480 && 740 < v.y && v.y < 1290){
                         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
  //                     Toast.makeText(this@MainActivity,"쓰기",Toast.LENGTH_SHORT).show()
-                        v.x = 315.6035f
-                        v.y = 996.8867f
+                        v.x = 317.20898f
+                        v.y = 928.77344f
                         val intent = Intent(this, WriteActivity::class.java)
                         startActivity(intent)
                     }
                     if(v.x < 120 && 740 < v.y && v.y < 1290){
                         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
 //                      Toast.makeText(this@MainActivity,"분류",Toast.LENGTH_SHORT).show()
-                        v.x = 315.6035f
-                        v.y = 996.8867f
+                        v.x = 317.20898f
+                        v.y = 928.77344f
                         val intent = Intent(this, ClassifyActivity::class.java)
                         startActivity(intent)
                     }
                     if(v.y > 1293 && v.x > 60 && v.x < 560){
                         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
 //                      Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
-                        v.x = 315.6035f
-                        v.y = 996.8867f
+                        v.x = 317.20898f
+                        v.y = 928.77344f
                         val intent = Intent(this, ViewCtgrActivity::class.java)
                         startActivity(intent)
                     }
                     if(v.y > 250 && v.y < 700 && v.x > 60 && v.x < 560){
                         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
 //                      Toast.makeText(this@MainActivity,"통계",Toast.LENGTH_SHORT).show()
-                        v.x = 315.6035f
-                        v.y = 996.8867f
+                        v.x = 317.20898f
+                        v.y = 928.77344f
                         val intent = Intent(this, StatisticsActivity::class.java)
                         startActivity(intent)
                     }

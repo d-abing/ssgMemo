@@ -104,6 +104,14 @@
             android:scaleType="fitCenter"
             android:src="@drawable/size_down" />
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"/>
+
         <ImageButton
             android:id="@+id/imageButton11"
             android:layout_width="85dp"

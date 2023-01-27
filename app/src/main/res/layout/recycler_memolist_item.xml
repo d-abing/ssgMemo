@@ -9,7 +9,7 @@
         android:id="@+id/memoTitle"
         android:layout_width="336dp"
         android:layout_height="49dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="20dp"
         android:text="아직 메모가 없어요"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
