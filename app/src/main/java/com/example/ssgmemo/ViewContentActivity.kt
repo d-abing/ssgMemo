@@ -3,9 +3,10 @@ package com.example.ssgmemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
 
-class ViewContentActivity : AppCompatActivity(), CallbackListener {
+class ViewContentActivity : AppCompatActivity(){
     private lateinit var binding: ActivityViewContentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,23 +19,19 @@ class ViewContentActivity : AppCompatActivity(), CallbackListener {
         // list
         val memoList = helper.selectMemoList(title!!)
         val unknownMemoList = helper.selectMemoList("isnull")
-        val adapter = RecyclerAdapter(this, this)
+        val adapter = RecyclerSwipeAdapter(this)
 
         adapter.helper = helper
+        adapter.itemList = helper.selectMemoList(ctgrName!!)
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
 
         if (title == "0"){
-            adapter.listData.addAll(unknownMemoList)
+            adapter.itemList.addAll(unknownMemoList)
         }else{
-            adapter.listData.addAll(memoList)
+            adapter.itemList.addAll(memoList)
         }
-
-        Log.d("왜","${adapter.listData}")
-
-    }
-
-    override fun callback(cidx: Long) {
-        TODO("Not yet implemented")
     }
 }

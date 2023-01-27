@@ -31,23 +31,23 @@ class WriteActivity : AppCompatActivity() {
         ctgrList.add(0,"미분류")
         spinner.adapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, ctgrList)
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
 
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if(spinner.getItemAtPosition(position).toString() !="미분류") {
-                        val value = spinner.getItemAtPosition(position)
-                        // 카테고리 이름.. = 벨류 값...
-                        ctgr = getKey(helper.selectCtgrMap(), value)
-                        Log.d("값값","${ctgr}")
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if(spinner.getItemAtPosition(position).toString() !="미분류") {
+                    val value = spinner.getItemAtPosition(position)
+                    // 카테고리 이름.. = 벨류 값...
+                    ctgr = getKey(helper.selectCtgrMap(), value)
+                    Log.d("값값","${ctgr}")
 
-                    }else{
-                        ctgr = null
-                    }
+                }else{
+                    ctgr = null
                 }
+            }
         }
 
-       btnSave.setOnClickListener {
+        btnSave.setOnClickListener {
             if (content.text.toString().isNotEmpty()){
                 var mTitle = ""
                 if ( title.text.toString() == "" ) {
@@ -55,7 +55,7 @@ class WriteActivity : AppCompatActivity() {
                 } else {
                     mTitle = title.text.toString()
                 }
-                val memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr)
+                val memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr,null)
                 helper.insertMemo(memo)
                 title.text = ""
                 content.text = ""

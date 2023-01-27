@@ -1,41 +1,47 @@
 package com.example.ssgmemo
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
+import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
 
-class RecyclerSwipeAdapter(): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
+class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
-    lateinit var itemList: MutableList<Any>
+    lateinit var itemList: MutableList<Memo>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
         var binding =
-            RecyclerCtgrViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(itemList.get(position))
+        holder.bind(itemList[position])
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
-    inner class Holder(val binding: RecyclerCtgrViewItemBinding): RecyclerView.ViewHolder(binding?.root!!){
-        fun bind(item: Any) {
-            if (item is Ctgr){
-                binding.txtCtgr2.setText(item.name)
-            } else {
-                item as Memo
-            }
+    inner class Holder(val binding: RecyclerContentItem1Binding): RecyclerView.ViewHolder(binding?.root!!){
+        fun bind(item: Memo) {
 
+            binding.titleItem.text = item.title
+            itemView.setOnClickListener {
+                val intent = Intent(context, EditActivity::class.java)
+                intent.putExtra("memoIdx", "${item.idx}")
+                context.startActivity(intent)
+            }
         }
     }
 
     override fun onItemMove(from: Int, to: Int) : Boolean {
         val data = itemList[from]
         //리스트 갱신
+        helper.switchPriority(itemList[to],data)
+        for(i in itemList){
+            Log.d("아ㅓ이템","${i.priority}")
+        }
         itemList.removeAt(from)
         itemList.add(to,data)
 
@@ -47,7 +53,9 @@ class RecyclerSwipeAdapter(): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(
     // 아이템 스와이프되면 호출되는 메소드
     override fun onItemSwipe(position: Int) {
         // 리스트 아이템 삭제
+        helper.deleteContent(itemList[position].idx)
         itemList.removeAt(position)
         notifyItemRemoved(position)
     }
+
 }
