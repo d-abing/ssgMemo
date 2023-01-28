@@ -48,15 +48,18 @@ class WriteActivity : AppCompatActivity() {
             if (content.text.toString().isNotEmpty()){
                 var mTitle = ""
                 lateinit var memo:Memo
-                var priority: Int? = 0
+                var priority: Int? = null
                 if ( title.text.toString() == "" ) {
                     mTitle = "빈 제목"
                 } else {
                     mTitle = title.text.toString()
                 }
                 // 카테고리가 있으며, 우선순위가 0이 아닌경우 우선순위 +1 부여 else null 부여
-                if(ctgr != null && helper.checkTop(ctgr!!) != null){
-                    priority = helper.checkTop(ctgr!!)!! +1
+                if(ctgr != null){
+                    if (helper.checkTop(ctgr!!) == 0){
+                        priority = helper.checkTop(ctgr!!)!! +1
+                    }
+                    priority = 0
                 }
                 memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr,priority)
                 helper.insertMemo(memo)

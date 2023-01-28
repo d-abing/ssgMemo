@@ -259,9 +259,18 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 	}
 
-	fun switchPriority(priority_from: Int?, priority_to: Int?) {
+	fun movePriority(itemList_from: Memo, itemList_to: Memo) {
+		val wd = writableDatabase
+		val wd1 = writableDatabase
+		val sql = "UPDATE memo set priority = '" + itemList_from.priority + "' where idx = '" + itemList_from.idx + "'"
+		val sql1 = "UPDATE memo set priority = '" + itemList_to.priority + "' where idx = '" + itemList_to.idx + "'"
 
+		wd.execSQL(sql)
+		wd1.execSQL(sql1)
+		wd.close()
+		wd1.close()
 	}
+
 
 	@SuppressLint("Range")
 	fun checkTop(ctgr: Int): Int? {
@@ -284,6 +293,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 }
 
 data class Ctgr(var idx: Long?, var name: String, var datetime: Long)
-data class Memo(var idx: Long?, var title: String, var content: String,var datetime: Long, var ctgr: Int?, val priority: Int?)
+data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int?, var priority: Int?)
 // memo 테이블의 레코드 하나를 저장할 수 있는 데이터 클래스
 // idx는 primary key이므로 자동증가값으로 설정되어 값이 없을 수도 있으므로 null값을 허용(?)

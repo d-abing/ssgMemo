@@ -85,7 +85,8 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
 
         if (memoList!!.isNotEmpty()) {
-            helper.updateMemoCtgr(midx, cidx, helper.checkTop(cidx.toInt())?.plus(1))
+            var priority:Int = if (helper.checkTop(cidx.toInt()) == null) 0 else helper.checkTop(cidx.toInt())?.plus(1)!!
+            helper.updateMemoCtgr(midx, cidx, priority)
             pagerAdapter!!.listData.clear()
             memoList2 = helper.selectUnclassifiedMemoList()
             pagerAdapter!!.listData.addAll(memoList2!!)

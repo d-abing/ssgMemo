@@ -36,13 +36,19 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
 
     override fun onItemMove(from: Int, to: Int) : Boolean {
-        val data = itemList[from]
+
         //리스트 갱신
-//        Log.d()
-//        helper.switchPriority(priority_fix)
-        for(i in itemList){
-            Log.d("아ㅓ이템","${i.priority}")
+        var priority_gap =itemList[from].priority!! - itemList[to].priority!!
+        Log.d("갑갑","${priority_gap}")
+        if (priority_gap == 1){
+            itemList[to].priority = itemList[to].priority?.minus(1)
+            itemList[from].priority = itemList[from].priority?.plus(1)
+        }else if (priority_gap == -1){
+            itemList[to].priority = itemList[to].priority?.plus(1)
+            itemList[from].priority = itemList[from].priority?.minus(1)
         }
+        val data = itemList[from]
+        helper.movePriority(itemList[from], itemList[to])
         itemList.removeAt(from)
         itemList.add(to,data)
 

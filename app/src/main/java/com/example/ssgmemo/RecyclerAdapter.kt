@@ -68,11 +68,11 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				binding.cidx.text = ctgr.idx.toString()
 				binding.cidx.visibility = View.INVISIBLE
 				itemView.setOnClickListener {
-					(binding as RecyclerViewItemBinding).box.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
+					binding.box.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
 					val handler = android.os.Handler()
 					handler.postDelayed( Runnable { binding.box.setImageResource(R.drawable.closed_box)}, 500) // 0.5초 후에 다시 닫아주기
 
-					callbackListener.callback((binding as RecyclerViewItemBinding).cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
+					callbackListener.callback(binding.cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
 				}
 			} else if (parentName.equals("recyclerCtgr2")) {
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
