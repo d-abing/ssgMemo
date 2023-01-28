@@ -15,7 +15,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		// 전체 앱에서 가장 처음 한 번만 수행되며, 대부분 테이블을 생성하는 코드를 작성
 		val sql = "create table ctgr (idx integer primary key, name text, datetime integer)"
 		db?.execSQL(sql)
-		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, FOREIGN KEY (ctgr) references ctgr(idx) ON UPDATE CASCADE ON DELETE CASCADE)"
+		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, priority integer, FOREIGN KEY (ctgr) references ctgr(idx) ON UPDATE CASCADE ON DELETE CASCADE)"
 		db?.execSQL(sql1)
 	}
 	override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) { }
@@ -49,10 +49,11 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 	}
 
-	fun updateMemoCtgr(memoidx: Long?, ctgr: Long) {
+	fun updateMemoCtgr(memoidx: Long?, ctgr: Long, priority: Int?) {
 		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
 		val values = ContentValues()
 		values.put("ctgr", ctgr)
+		values.put("priority", priority)
 		// 테이블에서 변경할 값들을 컬럼명과 함께 저장
 
 		val wd = writableDatabase
@@ -240,24 +241,43 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return result
 	}
 
-	fun deleteContent(idx: Long?) {
+	fun deleteContent(memo: Memo) {
+		// 삭제 할 데이터 보다 우선순위가 나중인 경우 -1
+		if (memo.ctgr != null){
+			val wd1 = writableDatabase
+			val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority<'" + memo.priority + "'"
+			wd1.execSQL(sql1)
+			wd1.close()
+		}
+		// 데이터 삭제
 		val wd = writableDatabase
-		val sql = "delete from memo where idx = '" + idx + " '"
+		val sql = "delete from memo where idx = '" + memo.idx + " '"
+
 		wd.execSQL(sql)
 		wd.close()
+
+
 	}
 
-	fun switchPriority(itemList: Memo, data: Memo) {
-		Log.d("왜안","${itemList},${data}")
-		val db = this.writableDatabase
-		val contentValues = ContentValues().apply {
-			put("priority", data.priority)
+	fun switchPriority(priority_from: Int?, priority_to: Int?) {
+
+	}
+
+	@SuppressLint("Range")
+	fun checkTop(ctgr: Int): Int? {
+
+		var sql = "SELECT priority FROM memo where ctgr = '" + ctgr + "' ORDER by priority DESC LIMIT 1"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var result: Int? = null
+
+		if (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			result = rs.getInt(rs.getColumnIndex("priority"))
 		}
-		db.update("memo", contentValues, "idx = '" + itemList.idx + "'", null)
-		val contentValues1 = ContentValues().apply {
-			put("priority", itemList.priority)
-		}
-		db.update("memo", contentValues1, "idx = '" + data.idx + "'", null)
+		rs.close()
+		rd.close()
+		return  result
 	}
 
 

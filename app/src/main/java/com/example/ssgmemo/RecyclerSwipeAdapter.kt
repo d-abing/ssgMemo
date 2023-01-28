@@ -38,7 +38,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     override fun onItemMove(from: Int, to: Int) : Boolean {
         val data = itemList[from]
         //리스트 갱신
-        helper.switchPriority(itemList[to],data)
+//        Log.d()
+//        helper.switchPriority(priority_fix)
         for(i in itemList){
             Log.d("아ㅓ이템","${i.priority}")
         }
@@ -53,7 +54,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     // 아이템 스와이프되면 호출되는 메소드
     override fun onItemSwipe(position: Int) {
         // 리스트 아이템 삭제
-        helper.deleteContent(itemList[position].idx)
+        helper.deleteContent(itemList[position])
         itemList.removeAt(position)
         notifyItemRemoved(position)
     }

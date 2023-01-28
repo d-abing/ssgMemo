@@ -1,14 +1,11 @@
 package com.example.ssgmemo
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.fragment.app.Fragment
-import com.example.ssgmemo.databinding.RecyclerViewItemBinding
 
 class WriteActivity : AppCompatActivity() {
     val helper = SqliteHelper(this, "ssgMemo", 1)
@@ -50,12 +47,18 @@ class WriteActivity : AppCompatActivity() {
         btnSave.setOnClickListener {
             if (content.text.toString().isNotEmpty()){
                 var mTitle = ""
+                lateinit var memo:Memo
+                var priority: Int? = 0
                 if ( title.text.toString() == "" ) {
                     mTitle = "빈 제목"
                 } else {
                     mTitle = title.text.toString()
                 }
-                val memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr,null)
+                // 카테고리가 있으며, 우선순위가 0이 아닌경우 우선순위 +1 부여 else null 부여
+                if(ctgr != null && helper.checkTop(ctgr!!) != null){
+                    priority = helper.checkTop(ctgr!!)!! +1
+                }
+                memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr,priority)
                 helper.insertMemo(memo)
                 title.text = ""
                 content.text = ""
