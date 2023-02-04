@@ -27,8 +27,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
-
-
     }
 
     override fun callback(cidx: Long) {

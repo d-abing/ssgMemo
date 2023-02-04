@@ -103,6 +103,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
 					// 엔터 그리고 키 업일 때만 적용
+					flag=false
+					binding.delete.visibility = View.INVISIBLE
+					binding.repair.visibility = View.INVISIBLE
 					if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP){
 						// db update 문
 						helper?.updateCtgrName(ctgr.idx.toString(),binding.txtCtgr2.text.toString())
@@ -120,6 +123,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					return@setOnKeyListener false
 				}
 				itemView.setOnClickListener {
+					flag=false
 					binding.delete.visibility = View.INVISIBLE
 					binding.repair.visibility = View.INVISIBLE
 					val intent = Intent(context, ViewContentActivity::class.java)
