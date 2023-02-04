@@ -12,7 +12,7 @@
         android:layout_width="169dp"
         android:layout_height="90dp"
 
-        android:background="@drawable/testback"
+        android:background="@drawable/ctgrback"
         android:focusable="auto"
         android:focusableInTouchMode="false"
         android:textColor="#000000"
@@ -82,7 +82,7 @@
         android:maxLength="10"
         android:singleLine="true"
         android:text="카테고링 이름"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
         app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
         app:layout_constraintHorizontal_bias="0.517"

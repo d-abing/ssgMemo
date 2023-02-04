@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
+import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
     lateinit var itemList: MutableList<Memo>
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
         var binding =
-            RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -23,13 +26,19 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     override fun getItemCount(): Int {
         return itemList.size
     }
-    inner class Holder(val binding: RecyclerContentItem1Binding): RecyclerView.ViewHolder(binding?.root!!){
-        fun bind(item: Memo) {
+    inner class Holder(val binding: RecyclerSearchItemBinding): RecyclerView.ViewHolder(binding?.root!!) {
+        fun bind(memo: Memo) {
 
-            binding.titleItem.text = item.title
+            binding.searchTitle.text = memo.title
+            binding.searchContent.text = memo.content
+
+            val t_dateFormat = SimpleDateFormat("MM월 dd일", Locale("ko", "KR"))
+            val str_date = t_dateFormat.format(Date(memo.datetime))
+            binding.searchDate.text = str_date
+
             itemView.setOnClickListener {
                 val intent = Intent(context, EditActivity::class.java)
-                intent.putExtra("memoIdx", "${item.idx}")
+                intent.putExtra("memoIdx", "${memo.idx}")
                 context.startActivity(intent)
             }
         }

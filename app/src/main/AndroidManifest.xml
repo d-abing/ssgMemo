@@ -44,7 +44,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".StatisticsActivity"
+            android:name=".SearchActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

@@ -39,9 +39,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 		} else if (parentName.equals("recyclerCtgr2")){
 			binding =
 				RecyclerCtgrViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-		} else if(parentName.equals("recyclerContent1")){
-			binding =
-				RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
 		} else if(parentName.equals("recyclerSearch")){
 			binding =
 				RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -58,7 +55,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			holder.getMemo(memo)
 		} else {
 			val resultMemo:Memo = listData.get(position) as Memo
-			holder.setMemo(resultMemo)
+			holder.getMemo(resultMemo)
 		}
 	}
 
@@ -140,14 +137,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					intent.putExtra("ctgrname", "${ctgr.name}")
 					context.startActivity(intent)
 				}
-			}
-		}
-		fun setMemo(resultMemo: Memo) {
-			(binding as RecyclerContentItem1Binding).titleItem.text = resultMemo.title
-			itemView.setOnClickListener {
-				val intent = Intent(context, EditActivity::class.java)
-				intent.putExtra("memoIdx", "${resultMemo.idx}")
-				context.startActivity(intent)
 			}
 		}
 		fun getMemo(memo: Memo) {
