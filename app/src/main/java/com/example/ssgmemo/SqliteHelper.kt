@@ -22,30 +22,25 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	// DB 버전 정보가 변경될 때 마다 반복해서 호출되며, 테이블의 스키마 부분을 변경하기 위한 용도로 사용
 
 	fun insertCtgr(ctgr: Ctgr) {
-		val wd = writableDatabase
-		val sql = "insert into ctgr (name, datetime) values " +
-				"('${ctgr.name}', ${ctgr.datetime})"
-		wd.execSQL(sql)
-		wd.close()
+		var sql1 = "select idx FROM ctgr where name = '" + ctgr.name + "' LIMIT 1"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql1, null)
+
+		if (!rs.moveToNext()) {
+			val wd = writableDatabase
+			val sql2 = "insert into ctgr (name, datetime) values " +
+					"('${ctgr.name}', ${ctgr.datetime})"
+			wd.execSQL(sql2)
+			wd.close()
+		}
+		rs.close()
+		rd.close()
 	}
 	fun insertMemo(memo: Memo) {
 		val wd = writableDatabase
 		val sql = "insert into memo (title,content,datetime,ctgr,priority) values " +
 				"('${memo.title}', '${memo.content}', ${memo.datetime}, ${memo.ctgr}, ${memo.priority})"
 		wd.execSQL(sql)
-		wd.close()
-	}
-
-	fun updateCtgr(ctgr: Ctgr) {
-		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
-		val values = ContentValues()
-		values.put("name", ctgr.name)
-		values.put("datetime", ctgr.datetime)
-		// 테이블에서 변경할 값들을 컬럼명과 함께 저장
-
-		val wd = writableDatabase
-		wd.update("ctgr", values, "idx = ${ctgr.idx}", null)
-		// wd.update("memo", values, "idx = ?", arrayOf("${memo.idx}")
 		wd.close()
 	}
 
@@ -141,7 +136,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 	@SuppressLint("Range")
 	fun selectUnclassifiedMemoList(): MutableList<Memo> {
-		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
+		// 메모 리스트 // 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
 		val sql = "select * from memo where ctgr is null "
 		val rd = readableDatabase
@@ -194,7 +189,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 	@SuppressLint("Range")
 	fun selectMemo(idx:String): Memo {
-		// 메모 리스트 // 보기, 분류에서 메모 불러올 때 사용
+		// 메모 // 보기에서 메모 불러올 때 사용
 		var memo:Memo? = null
 		var sql = "select * from memo where idx = '"+ idx +"' order by priority desc"
 		val rd = readableDatabase
@@ -220,14 +215,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		//카테고리 삭제 메소드
 		val wd = writableDatabase
 		val sql = "delete from ctgr where idx = '" + idx + " '"
-		wd.execSQL(sql)
-		wd.close()
-	}
-
-	fun deleteCtgr() {
-		//카테고리 삭제 메소드
-		val wd = writableDatabase
-		val sql = "delete from ctgr"
 		wd.execSQL(sql)
 		wd.close()
 	}
@@ -301,6 +288,47 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return  result
 	}
 
+	fun selectSearchList(keyword: String, where: String, orderby: String): MutableList<Memo> {
+
+		val list = mutableListOf<Memo>()
+		var condition1 = ""
+		var condition2 = ""
+
+		if( where == "제목") {
+			condition1 = "where title like '%$keyword%'"
+		} else if ( where == "내용" ) {
+			condition1 = "where content like '%$keyword%'"
+		} else if ( where == "제목+내용" ) {
+			condition1 = "where title like '%$keyword%' or content like '%$keyword%'"
+		}
+
+		if( orderby == "최신순") {
+			condition2 = "order by datetime desc"
+		} else {
+			condition2 = "order by datetime asc"
+		}
+
+
+		var sql = "select * from memo $condition1 $condition2"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+			val priority = rs.getInt(rs.getColumnIndex("priority"))
+
+			list.add(Memo(idx, title, content, datetime, ctgr, priority))
+		}
+		rs.close()
+		rd.close()
+
+		return list
+	}
 
 }
 

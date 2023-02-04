@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
+import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class RecyclerAdapter(val callbackListener: CallbackListener, val context: Context): RecyclerView.Adapter<RecyclerAdapter.Holder>() {
@@ -39,6 +42,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 		} else if(parentName.equals("recyclerContent1")){
 			binding =
 				RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
+		} else if(parentName.equals("recyclerSearch")){
+			binding =
+				RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 		}
 		return Holder(binding)
 	}
@@ -47,6 +53,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 		if (parentName.equals("recyclerCtgr1") || parentName.equals("recyclerCtgr2")){
 			val ctgr:Ctgr = listData.get(position) as Ctgr
 			holder.setCtgr(ctgr)
+		} else if (parentName.equals("recyclerSearch")) {
+			val memo:Memo = listData.get(position) as Memo
+			holder.getMemo(memo)
 		} else {
 			val resultMemo:Memo = listData.get(position) as Memo
 			holder.setMemo(resultMemo)
@@ -138,6 +147,20 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			itemView.setOnClickListener {
 				val intent = Intent(context, EditActivity::class.java)
 				intent.putExtra("memoIdx", "${resultMemo.idx}")
+				context.startActivity(intent)
+			}
+		}
+		fun getMemo(memo: Memo) {
+			(binding as RecyclerSearchItemBinding).searchTitle.text = memo.title
+			binding.searchContent.text = memo.content
+
+			val t_dateFormat = SimpleDateFormat("MM월 dd일", Locale("ko", "KR"))
+			val str_date = t_dateFormat.format(Date(memo.datetime))
+			binding.searchDate.text = str_date
+
+			itemView.setOnClickListener {
+				val intent = Intent(context, EditActivity::class.java)
+				intent.putExtra("memoIdx", "${memo.idx}")
 				context.startActivity(intent)
 			}
 		}
