@@ -3,6 +3,7 @@ package com.example.ssgmemo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.icu.text.Transliterator.Position
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -59,7 +60,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
 
-
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
@@ -89,7 +89,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					}
 					binding.delete.setOnClickListener {
 						helper?.deleteCtgr(ctgr.idx.toString())
-						listData.clear()
+						listData.removeAt(adapterPosition)
 						notifyDataSetChanged()
 					}
 					binding.repair.setOnClickListener {
