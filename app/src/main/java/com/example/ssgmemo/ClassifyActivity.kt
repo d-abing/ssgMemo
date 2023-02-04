@@ -114,4 +114,8 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             }
         }
     }
+
+    override fun callmsg() {
+        TODO("Not yet implemented")
+    }
 }

@@ -3,6 +3,7 @@ package com.example.ssgmemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 import java.security.Provider.Service
@@ -20,6 +21,8 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.helper = helper
         val unknownCtgr = Ctgr(0, "미분류", 11111111)
         adapter.listData = helper.selectCtgrList().toMutableList()
+
+
         if (helper.isUnknownMemoExist()){
             adapter.listData.add(unknownCtgr)
         }
@@ -27,6 +30,13 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
+        if(adapter.listData.isEmpty()){
+            binding.msgCtgr.visibility = View.VISIBLE
+        }
+    }
+
+    override fun callmsg() {
+        binding.msgCtgr.visibility = View.VISIBLE
     }
 
     override fun callback(cidx: Long) {

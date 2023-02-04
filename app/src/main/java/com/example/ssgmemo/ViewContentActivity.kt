@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
 
@@ -21,7 +22,6 @@ class ViewContentActivity : AppCompatActivity(){
         val memoList = helper.selectMemoList(title!!)
         val unknownMemoList = helper.selectMemoList("isnull")
         val adapter = RecyclerSwipeAdapter(this)
-
         adapter.helper = helper
         adapter.itemList = helper.selectMemoList(ctgrName!!)
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
@@ -33,6 +33,9 @@ class ViewContentActivity : AppCompatActivity(){
             adapter.itemList.addAll(unknownMemoList)
         }else{
             adapter.itemList.addAll(memoList)
+        }
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
         }
     }
 

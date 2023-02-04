@@ -69,4 +69,8 @@ class SearchActivity : AppCompatActivity(), CallbackListener {
     override fun callback(cidx: Long) {
         TODO("Not yet implemented")
     }
+
+    override fun callmsg() {
+        TODO("Not yet implemented")
+    }
 }

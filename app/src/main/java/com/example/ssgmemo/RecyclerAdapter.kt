@@ -95,7 +95,16 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					}
 					binding.delete.setOnClickListener {
 						helper?.deleteCtgr(ctgr.idx.toString())
-						listData.removeAt(adapterPosition)
+						listData.clear()
+						helper?.selectCtgrList()?.let { it1 -> listData.addAll(it1) }
+						binding.delete.visibility = View.INVISIBLE
+						binding.repair.visibility = View.INVISIBLE
+						flag=false
+
+						if(listData.isEmpty()){
+							callbackListener.callmsg()
+						}
+
 						notifyDataSetChanged()
 					}
 					binding.repair.setOnClickListener {
