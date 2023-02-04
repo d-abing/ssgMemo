@@ -61,17 +61,29 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 	}
 
-	fun updateMemo(memo: Memo) {
-		// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+	// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
+	fun updateMemo(memo: Memo, diffCtgr: Boolean, ctgr_before: Int, priority_before: Int) {
+		// 카테고리가 변경되었다면 우선순위 조정
+		if(diffCtgr){
+			if (memo.ctgr != null){
+				val wd = writableDatabase
+				val sql = "UPDATE memo set priority = priority-1 where ctgr = '$ctgr_before' and priority<'$priority_before'"
+				wd.execSQL(sql)
+				wd.close()
+			}
+		}
 		val db = this.writableDatabase
-		val title = memo.title.toString()
-		val content = memo.content.toString()
+		val title = memo.title
+		val content = memo.content
+		val ctgr = memo.ctgr
 		val datetime = System.currentTimeMillis()
+		var priority = memo.priority
 		val contentValues = ContentValues().apply {
-
 			put("title", title)
 			put("content", content)
 			put("datetime", datetime)
+			put("priority",priority)
+			put("ctgr",ctgr)
 		}
 		Log.d("결과","${title}")
 		db.update("memo", contentValues, "idx = ${memo.idx}", null)
