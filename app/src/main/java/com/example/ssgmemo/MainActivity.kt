@@ -7,7 +7,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.MotionEvent
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ssgmemo.databinding.ActivityMainBinding
 
@@ -67,10 +66,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     if(v.y > 250 && v.y < 700 && v.x > 60 && v.x < 560){
                         vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
-//                      Toast.makeText(this@MainActivity,"통계",Toast.LENGTH_SHORT).show()
+//                      Toast.makeText(this@MainActivity,"검색",Toast.LENGTH_SHORT).show()
                         v.x = 317.20898f
                         v.y = 928.77344f
-                        val intent = Intent(this, StatisticsActivity::class.java)
+                        val intent = Intent(this, SearchActivity::class.java)
                         startActivity(intent)
                     }
                 }

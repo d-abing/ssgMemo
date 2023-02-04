@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/diligent"
-        android:text="통계"
+        android:text="검색"
         android:textSize="40sp"
         app:layout_constraintBottom_toTopOf="@+id/arrow_top"
         app:layout_constraintEnd_toEndOf="parent"
