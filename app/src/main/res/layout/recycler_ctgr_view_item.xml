@@ -9,10 +9,10 @@
     <ImageView
         android:id="@+id/ctgr_btn"
 
-        android:layout_width="87dp"
-        android:layout_height="95dp"
+        android:layout_width="169dp"
+        android:layout_height="90dp"
 
-        android:background="@drawable/item_ctgr_button"
+        android:background="@drawable/testback"
         android:focusable="auto"
         android:focusableInTouchMode="false"
         android:textColor="#000000"
@@ -42,34 +42,44 @@
 
     <ImageButton
         android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:background="#00ECECEC"
+        android:scaleType="fitEnd"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/repair"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
-        app:srcCompat="@drawable/delete" />
+        app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
+        app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
+        app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
+        app:layout_constraintVertical_bias="0.04"
+        app:srcCompat="@drawable/close" />
 
     <ImageButton
         android:id="@+id/repair"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_width="15dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="8dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitEnd"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
+        app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
+        app:layout_constraintHorizontal_bias="0.74"
         app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188"
-        app:srcCompat="@drawable/repair" />
+        app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/pencil" />
 
     <TextView
         android:id="@+id/txtCtgr3"
-        android:layout_width="116dp"
+        android:layout_width="160dp"
         android:layout_height="56dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/diligent"
         android:gravity="center"
+        android:maxLength="10"
         android:singleLine="true"
         android:text="카테고링 이름"
         android:textSize="18sp"

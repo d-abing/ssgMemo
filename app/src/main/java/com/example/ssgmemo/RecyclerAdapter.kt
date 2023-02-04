@@ -6,9 +6,11 @@ import android.content.Intent
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnKeyListener
 import android.view.ViewGroup
+import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
@@ -21,7 +23,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
 	var flag :Boolean = false
-
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
@@ -38,7 +39,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			binding =
 				RecyclerContentItem1Binding.inflate(LayoutInflater.from(parent.context), parent, false)
 		}
-
 		return Holder(binding)
 	}
 
@@ -119,8 +119,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					}
 					return@setOnKeyListener false
 				}
-
 				itemView.setOnClickListener {
+					binding.delete.visibility = View.INVISIBLE
+					binding.repair.visibility = View.INVISIBLE
 					val intent = Intent(context, ViewContentActivity::class.java)
 					intent.putExtra("title", "${ctgr.idx}")
 					intent.putExtra("ctgrname", "${ctgr.name}")
