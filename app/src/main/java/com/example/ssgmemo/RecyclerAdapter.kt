@@ -26,7 +26,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	var listData = mutableListOf<Any>()
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
-	var flag :Boolean = false
+
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
@@ -65,7 +65,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	}
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
-
+		var flag :Boolean = false
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
@@ -108,6 +108,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 						notifyDataSetChanged()
 					}
 					binding.repair.setOnClickListener {
+						flag=false
+						binding.delete.visibility = View.INVISIBLE
+						binding.repair.visibility = View.INVISIBLE
 						binding.txtCtgr3.visibility = View.INVISIBLE
 						binding.txtCtgr2.visibility = View.VISIBLE
 						binding.txtCtgr2.isEnabled = true
