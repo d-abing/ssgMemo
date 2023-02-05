@@ -26,20 +26,11 @@
         <ImageButton
             android:id="@+id/imageButton12"
             android:layout_width="85dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
             android:src="@drawable/italic" />
-
-        <ImageButton
-            android:id="@+id/imageButton13"
-            android:layout_width="85dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#00FFFFFF"
-            android:scaleType="fitCenter"
-            android:src="@drawable/underline" />
 
         <ImageButton
             android:id="@+id/imageButton5"
@@ -47,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             android:src="@drawable/bullet_list" />
 
         <ImageButton
@@ -56,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             android:src="@drawable/number_list" />
 
         <ImageButton
@@ -98,7 +89,7 @@
         <ImageButton
             android:id="@+id/imageButton10"
             android:layout_width="85dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
@@ -107,15 +98,15 @@
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="170dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter" />
 
         <ImageButton
             android:id="@+id/imageButton11"
             android:layout_width="85dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"

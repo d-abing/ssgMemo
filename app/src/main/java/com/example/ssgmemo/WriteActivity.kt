@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.fragment.app.Fragment
 
 class WriteActivity : AppCompatActivity() {
     val helper = SqliteHelper(this, "ssgMemo", 1)
@@ -75,8 +76,8 @@ class WriteActivity : AppCompatActivity() {
         }
 //        setFragment()
     }
-/*
-    private fun setFragment() {
+
+    /*private fun setFragment() {
         val fontFragment: Fragment = FontFragment()
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.frameLayout, fontFragment)
