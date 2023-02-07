@@ -42,11 +42,11 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner4" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/btnSearch"
         android:layout_width="41dp"
         android:layout_height="39dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
         android:background="#00FFFFFF"
         android:src="@android:drawable/ic_menu_search"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,20 +76,50 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearch"
-        android:layout_width="357dp"
-        android:layout_height="585dp"
+        android:layout_width="358dp"
+        android:layout_height="524dp"
         android:layout_marginStart="31dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="31dp"
         android:layout_marginBottom="8dp"
-        android:background="#00BC9C9C"
+        android:background="#1AEDC089"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keyword"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/recycler_search_item" />
+
+    <TextView
+        android:id="@+id/emptyText2"
+        android:layout_width="358dp"
+        android:layout_height="524dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginEnd="152dp"
+        android:background="#1AEDC089"
+        android:fontFamily="@font/diligent"
+        android:gravity="center|center_horizontal"
+        android:text="검색결과가 없습니다"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/recyclerSearch"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="@+id/recyclerSearch"
+        app:layout_constraintTop_toTopOf="@+id/recyclerSearch"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
+        android:background="#00FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/keyword"
+        app:layout_constraintTop_toTopOf="@+id/keyword"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -155,7 +155,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			(binding as RecyclerSearchItemBinding).searchTitle.text = memo.title
 			binding.searchContent.text = memo.content
 
-			val t_dateFormat = SimpleDateFormat("MM월 dd일", Locale("ko", "KR"))
+			val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
 			val str_date = t_dateFormat.format(Date(memo.datetime))
 			binding.searchDate.text = str_date
 

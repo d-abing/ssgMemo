@@ -34,12 +34,12 @@
 
     <TextView
         android:id="@+id/searchDate"
-        android:layout_width="43dp"
-        android:layout_height="21dp"
+        android:layout_width="52dp"
+        android:layout_height="23dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="날짜"
+        android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.882"
-        app:layout_constraintStart_toEndOf="@+id/searchTitle"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

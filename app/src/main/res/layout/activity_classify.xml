@@ -41,6 +41,7 @@
         android:hint="카테고리명"
         android:inputType="textPersonName"
         android:maxLength="8"
+        android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/btnCtgrAdd"
         app:layout_constraintTop_toBottomOf="@+id/viewpager" />
 

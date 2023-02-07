@@ -27,6 +27,9 @@ class EditActivity : AppCompatActivity() {
         ctgrList.add(0,"미분류")
         // 수정시 버튼 숨김 및 기존 정보 불러오기
         binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
+        binding.saveContent.layoutParams.width = 80
+        binding.saveContent.layoutParams.height =
+            80
         binding.writeTitle.setText(memo.title)
         binding.writeContent.setText(memo.content)
         binding.category.adapter = ArrayAdapter<String>(this, R.layout.simple_list_item_1, ctgrList)

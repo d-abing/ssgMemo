@@ -40,27 +40,61 @@ class SearchActivity : AppCompatActivity(), CallbackListener {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 orderby = binding.spinner2.getItemAtPosition(position).toString()
-                Log.d("로그", "확인")
                 recyclerAdapter.listData.clear()
+                val data = helper.selectSearchList(keyword, where, orderby)
                 recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
+                if(data!!.isEmpty()) {
+                    binding.recyclerSearch.visibility = View.INVISIBLE
+                    binding.emptyText2.visibility = View.VISIBLE
+                } else {
+                    binding.recyclerSearch.visibility = View.VISIBLE
+                    binding.emptyText2.visibility = View.INVISIBLE
+                }
                 recyclerAdapter.notifyDataSetChanged()
                 binding.keyword.setText("")
 
             }
         }
 
-
-
         recyclerAdapter.helper = helper
-        recyclerAdapter.listData.addAll(helper.selectSearchList(binding.keyword.text.toString(), where, orderby))
+        val data = helper.selectSearchList(keyword, where, orderby)
+        recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
+        if(data!!.isEmpty()) {
+            binding.recyclerSearch.visibility = View.INVISIBLE
+            binding.emptyText2.visibility = View.VISIBLE
+        } else {
+            binding.recyclerSearch.visibility = View.VISIBLE
+            binding.emptyText2.visibility = View.INVISIBLE
+        }
         binding.recyclerSearch.adapter = recyclerAdapter
 
-        binding.imageButton.setOnClickListener{
-            if (binding.keyword.text.toString().isNotEmpty()) {
+        binding.btnCancel.setOnClickListener{
+            recyclerAdapter.listData.clear()
+            val data = helper.selectSearchList(keyword, where, orderby)
+            recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
+            if(data!!.isEmpty()) {
+                binding.recyclerSearch.visibility = View.INVISIBLE
+                binding.emptyText2.visibility = View.VISIBLE
+            } else {
+                binding.recyclerSearch.visibility = View.VISIBLE
+                binding.emptyText2.visibility = View.INVISIBLE
+            }
+        }
+
+        binding.btnSearch.setOnClickListener{
+            keyword = binding.keyword.text.toString()
+            if (keyword.isNotEmpty()) {
                 recyclerAdapter.listData.clear()
-                recyclerAdapter.listData.addAll(helper.selectSearchList(binding.keyword.text.toString(), where, orderby))
+                val data = helper.selectSearchList(keyword, where, orderby)
+                recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
+                if(data!!.isEmpty()) {
+                    binding.recyclerSearch.visibility = View.INVISIBLE
+                    binding.emptyText2.visibility = View.VISIBLE
+                } else {
+                    binding.recyclerSearch.visibility = View.VISIBLE
+                    binding.emptyText2.visibility = View.INVISIBLE
+                }
                 recyclerAdapter.notifyDataSetChanged()
-                keyword = binding.keyword.text.toString()
                 binding.keyword.setText("")
             }
         }
