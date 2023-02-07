@@ -21,7 +21,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.helper = helper
         val unknownCtgr = Ctgr(0, "미분류", 11111111)
         adapter.listData = helper.selectCtgrList().toMutableList()
-
+        adapter.fontSize = intent.getStringExtra("fontSize")
 
         if (helper.isUnknownMemoExist()){
             adapter.listData.add(unknownCtgr)

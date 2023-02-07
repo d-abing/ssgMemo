@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/diligent"
         android:text="새로운 카테고리를 만들어 보셈"
-        android:textSize="24sp"
+        android:textSize="34sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

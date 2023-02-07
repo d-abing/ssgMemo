@@ -10,6 +10,7 @@ import com.example.ssgmemo.databinding.RecyclerMemolistItemBinding
 
 class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
     var listData = mutableListOf<Memo>()
+    var fontSize: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : Holder {
         var binding: ViewBinding = RecyclerMemolistItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,6 +29,11 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
         fun setMemo(memo: Memo) {
             (binding as RecyclerMemolistItemBinding).memoTitle.text = memo.title
             binding.memoContent.text = memo.content
+
+            if (fontSize.equals("ON")) {
+                binding.memoTitle.textSize = 24f
+                binding.memoContent.textSize = 20f
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ class ViewContentActivity : AppCompatActivity(){
         val memoList = helper.selectMemoList(title!!)
         val unknownMemoList = helper.selectMemoList("isnull")
         val adapter = RecyclerSwipeAdapter(this)
+        adapter.fontSize = intent.getStringExtra("fontSize")
         adapter.helper = helper
         adapter.itemList = helper.selectMemoList(ctgrName!!)
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)

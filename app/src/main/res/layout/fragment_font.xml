@@ -34,25 +34,25 @@
 
         <ImageButton
             android:id="@+id/imageButton5"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:scaleType="centerInside"
-            android:src="@drawable/bullet_list" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/underline" />
 
         <ImageButton
-            android:id="@+id/imageButton8"
+            android:id="@+id/imageButton"
             android:layout_width="85dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
             android:scaleType="centerInside"
-            android:src="@drawable/number_list" />
+            android:src="@drawable/list" />
 
         <ImageButton
             android:id="@+id/imageButton6"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
@@ -61,7 +61,7 @@
 
         <ImageButton
             android:id="@+id/imageButton7"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
@@ -70,7 +70,7 @@
 
         <ImageButton
             android:id="@+id/imageButton3"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
@@ -79,7 +79,7 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="85dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"

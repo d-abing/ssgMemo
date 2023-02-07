@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,16 +19,17 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     var memoList2: MutableList<Memo>? = null    // 분류로 인해 변경된 memoList
     var midx: Long? = null                      // 현재 보고 있는 메모의 midx 값
     var tmp_position: Int = 0                   // viewpager의 현재 위치
-
+    val fontSize = intent.getStringExtra("fontSize")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityClassifyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        Log.d("tgjgjgjgj","??")
         // < 메모 list >
         pagerAdapter = ViewPagerAdapter()
         memoList = helper.selectUnclassifiedMemoList()  // 분류되지 않은 memoList
+        pagerAdapter!!.fontSize = fontSize.toString()
         pagerAdapter!!.listData.addAll(memoList!!)      // pagerAdapter에 추가
         binding.viewpager.adapter = pagerAdapter        // viewpager에 pagerAdapter 등록
         binding.viewpager.registerOnPageChangeCallback( object : ViewPager2.OnPageChangeCallback() {
@@ -66,10 +68,15 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
         // < 카테고리 list >
         val recyclerAdapter = RecyclerAdapter(this, this)
+        recyclerAdapter.fontSize = fontSize.toString()
         recyclerAdapter.helper = helper
         recyclerAdapter.listData.addAll(helper.selectCtgrList())                            // ctgrList를 recyclerAdapter에 추가
         binding.recyclerCtgr1.adapter = recyclerAdapter                                     // recyclerCtgr1에 recyclerAdapter 등록
         binding.recyclerCtgr1.layoutManager = GridLayoutManager(this, 4)   // layout을 그리드 4span으로 지정
+
+       if (fontSize.equals("ON")) {
+           binding.ctgrName.textSize = 24f
+       }
 
         binding.btnCtgrAdd.setOnClickListener {                                             // 카테고리 추가 기능
             if (binding.ctgrName.text.toString().isNotEmpty()) {

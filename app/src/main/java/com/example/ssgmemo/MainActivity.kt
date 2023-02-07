@@ -8,6 +8,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.ssgmemo.databinding.ActivityMainBinding
@@ -15,8 +17,8 @@ import com.example.ssgmemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    var vibration = ""
-    var fontSize = ""
+    var vibration =  MyApplication.prefs.getString("vibration", "")
+    var fontSize = MyApplication.prefs.getString("fontSize", "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,47 +51,39 @@ class MainActivity : AppCompatActivity() {
                 }
                 MotionEvent.ACTION_UP -> {
                     if(v.x > 480 && 740 < v.y && v.y < 1290){
-                        if(vibration.equals("ON")) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
-
-                        }
+                        if(vibration.equals("ON")) { vibrator.vibrate(VibrationEffect.createOneShot(200, 50)) }
                         //                     Toast.makeText(this@MainActivity,"쓰기",Toast.LENGTH_SHORT).show()
                         v.x = 317.20898f
                         v.y = 928.77344f
                         val intent = Intent(this, WriteActivity::class.java)
+                        intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
                     if(v.x < 120 && 740 < v.y && v.y < 1290){
-                        if(vibration.equals("ON")) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
-
-                        }
+                        if(vibration.equals("ON")) { vibrator.vibrate(VibrationEffect.createOneShot(200, 50)) }
 //                      Toast.makeText(this@MainActivity,"분류",Toast.LENGTH_SHORT).show()
                         v.x = 317.20898f
                         v.y = 928.77344f
                         val intent = Intent(this, ClassifyActivity::class.java)
+                        intent.putExtra("fontSize1", "$fontSize")
                         startActivity(intent)
                     }
                     if(v.y > 1220 && v.x > 60 && v.x < 560){
-                        if(vibration.equals("ON")) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
-
-                        }
+                        if(vibration.equals("ON")) { vibrator.vibrate(VibrationEffect.createOneShot(200, 50)) }
 //                      Toast.makeText(this@MainActivity,"보기",Toast.LENGTH_SHORT).show()
                         v.x = 317.20898f
                         v.y = 928.77344f
                         val intent = Intent(this, ViewCtgrActivity::class.java)
+                        intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
                     if(v.y < 643 && v.x > 60 && v.x < 560){
-                        if(vibration.equals("ON")) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
-
-                        }
+                        if(vibration.equals("ON")) { vibrator.vibrate(VibrationEffect.createOneShot(200, 50)) }
 //                      Toast.makeText(this@MainActivity,"검색",Toast.LENGTH_SHORT).show()
                         v.x = 317.20898f
                         v.y = 928.77344f
                         val intent = Intent(this, SearchActivity::class.java)
+                        intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
                 }
@@ -111,6 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setVibrationSetting(vibrationSetting: String) {
+        MyApplication.prefs.setString("vibration", "$vibrationSetting")
         vibration = vibrationSetting
     }
 
@@ -118,8 +113,9 @@ class MainActivity : AppCompatActivity() {
         return vibration
     }
 
-    fun setFontSizeSetting(FontSizeSetting: String) {
-        fontSize = FontSizeSetting
+    fun setFontSizeSetting(fontSizeSetting: String) {
+        MyApplication.prefs.setString("fontSize", "$fontSizeSetting")
+        fontSize = fontSizeSetting
     }
 
     fun getFontSizeSetting(): String{

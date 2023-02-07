@@ -20,6 +20,7 @@ class EditActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val memoIdx = intent.getStringExtra("memoIdx") as String
+        val fontSize = intent.getStringExtra("fontSize") as String
         var memo = helper.selectMemo(memoIdx)
         val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
         var ctgr:Int? = memo.ctgr
@@ -28,10 +29,13 @@ class EditActivity : AppCompatActivity() {
         // 수정시 버튼 숨김 및 기존 정보 불러오기
         binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
         binding.saveContent.layoutParams.width = 80
-        binding.saveContent.layoutParams.height =
-            80
+        binding.saveContent.layoutParams.height = 80
         binding.writeTitle.setText(memo.title)
         binding.writeContent.setText(memo.content)
+        if (fontSize.equals("ON")) {
+            binding.writeTitle.textSize = 24f
+            binding.writeContent.textSize = 24f
+        }
         binding.category.adapter = ArrayAdapter<String>(this, R.layout.simple_list_item_1, ctgrList)
         binding.category.setSelection(memo.ctgr as Int)
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {

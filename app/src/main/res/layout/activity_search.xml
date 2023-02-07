@@ -16,35 +16,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner2" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="323dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/diligent"
-        android:text="원하는 키워드로 메모를 검색하세요"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.352"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/keyword"
-        android:layout_width="312dp"
-        android:layout_height="55dp"
+        android:layout_width="275dp"
+        android:layout_height="58dp"
         android:ems="10"
         android:hint="검색어를 입력하세요"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.303"
+        app:layout_constraintHorizontal_bias="0.22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner4" />
 
     <ImageButton
         android:id="@+id/btnSearch"
-        android:layout_width="41dp"
-        android:layout_height="39dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
         android:background="#00FFFFFF"
@@ -56,28 +43,28 @@
 
     <Spinner
         android:id="@+id/spinner2"
-        android:layout_width="133dp"
+        android:layout_width="wrap_content"
         android:layout_height="49dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="11dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/spinner4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner4"
         android:layout_width="149dp"
         android:layout_height="51dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearch"
-        android:layout_width="358dp"
-        android:layout_height="524dp"
+        android:layout_width="351dp"
+        android:layout_height="562dp"
         android:layout_marginStart="31dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="31dp"
@@ -94,32 +81,29 @@
 
     <TextView
         android:id="@+id/emptyText2"
-        android:layout_width="358dp"
-        android:layout_height="524dp"
-        android:layout_marginStart="147dp"
-        android:layout_marginEnd="152dp"
+        android:layout_width="352dp"
+        android:layout_height="562dp"
+        android:layout_marginTop="16dp"
         android:background="#1AEDC089"
         android:fontFamily="@font/diligent"
         android:gravity="center|center_horizontal"
         android:text="검색결과가 없습니다"
         android:textAlignment="center"
         android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerSearch"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="@+id/recyclerSearch"
-        app:layout_constraintTop_toTopOf="@+id/recyclerSearch"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keyword" />
 
     <ImageButton
         android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="5dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
         android:background="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/keyword"
-        app:layout_constraintTop_toTopOf="@+id/keyword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btnSearch"
+        app:layout_constraintTop_toBottomOf="@+id/spinner2"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

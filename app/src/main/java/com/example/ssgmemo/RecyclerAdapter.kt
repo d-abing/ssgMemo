@@ -26,6 +26,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	var listData = mutableListOf<Any>()
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
+	var fontSize : String? = null
 
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -70,6 +71,9 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
 				(binding as RecyclerViewItemBinding).txtCtgr.text = ctgr.name
+				if (fontSize.equals("ON")) {
+					binding.txtCtgr.textSize = 20f
+				}
 				binding.box.setImageResource(R.drawable.closed_box)
 				binding.cidx.text = ctgr.idx.toString()
 				binding.cidx.visibility = View.INVISIBLE
@@ -147,6 +151,7 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					val intent = Intent(context, ViewContentActivity::class.java)
 					intent.putExtra("title", "${ctgr.idx}")
 					intent.putExtra("ctgrname", "${ctgr.name}")
+					intent.putExtra("fontSize", "$fontSize")
 					context.startActivity(intent)
 				}
 			}
@@ -158,6 +163,12 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 			val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
 			val str_date = t_dateFormat.format(Date(memo.datetime))
 			binding.searchDate.text = str_date
+
+			if (fontSize.equals("ON")) {
+				binding.searchTitle.textSize = 24f
+				binding.searchContent.textSize = 20f
+				binding.searchDate.textSize = 20f
+			}
 
 			itemView.setOnClickListener {
 				val intent = Intent(context, EditActivity::class.java)

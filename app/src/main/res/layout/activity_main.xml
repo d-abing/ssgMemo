@@ -134,11 +134,12 @@
 
     <TextView
         android:id="@+id/mainTitle"
-        android:layout_width="172dp"
-        android:layout_height="69dp"
+        android:layout_width="223dp"
+        android:layout_height="83dp"
         android:layout_marginTop="96dp"
         android:fontFamily="@font/diligent"
         android:text="쓱싹메모"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"

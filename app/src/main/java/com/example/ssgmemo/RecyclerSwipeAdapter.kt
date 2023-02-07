@@ -14,6 +14,8 @@ import java.util.*
 class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
     lateinit var itemList: MutableList<Memo>
+    var fontSize: String? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
         var binding =
             RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -32,13 +34,20 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             binding.searchTitle.text = memo.title
             binding.searchContent.text = memo.content
 
-            val t_dateFormat = SimpleDateFormat("MM월 dd일", Locale("ko", "KR"))
+            val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
             binding.searchDate.text = str_date
+
+            if (fontSize!!.equals("ON")) {
+                binding.searchTitle.textSize = 24f
+                binding.searchContent.textSize = 20f
+                binding.searchDate.textSize = 20f
+            }
 
             itemView.setOnClickListener {
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("memoIdx", "${memo.idx}")
+                intent.putExtra("fontSize", "$fontSize")
                 context.startActivity(intent)
             }
         }

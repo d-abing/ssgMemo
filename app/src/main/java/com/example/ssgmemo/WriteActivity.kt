@@ -18,6 +18,7 @@ class WriteActivity : AppCompatActivity() {
         val title = findViewById<TextView>(R.id.writeTitle)
         val content = findViewById<TextView>(R.id.writeContent)
         val btnSave = findViewById<ImageButton>(R.id.saveContent)
+        val fontSize = intent.getStringExtra("fontSize")
         var ctgr:Int? = null
 
         val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
@@ -46,23 +47,30 @@ class WriteActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            if (content.text.toString().isNotEmpty()){
+            if (content.text.toString().isNotEmpty()) {
                 var mTitle = ""
-                lateinit var memo:Memo
+                lateinit var memo: Memo
                 var priority: Int? = null
-                if ( title.text.toString() == "" ) {
+                if (title.text.toString() == "") {
                     mTitle = "빈 제목"
                 } else {
                     mTitle = title.text.toString()
                 }
                 // 카테고리가 있으며, 우선순위가 0이 아닌경우 우선순위 +1 부여 else null 부여
-                if(ctgr != null){
-                    if (helper.checkTop(ctgr!!) == 0){
-                        priority = helper.checkTop(ctgr!!)!! +1
+                if (ctgr != null) {
+                    if (helper.checkTop(ctgr!!) == 0) {
+                        priority = helper.checkTop(ctgr!!)!! + 1
                     }
                     priority = 0
                 }
-                memo = Memo(null, mTitle, content.text.toString(), System.currentTimeMillis(),ctgr,priority)
+                memo = Memo(
+                    null,
+                    mTitle,
+                    content.text.toString(),
+                    System.currentTimeMillis(),
+                    ctgr,
+                    priority
+                )
                 helper.insertMemo(memo)
                 title.text = ""
                 content.text = ""
@@ -70,14 +78,23 @@ class WriteActivity : AppCompatActivity() {
 
                 btnSave.setImageResource(R.drawable.save2)
                 val handler = android.os.Handler()
-                handler.postDelayed( Runnable { btnSave.setImageResource(R.drawable.save1)}, 200) // 0.5초 후에 다시 닫아주기
+                handler.postDelayed(
+                    Runnable { btnSave.setImageResource(R.drawable.save1) },
+                    200
+                ) // 0.5초 후에 다시 닫아주기
 
             }
         }
-//        setFragment()
+
+        if (fontSize.equals("ON")) {
+            title.textSize = 24f
+            content.textSize = 24f
+        }
+
+       // setFragment()
     }
 
-    /*private fun setFragment() {
+   /* private fun setFragment() {
         val fontFragment: Fragment = FontFragment()
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.frameLayout, fontFragment)

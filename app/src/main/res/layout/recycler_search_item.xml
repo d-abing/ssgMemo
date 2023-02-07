@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/searchTitle"
-        android:layout_width="294dp"
-        android:layout_height="34dp"
+        android:layout_width="278dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="제목입니다"
         android:textSize="20sp"
@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/searchContent"
-        android:layout_width="295dp"
+        android:layout_width="278dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:maxLines="3"
@@ -34,8 +34,8 @@
 
     <TextView
         android:id="@+id/searchDate"
-        android:layout_width="52dp"
-        android:layout_height="23dp"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="날짜"
