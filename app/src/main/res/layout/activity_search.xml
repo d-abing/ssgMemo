@@ -76,8 +76,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearch"
-        android:layout_width="357dp"
-        android:layout_height="585dp"
+        android:layout_width="358dp"
+        android:layout_height="524dp"
         android:layout_marginStart="31dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="31dp"
@@ -94,8 +94,8 @@
 
     <TextView
         android:id="@+id/emptyText2"
-        android:layout_width="356dp"
-        android:layout_height="583dp"
+        android:layout_width="358dp"
+        android:layout_height="524dp"
         android:layout_marginStart="147dp"
         android:layout_marginEnd="152dp"
         android:background="#1AEDC089"
@@ -106,7 +106,7 @@
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recyclerSearch"
-        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="@+id/recyclerSearch"
         app:layout_constraintTop_toTopOf="@+id/recyclerSearch"
         app:layout_constraintVertical_bias="0.0" />
