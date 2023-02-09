@@ -121,8 +121,13 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             }
         }
     }
-
     override fun callmsg() {
+        TODO("Not yet implemented")
+    }
+    override fun fragmentOpen(item: String) {
+        TODO("Not yet implemented")
+    }
+    override fun addCtgr(ctgrName: String) {
         TODO("Not yet implemented")
     }
 }

@@ -8,14 +8,27 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.ssgmemo.databinding.ActivitySearchBinding
 
-class SearchActivity : AppCompatActivity(), CallbackListener {
+class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val recyclerAdapter = RecyclerAdapter(this, this)
+        val recyclerAdapter = RecyclerAdapter(object :CallbackListener{
+            override fun callback(cidx: Long) {
+                TODO("Not yet implemented")
+            }
+            override fun callmsg() {
+                TODO("Not yet implemented")
+            }
+            override fun fragmentOpen(item: String) {
+                TODO("Not yet implemented")
+            }
+            override fun addCtgr(ctgrName: String) {
+                TODO("Not yet implemented")
+            }
+        }, this)
         recyclerAdapter.fontSize =  intent.getStringExtra("fontSize")
         var where = ""          // sql where 조건
         var orderby = ""        // sql orderby 조건
@@ -69,14 +82,6 @@ class SearchActivity : AppCompatActivity(), CallbackListener {
             showDataList(recyclerAdapter, "", where, orderby)
             recyclerAdapter.notifyDataSetChanged()
         }
-    }
-
-    override fun callback(cidx: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun callmsg() {
-        TODO("Not yet implemented")
     }
 
     fun showDataList(recyclerAdapter:RecyclerAdapter, keyword: String, where: String, orderby: String) {

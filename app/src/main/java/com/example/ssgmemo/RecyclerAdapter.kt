@@ -3,18 +3,13 @@ package com.example.ssgmemo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.icu.text.Transliterator.Position
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnKeyListener
 import android.view.ViewGroup
-import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
@@ -66,7 +61,8 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 	}
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
-		var flag :Boolean = false
+		var flag: Boolean = false
+
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) {
@@ -80,62 +76,75 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				itemView.setOnClickListener {
 					binding.box.setImageResource(R.drawable.opened_box) // 닫힌 상자를 열어주고
 					val handler = android.os.Handler()
-					handler.postDelayed( Runnable { binding.box.setImageResource(R.drawable.closed_box)}, 500) // 0.5초 후에 다시 닫아주기
+					handler.postDelayed(
+						Runnable { binding.box.setImageResource(R.drawable.closed_box) },
+						500
+					) // 0.5초 후에 다시 닫아주기
 
-					callbackListener.callback(binding.cidx.text.toString().toLong()) // cidx값을 액티비티로 전송
+					callbackListener.callback(
+						binding.cidx.text.toString().toLong()
+					) // cidx값을 액티비티로 전송
 				}
 			} else if (parentName.equals("recyclerCtgr2")) {
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name
-				itemView.setOnLongClickListener {
-					if(flag){
-						binding.delete.visibility = View.INVISIBLE
-						binding.repair.visibility = View.INVISIBLE
-						flag=false
-					}else{
-						binding.delete.visibility = View.VISIBLE
-						binding.repair.visibility = View.VISIBLE
-						flag=true
-					}
-					binding.delete.setOnClickListener {
-						helper?.deleteCtgr(ctgr.idx.toString())
-						listData.clear()
-						helper?.selectCtgrList()?.let { it1 -> listData.addAll(it1) }
-						binding.delete.visibility = View.INVISIBLE
-						binding.repair.visibility = View.INVISIBLE
-						flag=false
-
-						if(listData.isEmpty()){
-							callbackListener.callmsg()
+				if (ctgr.name == "+"){
+					binding.ctgrBtn.setBackgroundResource(R.drawable.testback)
+				}
+				if (ctgr.name != "미분류" && ctgr.name != "+") {
+					itemView.setOnLongClickListener {
+						if (flag) {
+							binding.delete.visibility = View.INVISIBLE
+							binding.repair.visibility = View.INVISIBLE
+							flag = false
+						} else {
+							binding.delete.visibility = View.VISIBLE
+							binding.repair.visibility = View.VISIBLE
+							flag = true
 						}
+						binding.delete.setOnClickListener {
+							helper?.deleteCtgr(ctgr.idx.toString())
+							listData.clear()
+							helper?.selectCtgrList()?.let { it1 -> listData.addAll(it1) }
+							binding.delete.visibility = View.INVISIBLE
+							binding.repair.visibility = View.INVISIBLE
+							flag = false
 
-						notifyDataSetChanged()
+							if (listData.isEmpty()) {
+								callbackListener.callmsg()
+							}
+
+							notifyDataSetChanged()
+						}
+						binding.repair.setOnClickListener {
+							flag = false
+							binding.delete.visibility = View.INVISIBLE
+							binding.repair.visibility = View.INVISIBLE
+							binding.txtCtgr3.visibility = View.INVISIBLE
+							binding.txtCtgr2.visibility = View.VISIBLE
+							binding.txtCtgr2.isEnabled = true
+							binding.txtCtgr2.selectionEnd
+						}
+						return@setOnLongClickListener true
 					}
-					binding.repair.setOnClickListener {
-						flag=false
-						binding.delete.visibility = View.INVISIBLE
-						binding.repair.visibility = View.INVISIBLE
-						binding.txtCtgr3.visibility = View.INVISIBLE
-						binding.txtCtgr2.visibility = View.VISIBLE
-						binding.txtCtgr2.isEnabled = true
-						binding.txtCtgr2.selectionEnd
-					}
-					return@setOnLongClickListener true
 				}
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
 					// 엔터 그리고 키 업일 때만 적용
-					flag=false
+					flag = false
 					binding.delete.visibility = View.INVISIBLE
 					binding.repair.visibility = View.INVISIBLE
-					if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP){
+					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
 						// db update 문
-						helper?.updateCtgrName(ctgr.idx.toString(),binding.txtCtgr2.text.toString())
+						helper?.updateCtgrName(
+							ctgr.idx.toString(),
+							binding.txtCtgr2.text.toString()
+						)
 						// 플레인 텍스트 값 변경
 						binding.txtCtgr3.text = binding.txtCtgr2.text
 						ctgr.name = binding.txtCtgr2.text.toString()
 						// 데이터 변경 알림
-						listData.set(adapterPosition,ctgr)
+						listData[adapterPosition] = ctgr
 						this@RecyclerAdapter.notifyDataSetChanged()
 						// 에디터와 플레인을 번갈아 가면서 노출
 						binding.txtCtgr2.visibility = View.INVISIBLE
@@ -144,15 +153,26 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 					}
 					return@setOnKeyListener false
 				}
-				itemView.setOnClickListener {
-					flag=false
-					binding.delete.visibility = View.INVISIBLE
-					binding.repair.visibility = View.INVISIBLE
-					val intent = Intent(context, ViewContentActivity::class.java)
-					intent.putExtra("title", "${ctgr.idx}")
-					intent.putExtra("ctgrname", "${ctgr.name}")
-					intent.putExtra("fontSize", "$fontSize")
-					context.startActivity(intent)
+				if (ctgr.name == "+") {
+					itemView.setOnClickListener {
+						flag = false
+						binding.delete.visibility = View.INVISIBLE
+						binding.repair.visibility = View.INVISIBLE
+						callbackListener.fragmentOpen(
+							ctgr.name
+						)
+					}
+				}else{
+					itemView.setOnClickListener {
+						flag = false
+						binding.delete.visibility = View.INVISIBLE
+						binding.repair.visibility = View.INVISIBLE
+						val intent = Intent(context, ViewContentActivity::class.java)
+						intent.putExtra("title", "${ctgr.idx}")
+						intent.putExtra("ctgrname", "${ctgr.name}")
+						intent.putExtra("fontSize", "$fontSize")
+						context.startActivity(intent)
+					}
 				}
 			}
 		}
@@ -176,5 +196,6 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				context.startActivity(intent)
 			}
 		}
+
 	}
 }

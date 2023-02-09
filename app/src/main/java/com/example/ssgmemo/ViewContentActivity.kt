@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
 
 class ViewContentActivity : AppCompatActivity(){
@@ -21,11 +23,12 @@ class ViewContentActivity : AppCompatActivity(){
         // list
         val memoList = helper.selectMemoList(title!!)
         val unknownMemoList = helper.selectMemoList("isnull")
-        val adapter = RecyclerSwipeAdapter(this)
-        adapter.fontSize = intent.getStringExtra("fontSize")
+        var adapter = RecyclerSwipeAdapter(this)
+        adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.helper = helper
         adapter.itemList = helper.selectMemoList(ctgrName!!)
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        itemTouchHelperCallback.setClamp(150f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
@@ -37,6 +40,17 @@ class ViewContentActivity : AppCompatActivity(){
         }
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
+        }
+
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+//            addItemDecoration(ItemDecoration())
+
+            setOnTouchListener { _, _ ->
+                itemTouchHelperCallback.removePreviousClamp(this)
+                false
+            }
         }
     }
 
