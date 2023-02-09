@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
 import com.example.ssgmemo.databinding.RecyclerContentItem2Binding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
@@ -18,17 +20,14 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     lateinit var helper: SqliteHelper
     lateinit var itemList: MutableList<Memo>
     var fontSize: String = ""
+    lateinit var  binding: ViewBinding
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
     }
-
-    override fun onItemSwipe(position: Int) {
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
-        var binding =
+        binding =
             RecyclerContentItem2Binding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return Holder(binding)
+        return Holder(binding as RecyclerContentItem2Binding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(itemList[position])
@@ -52,11 +51,17 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.searchDate2.textSize = 20f
             }
 
-            itemView.setOnClickListener {
+            binding.memoItem.setOnClickListener {
+
+
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("memoIdx", "${memo.idx}")
                 intent.putExtra("fontSize", "$fontSize")
                 context.startActivity(intent)
+            }
+
+            binding.task.setOnClickListener {
+                Log.d("gggmad","${(binding as RecyclerContentItem2Binding).task.isClickable}")
             }
         }
     }
@@ -81,7 +86,6 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         notifyItemMoved(from,to)
         return true
     }
-
     // 아이템 스와이프되면 호출되는 메소드
 //    override fun onItemSwipe(position: Int) {
 //        // 리스트 아이템 삭제
@@ -89,6 +93,5 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
 //        itemList.removeAt(position)
 //        notifyItemRemoved(position)
 //    }
-
 
 }

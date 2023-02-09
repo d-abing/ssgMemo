@@ -1,10 +1,12 @@
 package com.example.ssgmemo
 
 import android.graphics.Canvas
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.RecyclerView
+import com.example.ssgmemo.databinding.RecyclerContentItem2Binding
 import java.lang.Float.max
 import java.lang.Float.min
 
@@ -36,7 +38,7 @@ class ItemTouchHelperCallback(private val listener:ItemTouchHelperListener) : It
 
     //사용자에 의해 swipe될 때 호출
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        listener.onItemSwipe(viewHolder.adapterPosition)
+//        listener.onItemSwipe(viewHolder.adapterPosition)
     }
 
     override fun getSwipeEscapeVelocity(defaultValue: Float): Float {
@@ -45,7 +47,7 @@ class ItemTouchHelperCallback(private val listener:ItemTouchHelperListener) : It
 
 
     private fun getView(viewHolder: RecyclerView.ViewHolder): View {
-        return (viewHolder as RecyclerSwipeAdapter.Holder).binding.swipeView
+        return (viewHolder as RecyclerSwipeAdapter.Holder).binding.memoItem
     }
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         currentDx = 0f
@@ -61,7 +63,9 @@ class ItemTouchHelperCallback(private val listener:ItemTouchHelperListener) : It
     }
 
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+        // 여기서 아이템에 접근이 가능한가?
         val isClamped = getTag(viewHolder)
+        Log.d("gggmad","$isClamped")
         // 현재 View가 고정되어있지 않고 사용자가 -clamp 이상 swipe시 isClamped true로 변경 아닐시 false로 변경
         setTag(viewHolder, !isClamped && currentDx >= clamp)
         return 2f
@@ -140,5 +144,4 @@ class ItemTouchHelperCallback(private val listener:ItemTouchHelperListener) : It
             previousPosition = null
         }
     }
-
 }

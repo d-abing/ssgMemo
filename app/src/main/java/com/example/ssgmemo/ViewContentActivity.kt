@@ -70,6 +70,8 @@ class ViewContentActivity : AppCompatActivity(){
         adapter.itemList = helper.selectMemoList(ctgrName!!)
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
+        itemTouchHelperCallback.setClamp(150f)
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
 
