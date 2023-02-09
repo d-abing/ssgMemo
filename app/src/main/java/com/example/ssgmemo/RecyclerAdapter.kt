@@ -90,6 +90,8 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 				binding.txtCtgr3.text = ctgr.name
 				if (ctgr.name == "+"){
 					binding.ctgrBtn.setBackgroundResource(R.drawable.testback)
+				} else{
+					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback)
 				}
 				if (ctgr.name != "미분류" && ctgr.name != "+") {
 					itemView.setOnLongClickListener {
@@ -106,6 +108,8 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 							helper?.deleteCtgr(ctgr.idx.toString())
 							listData.clear()
 							helper?.selectCtgrList()?.let { it1 -> listData.addAll(it1) }
+							listData.add(Ctgr(null,"미분류",11))
+							listData.add(Ctgr(null,"+",11))
 							binding.delete.visibility = View.INVISIBLE
 							binding.repair.visibility = View.INVISIBLE
 							flag = false

@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                         v.x = 317.20898f
                         v.y = 928.77344f
                         val intent = Intent(this, ClassifyActivity::class.java)
-                        intent.putExtra("fontSize1", "$fontSize")
+                        intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
                     if(v.y > 1220 && v.x > 60 && v.x < 560){

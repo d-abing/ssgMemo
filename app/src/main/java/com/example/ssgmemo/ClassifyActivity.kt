@@ -19,13 +19,13 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     var memoList2: MutableList<Memo>? = null    // 분류로 인해 변경된 memoList
     var midx: Long? = null                      // 현재 보고 있는 메모의 midx 값
     var tmp_position: Int = 0                   // viewpager의 현재 위치
-    val fontSize = intent.getStringExtra("fontSize")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val fontSize = intent.getStringExtra("fontSize")
         binding = ActivityClassifyBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.d("tgjgjgjgj","??")
         // < 메모 list >
         pagerAdapter = ViewPagerAdapter()
         memoList = helper.selectUnclassifiedMemoList()  // 분류되지 않은 memoList
