@@ -26,7 +26,7 @@ class ViewContentActivity : AppCompatActivity(){
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
-        val unknownMemoList = helper.selectMemoList("isnull")
+        val unknownMemoList = helper.selectMemoList("0")
         var adapter = RecyclerSwipeAdapter(this)
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.helper = helper

@@ -216,25 +216,22 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.execSQL(sql)
 		wd.close()
 	}
-
+	// 미분류 메모가 있다면 true 반환
 	@SuppressLint("Range")
 	fun isUnknownMemoExist(): Boolean{
 		var result: Boolean = false
 		var flag: Int? = null
-		val sql = "select exists(select * from memo where ctgr ISNULL) as b"
+		val sql = "select exists(select * from memo where ctgr = 0) as b"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 		while (rs.moveToNext()) {
 			flag = rs.getInt(rs.getColumnIndex("b"))
 		}
-
 		if (flag == 1){
 			result = true
 		}
-
 		rs.close()
 		rd.close()
-		Log.d("육회비빔이","${flag}")
 		return result
 	}
 
