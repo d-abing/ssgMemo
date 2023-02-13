@@ -1,4 +1,4 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.example.ssgmemo.*
+import com.example.ssgmemo.callback.CallbackListener
+import com.example.ssgmemo.common.EditActivity
+import com.example.ssgmemo.common.ViewContentActivity
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
@@ -17,12 +21,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class RecyclerAdapter(val callbackListener: CallbackListener, val context: Context): RecyclerView.Adapter<RecyclerAdapter.Holder>() {
+class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapter.Holder>() {
 	var listData = mutableListOf<Any>()
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
 	var fontSize : String? = null
-
+	lateinit var callbackListener: CallbackListener
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
@@ -44,13 +48,13 @@ class RecyclerAdapter(val callbackListener: CallbackListener, val context: Conte
 
 	override fun onBindViewHolder(holder: Holder, position: Int) {
 		if (parentName.equals("recyclerCtgr1") || parentName.equals("recyclerCtgr2")){
-			val ctgr:Ctgr = listData.get(position) as Ctgr
+			val ctgr: Ctgr = listData.get(position) as Ctgr
 			holder.setCtgr(ctgr)
 		} else if (parentName.equals("recyclerSearch")) {
-			val memo:Memo = listData.get(position) as Memo
+			val memo: Memo = listData.get(position) as Memo
 			holder.getMemo(memo)
 		} else {
-			val resultMemo:Memo = listData.get(position) as Memo
+			val resultMemo: Memo = listData.get(position) as Memo
 			holder.getMemo(resultMemo)
 		}
 	}

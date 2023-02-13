@@ -164,9 +164,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		// 메모 리스트 // 보기에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
 		var sql = "select * from memo where ctgr = '"+ ctgr +"' order by priority desc"
-		if (ctgr == "isnull"){
-			sql = "select * from memo where ctgr isnull order by priority desc"
-		}
+		
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 

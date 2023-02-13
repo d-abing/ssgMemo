@@ -1,10 +1,10 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager.widget.PagerAdapter.POSITION_NONE
+import com.example.ssgmemo.Memo
 import com.example.ssgmemo.databinding.RecyclerMemolistItemBinding
 
 
@@ -21,7 +21,7 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
     override fun getItemCount(): Int = listData.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val memo:Memo = listData.get(position) as Memo
+        val memo: Memo = listData.get(position) as Memo
         holder.setMemo(memo)
     }
 
@@ -31,8 +31,8 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
             binding.memoContent.text = memo.content
 
             if (fontSize.equals("ON")) {
-                binding.memoTitle.textSize = 24f
-                binding.memoContent.textSize = 20f
+                binding.memoTitle.textSize = 40f
+                binding.memoContent.textSize = 30f
             }
         }
     }

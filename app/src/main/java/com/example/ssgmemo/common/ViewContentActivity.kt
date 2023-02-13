@@ -1,14 +1,18 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.common
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.ssgmemo.R
+import com.example.ssgmemo.SqliteHelper
+import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
+import com.example.ssgmemo.callback.ItemTouchHelperCallback
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class ViewContentActivity : AppCompatActivity(){
     private lateinit var binding: ActivityViewContentBinding
@@ -52,6 +56,12 @@ class ViewContentActivity : AppCompatActivity(){
                 false
             }
         }
+
+        // 광고
+        MobileAds.initialize(this) {}
+        val mAdView = findViewById<AdView>(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     override fun onRestart() {
@@ -63,7 +73,7 @@ class ViewContentActivity : AppCompatActivity(){
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
-        val unknownMemoList = helper.selectMemoList("isnull")
+        val unknownMemoList = helper.selectMemoList("0")
         val adapter = RecyclerSwipeAdapter(this)
 
         adapter.helper = helper

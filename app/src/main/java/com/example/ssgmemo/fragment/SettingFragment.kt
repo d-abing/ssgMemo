@@ -1,17 +1,15 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.fragment
 
 import android.content.Context
-import android.media.AudioManager
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.ssgmemo.common.MainActivity
 import com.example.ssgmemo.databinding.FragmentSettingBinding
 
-class SettingFragment() : Fragment() {
-
+class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
     var mainActivity: MainActivity? = null
 
     override fun onAttach(context: Context) {
@@ -24,30 +22,38 @@ class SettingFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSettingBinding.inflate(inflater, container, false)
-        binding.btnSetting2.setOnClickListener { mainActivity?.goBack(this) }
+        binding.btnSetting2.setOnClickListener { onBackPressed() }
 
-        if(mainActivity?.getVibrationSetting().equals("ON")) {
+        // 앱 설정 확인 후 switch에 적용
+        if(mainActivity?.getVibrationState().equals("ON")) {
             binding.switchVibrate.isChecked = true
         }
         if(mainActivity?.getFontSizeSetting().equals("ON")) {
             binding.switchFontSize.isChecked = true
         }
 
+        // switch ChangeListener
         binding.switchVibrate.setOnCheckedChangeListener { compoundButton, ischecked ->
             if (ischecked) {
-                mainActivity?.setVibrationSetting("ON")
+                mainActivity?.setVibrationState("ON")
             } else {
-                mainActivity?.setVibrationSetting("OFF")
+                mainActivity?.setVibrationState("OFF")
             }
         }
         binding.switchFontSize.setOnCheckedChangeListener { compoundButton, ischecked ->
             if(ischecked) {
-                mainActivity?.setFontSizeSetting("ON")
+                mainActivity?.setFontSizeState("ON")
             } else {
-                mainActivity?.setFontSizeSetting("OFF")
+                mainActivity?.setFontSizeState("OFF")
             }
         }
 
         return binding.root
+    }
+
+    // 뒤로 가기
+    override fun onBackPressed() {
+        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
+        //requireActivity().supportFragmentManager.popBackStack()
     }
 }

@@ -1,15 +1,14 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.FragmentCtgrAddBinding
 
-class CtgrAddFragment(val Callback:CallbackListener) : DialogFragment(){
+class CtgrAddFragment(val Callback: CallbackListener) : DialogFragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

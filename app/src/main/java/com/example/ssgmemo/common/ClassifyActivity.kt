@@ -1,14 +1,17 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.common
 
 import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.example.ssgmemo.*
+import com.example.ssgmemo.adapter.RecyclerAdapter
+import com.example.ssgmemo.adapter.ViewPagerAdapter
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 
 class ClassifyActivity : AppCompatActivity(), CallbackListener {
@@ -19,17 +22,19 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     var memoList2: MutableList<Memo>? = null    // 분류로 인해 변경된 memoList
     var midx: Long? = null                      // 현재 보고 있는 메모의 midx 값
     var tmp_position: Int = 0                   // viewpager의 현재 위치
-
+    var vibration: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val fontSize = intent.getStringExtra("fontSize")
         binding = ActivityClassifyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val fontSize = intent.getStringExtra("fontSize")
+        vibration = intent.getStringExtra("vibration")
+
         // < 메모 list >
         pagerAdapter = ViewPagerAdapter()
         memoList = helper.selectUnclassifiedMemoList()  // 분류되지 않은 memoList
-        pagerAdapter!!.fontSize = fontSize.toString()
+        pagerAdapter!!.fontSize = fontSize
         pagerAdapter!!.listData.addAll(memoList!!)      // pagerAdapter에 추가
         binding.viewpager.adapter = pagerAdapter        // viewpager에 pagerAdapter 등록
         binding.viewpager.registerOnPageChangeCallback( object : ViewPager2.OnPageChangeCallback() {
@@ -67,8 +72,9 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         }
 
         // < 카테고리 list >
-        val recyclerAdapter = RecyclerAdapter(this, this)
-        recyclerAdapter.fontSize = fontSize.toString()
+        val recyclerAdapter = RecyclerAdapter(this)
+        recyclerAdapter.callbackListener = this
+        recyclerAdapter.fontSize = fontSize
         recyclerAdapter.helper = helper
         recyclerAdapter.listData.addAll(helper.selectCtgrList())                            // ctgrList를 recyclerAdapter에 추가
         binding.recyclerCtgr1.adapter = recyclerAdapter                                     // recyclerCtgr1에 recyclerAdapter 등록
@@ -78,7 +84,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
            binding.ctgrName.textSize = 24f
        }
 
-        binding.btnCtgrAdd.setOnClickListener {                                             // 카테고리 추가 기능
+        /*binding.btnCtgrAdd.setOnClickListener {                                             // 카테고리 추가 기능
             if (binding.ctgrName.text.toString().isNotEmpty()) {
                 val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis())
                 helper.insertCtgr(ctgr)
@@ -87,13 +93,16 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 recyclerAdapter.notifyDataSetChanged()
                 binding.ctgrName.setText("")
             }
-        }
+        }*/
     }
 
     override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수
         // item(ctgr) 클릭시 호출
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator;
-        vibrator.vibrate(VibrationEffect.createOneShot(200, 50));
+
+        if (vibration!!.equals("ON")) {
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
+        }
 
         if (memoList!!.isNotEmpty()) {                                                      // memoList가 비어있지 않을 때만 수행
             helper.updateMemoCtgr(midx, cidx, helper.checkTop(cidx.toInt())?.plus(1)) // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
@@ -121,6 +130,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             }
         }
     }
+
     override fun callmsg() {
         TODO("Not yet implemented")
     }

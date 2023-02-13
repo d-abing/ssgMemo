@@ -1,4 +1,4 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.callback
 
 import androidx.recyclerview.widget.RecyclerView
 

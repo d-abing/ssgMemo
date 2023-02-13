@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.example.ssgmemo.MyApplication"
@@ -16,7 +17,7 @@
         android:theme="@style/Theme.SsgMemo"
         tools:targetApi="31">
         <activity
-            android:name=".EditActivity"
+            android:name=".common.EditActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -24,21 +25,21 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ViewContentActivity"
+            android:name=".common.ViewContentActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ViewCtgrActivity"
+            android:name=".common.ViewCtgrActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".WriteActivity"
+            android:name=".common.WriteActivity"
             android:exported="false"
            >
             <meta-data
@@ -46,21 +47,21 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".SearchActivity"
+            android:name=".common.SearchActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ClassifyActivity"
+            android:name=".common.ClassifyActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".common.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,5 +74,8 @@
                 android:value="" />
 
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
     </application>
 </manifest>

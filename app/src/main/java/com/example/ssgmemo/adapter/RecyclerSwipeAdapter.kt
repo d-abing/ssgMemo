@@ -1,22 +1,22 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.adapter
 
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.example.ssgmemo.databinding.RecyclerContentItem1Binding
+import com.example.ssgmemo.Memo
+import com.example.ssgmemo.SqliteHelper
+import com.example.ssgmemo.common.EditActivity
 import com.example.ssgmemo.databinding.RecyclerContentItem2Binding
-import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.ssgmemo.callback.ItemTouchHelperListener
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),ItemTouchHelperListener {
+class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),
+    ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
     lateinit var itemList: MutableList<Memo>
     var fontSize: String = ""
@@ -24,7 +24,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerSwipeAdapter.Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         binding =
             RecyclerContentItem2Binding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding as RecyclerContentItem2Binding)

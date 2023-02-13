@@ -1,12 +1,19 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.common
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.ssgmemo.Ctgr
+import com.example.ssgmemo.R
+import com.example.ssgmemo.SqliteHelper
+import com.example.ssgmemo.adapter.RecyclerAdapter
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
-import java.security.Provider.Service
+import com.example.ssgmemo.fragment.CtgrAddFragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityViewCtgrBinding
@@ -18,7 +25,8 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding = ActivityViewCtgrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        adapter = RecyclerAdapter(this,this)
+        adapter = RecyclerAdapter(this)
+        adapter.callbackListener = this
         adapter.helper = helper
         val unknownCtgr = Ctgr(0, "미분류", 11111111)
         val ctgrAddBtn = Ctgr(null,"+",11111111)
@@ -36,15 +44,16 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         if(adapter.listData.isEmpty()){
             binding.msgCtgr.visibility = View.VISIBLE
         }
+
+        // 광고
+        MobileAds.initialize(this) {}
+        val mAdView = findViewById<AdView>(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     override fun callmsg() {
         binding.msgCtgr.visibility = View.VISIBLE
-    }
-
-    override fun callback(cidx: Long) {
-        // callback 한 값이 마지막 cidx 즉 + 일 경우
-
     }
 
     override fun fragmentOpen(item: String) {

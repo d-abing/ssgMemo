@@ -1,14 +1,14 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.common
 
 import android.R
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.example.ssgmemo.databinding.ActivityViewContentBinding
+import com.example.ssgmemo.Memo
+import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.databinding.ActivityWriteBinding
 
 class EditActivity : AppCompatActivity() {

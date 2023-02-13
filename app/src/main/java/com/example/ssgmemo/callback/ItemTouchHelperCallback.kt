@@ -1,4 +1,4 @@
-package com.example.ssgmemo
+package com.example.ssgmemo.callback
 
 import android.graphics.Canvas
 import android.util.Log
@@ -6,11 +6,11 @@ import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.RecyclerView
-import com.example.ssgmemo.databinding.RecyclerContentItem2Binding
+import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
 import java.lang.Float.max
 import java.lang.Float.min
 
-class ItemTouchHelperCallback(private val listener:ItemTouchHelperListener) : ItemTouchHelper.Callback() {
+class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : ItemTouchHelper.Callback() {
 
 
     private var currentPosition: Int? = null
