@@ -21,8 +21,8 @@ import com.google.android.gms.ads.MobileAds
 class ClassifyActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityClassifyBinding
     lateinit var mAdView : AdView
-
     val helper = SqliteHelper(this, "ssgMemo", 1)
+
     var pagerAdapter: ViewPagerAdapter? = null
     var recyclerAdapter: RecyclerAdapter? = null
     var memoList: MutableList<Memo>? = null     // 분류 메뉴에 들어올 때의 memoList
@@ -95,16 +95,6 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
-        /*binding.btnCtgrAdd.setOnClickListener {                                             // 카테고리 추가 기능
-            if (binding.ctgrName.text.toString().isNotEmpty()) {
-                val ctgr = Ctgr(null, binding.ctgrName.text.toString(), System.currentTimeMillis())
-                helper.insertCtgr(ctgr)
-                recyclerAdapter.listData.clear()
-                recyclerAdapter.listData.addAll(helper.selectCtgrList())
-                recyclerAdapter.notifyDataSetChanged()
-                binding.ctgrName.setText("")
-            }
-        }*/
     }
 
     override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수
@@ -150,7 +140,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
     override fun addCtgr(ctgrName: String) {
         val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
-        val index = recyclerAdapter!!.listData.size -2
+        val index = recyclerAdapter!!.listData.size -1
         helper.insertCtgr(ctgr)
         recyclerAdapter!!.listData.add(index,ctgr)
         recyclerAdapter!!.notifyDataSetChanged()

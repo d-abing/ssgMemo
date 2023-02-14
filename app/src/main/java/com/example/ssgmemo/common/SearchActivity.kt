@@ -1,10 +1,14 @@
 package com.example.ssgmemo.common
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.view.marginTop
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
@@ -24,16 +28,19 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val recyclerAdapter = RecyclerAdapter(this)
-        recyclerAdapter.fontSize =  intent.getStringExtra("fontSize")
-        var where = ""          // sql where 조건
-        var orderby = ""        // sql orderby 조건
-        var keyword = ""        // sql where의 keyword
+        var fontSize = intent.getStringExtra("fontSize")
+        recyclerAdapter.fontSize = fontSize
+        var where = "제목+내용"          // sql where 조건
+        var orderby = "최신순"          // sql orderby 조건
+        var keyword = ""               // sql where의 keyword
+        var flag = false
 
-        var conditionList1: MutableList<String> = arrayListOf("제목", "내용", "제목+내용")
+        var conditionList1: MutableList<String> = arrayListOf("제목+내용", "제목", "내용")
         val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
 
         // <"제목", "내용", "제목+내용">
-        binding.spinner4.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
+        if(fontSize.equals("ON")) binding.spinner4.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList1)
+        else binding.spinner4.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
         binding.spinner4.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -42,8 +49,10 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+
         // <"최신순", "오래된순">
-        binding.spinner2.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList2)
+        if(fontSize.equals("ON"))  binding.spinner2.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList2)
+        else binding.spinner2.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList2)
         binding.spinner2.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -55,6 +64,8 @@ class SearchActivity : AppCompatActivity() {
 
             }
         }
+
+
 
         recyclerAdapter.helper = helper
         showDataList(recyclerAdapter, keyword, where, orderby)
@@ -79,6 +90,34 @@ class SearchActivity : AppCompatActivity() {
             recyclerAdapter.notifyDataSetChanged()
         }
 
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams =  binding.recyclerSearch.layoutParams
+        layoutParams.height = deviceHeight?.times(0.81)!!.toInt()
+        binding.recyclerSearch.layoutParams = layoutParams
+
+        binding.btnFilter.setOnClickListener {
+            if (flag == false) {
+                binding.spinner2.visibility = View.VISIBLE
+                binding.spinner4.visibility = View.VISIBLE
+                binding.recyclerSearch.margin(top = 79F)
+                binding.emptyText2.margin(top = 79F)
+                layoutParams.height = deviceHeight?.times(0.75)!!.toInt()
+                binding.recyclerSearch.layoutParams = layoutParams
+                flag = true
+            } else {
+                binding.spinner2.visibility = View.GONE
+                binding.spinner4.visibility = View.GONE
+                binding.recyclerSearch.margin(top = 32F)
+                binding.emptyText2.margin(top = 32F)
+                layoutParams.height = deviceHeight?.times(0.81)!!.toInt()
+                binding.recyclerSearch.layoutParams = layoutParams
+                flag = false
+            }
+        }
+
+
+
         // 광고
         MobileAds.initialize(this) {}
         mAdView = findViewById<AdView>(R.id.adView)
@@ -97,4 +136,20 @@ class SearchActivity : AppCompatActivity() {
             binding.emptyText2.visibility = View.INVISIBLE
         }
     }
+
+    fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
+        layoutParams<ViewGroup.MarginLayoutParams> {
+            left?.run { leftMargin = dpToPx(this) }
+            top?.run { topMargin = dpToPx(this) }
+            right?.run { rightMargin = dpToPx(this) }
+            bottom?.run { bottomMargin = dpToPx(this) }
+        }
+    }
+
+    inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) {
+        if (layoutParams is T) block(layoutParams as T)
+    }
+
+    fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
+    fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
 }

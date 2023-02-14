@@ -1,6 +1,7 @@
 package com.example.ssgmemo.common
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -37,7 +38,8 @@ class WriteActivity : AppCompatActivity() {
         fun <K, V> getKey(map: Map<K, V>, target: V): K { return map.keys.first { target == map[it] } }
 
         ctgrList.add(0,"미분류")
-        spinner.adapter = ArrayAdapter(this,android.R.layout.simple_list_item_1, ctgrList)
+        if(fontSize.equals("ON"))  spinner.adapter = ArrayAdapter(this, R.layout.spinner_layout, ctgrList)
+        else spinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ctgrList)
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

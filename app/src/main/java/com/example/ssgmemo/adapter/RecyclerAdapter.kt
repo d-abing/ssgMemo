@@ -30,7 +30,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
-		Log.d("text","$parentName")
 		var binding: ViewBinding? =null
 		if (parentName.equals("recyclerCtgr1")){
 			Log.d("text","$parentName")
@@ -50,12 +49,9 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		if (parentName.equals("recyclerCtgr1") || parentName.equals("recyclerCtgr2")){
 			val ctgr: Ctgr = listData.get(position) as Ctgr
 			holder.setCtgr(ctgr)
-		} else if (parentName.equals("recyclerSearch")) {
+		} else {
 			val memo: Memo = listData.get(position) as Memo
 			holder.getMemo(memo)
-		} else {
-			val resultMemo: Memo = listData.get(position) as Memo
-			holder.getMemo(resultMemo)
 		}
 	}
 
