@@ -9,30 +9,20 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCtgr1"
-        android:layout_width="412dp"
-        android:layout_height="453dp"
+        android:layout_width="416dp"
+        android:layout_height="350dp"
         android:background="#EDE3D6"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ctgrName"
+        app:layout_constraintTop_toBottomOf="@+id/viewpager"
+        app:layout_constraintVertical_bias="1.0"
         tools:itemCount="20"
         tools:layoutManager="GridLayoutManager"
         tools:listitem="@layout/recycler_view_item"
         tools:spanCount="4" />
-
-    <EditText
-        android:id="@+id/ctgrName"
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:ems="10"
-        android:hint="카테고리명"
-        android:inputType="textPersonName"
-        android:maxLength="8"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/btnCtgrAdd"
-        app:layout_constraintTop_toBottomOf="@+id/viewpager" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
@@ -54,6 +44,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/viewpager" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="412dp"
+        android:layout_height="49dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#FFFFFF"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id_for_test"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </com.google.android.gms.ads.AdView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

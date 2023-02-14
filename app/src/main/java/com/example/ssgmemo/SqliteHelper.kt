@@ -138,7 +138,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun selectUnclassifiedMemoList(): MutableList<Memo> {
 		// 메모 리스트 // 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
-		val sql = "select * from memo where ctgr is null "
+		val sql = "select * from memo where ctgr = '0'"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 

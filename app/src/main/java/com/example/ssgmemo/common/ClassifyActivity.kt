@@ -13,9 +13,14 @@ import com.example.ssgmemo.adapter.RecyclerAdapter
 import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class ClassifyActivity : AppCompatActivity(), CallbackListener {
     lateinit var binding: ActivityClassifyBinding
+    lateinit var mAdView : AdView
+
     val helper = SqliteHelper(this, "ssgMemo", 1)
     var pagerAdapter: ViewPagerAdapter? = null
     var memoList: MutableList<Memo>? = null     // 분류 메뉴에 들어올 때의 memoList
@@ -80,9 +85,11 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr1.adapter = recyclerAdapter                                     // recyclerCtgr1에 recyclerAdapter 등록
         binding.recyclerCtgr1.layoutManager = GridLayoutManager(this, 4)   // layout을 그리드 4span으로 지정
 
-       if (fontSize.equals("ON")) {
-           binding.ctgrName.textSize = 24f
-       }
+        // 광고
+        MobileAds.initialize(this) {}
+        mAdView = findViewById<AdView>(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
         /*binding.btnCtgrAdd.setOnClickListener {                                             // 카테고리 추가 기능
             if (binding.ctgrName.text.toString().isNotEmpty()) {
@@ -129,15 +136,5 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 memoList!!.clear()
             }
         }
-    }
-
-    override fun callmsg() {
-        TODO("Not yet implemented")
-    }
-    override fun fragmentOpen(item: String) {
-        TODO("Not yet implemented")
-    }
-    override fun addCtgr(ctgrName: String) {
-        TODO("Not yet implemented")
     }
 }

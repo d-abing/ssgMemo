@@ -5,13 +5,19 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivitySearchBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
+    lateinit var mAdView : AdView
+
     val helper = SqliteHelper(this, "ssgMemo", 1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.keyword.setText("")
             }
         }
-
+    
 
         binding.btnCancel.setOnClickListener {
             recyclerAdapter.listData.clear()
@@ -72,6 +78,12 @@ class SearchActivity : AppCompatActivity() {
             showDataList(recyclerAdapter, keyword, where, orderby)
             recyclerAdapter.notifyDataSetChanged()
         }
+
+        // 광고
+        MobileAds.initialize(this) {}
+        mAdView = findViewById<AdView>(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
