@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.FragmentCtgrAddBinding
 

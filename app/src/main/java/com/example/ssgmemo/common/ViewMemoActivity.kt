@@ -14,7 +14,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
-class ViewContentActivity : AppCompatActivity(){
+class ViewMemoActivity : AppCompatActivity(){
     private lateinit var binding: ActivityViewContentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
