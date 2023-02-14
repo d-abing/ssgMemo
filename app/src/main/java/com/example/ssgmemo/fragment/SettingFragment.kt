@@ -10,7 +10,7 @@ import com.example.ssgmemo.common.MainActivity
 import com.example.ssgmemo.databinding.FragmentSettingBinding
 
 class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
-    var mainActivity: MainActivity? = null
+    lateinit var mainActivity: MainActivity
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -20,31 +20,31 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentSettingBinding.inflate(inflater, container, false)
         binding.btnSetting2.setOnClickListener { onBackPressed() }
 
         // 앱 설정 확인 후 switch에 적용
-        if(mainActivity?.getVibrationState().equals("ON")) {
+        if(mainActivity.getVibrationState().equals("ON")) {
             binding.switchVibrate.isChecked = true
         }
-        if(mainActivity?.getFontSizeSetting().equals("ON")) {
+        if(mainActivity.getFontSizeSetting().equals("ON")) {
             binding.switchFontSize.isChecked = true
         }
 
         // switch ChangeListener
         binding.switchVibrate.setOnCheckedChangeListener { compoundButton, ischecked ->
             if (ischecked) {
-                mainActivity?.setVibrationState("ON")
+                mainActivity.setVibrationState("ON")
             } else {
-                mainActivity?.setVibrationState("OFF")
+                mainActivity.setVibrationState("OFF")
             }
         }
         binding.switchFontSize.setOnCheckedChangeListener { compoundButton, ischecked ->
             if(ischecked) {
-                mainActivity?.setFontSizeState("ON")
+                mainActivity.setFontSizeState("ON")
             } else {
-                mainActivity?.setFontSizeState("OFF")
+                mainActivity.setFontSizeState("OFF")
             }
         }
 

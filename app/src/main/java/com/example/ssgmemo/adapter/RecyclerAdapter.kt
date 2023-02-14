@@ -89,6 +89,16 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						binding.cidx.text.toString().toLong()
 					) // cidx값을 액티비티로 전송
 				}
+
+				if (ctgr.name == "+"){
+					binding.txtCtgr.visibility = View.INVISIBLE
+					binding.box.setImageResource(R.drawable.add_ctgr)
+					itemView.setOnClickListener {
+						flag = false
+						callbackListener.fragmentOpen(ctgr.name)
+					}
+				}
+
 			} else if (parentName.equals("recyclerCtgr2")) {
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name

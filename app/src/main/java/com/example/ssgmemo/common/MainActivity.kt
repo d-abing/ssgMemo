@@ -7,6 +7,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.ssgmemo.*
@@ -51,37 +52,32 @@ class MainActivity : AppCompatActivity() {
 
                     v.x = v.x + movedX
                     v.y = v.y + movedY
+
+                    Log.d("event xy","${v.x},${v.y}")
                 }
+
                 MotionEvent.ACTION_UP -> {
-                    if(v.x > 480 && 770 < v.y && v.y < 1120){ // 쓰기
-                        vibrate()
-                        v.x = 317.20898f
-                        v.y = 928.77344f
+                    if(v.x > 480 && 640 < v.y && v.y < 1164){ // 쓰기
+                        goMenu(v)
                         val intent = Intent(this, WriteActivity::class.java)
                         intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
-                    if(v.x < 120 && 770 < v.y && v.y < 1120){ // 분류
-                        vibrate()
-                        v.x = 317.20898f
-                        v.y = 928.77344f
+                    if(v.x < 120 && 640 < v.y && v.y < 1164){ // 분류
+                        goMenu(v)
                         val intent = Intent(this, ClassifyActivity::class.java)
                         intent.putExtra("fontSize", "$fontSize")
                         intent.putExtra("vibration", "$vibration")
                         startActivity(intent)
                     }
-                    if(v.y > 1125 && v.x > 60 && v.x < 570){ // 보기
-                        vibrate()
-                        v.x = 317.20898f
-                        v.y = 928.77344f
+                    if(v.y > 1080 && v.x > 60 && v.x < 570){ // 보기
+                        goMenu(v)
                         val intent = Intent(this, ViewCtgrActivity::class.java)
                         intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
                     }
-                    if(v.y < 744 && v.x > 70 && v.x < 550){ // 검색
-                        vibrate()
-                        v.x = 317.20898f
-                        v.y = 928.77344f
+                    if(v.y < 670 && v.x > 70 && v.x < 550){ // 검색
+                        goMenu(v)
                         val intent = Intent(this, SearchActivity::class.java)
                         intent.putExtra("fontSize", "$fontSize")
                         startActivity(intent)
@@ -96,6 +92,12 @@ class MainActivity : AppCompatActivity() {
         mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
+    }
+
+    fun goMenu(v: View) {
+        vibrate()
+        v.x = 317.20898f
+        v.y = 884.44336f
     }
 
     // 진동

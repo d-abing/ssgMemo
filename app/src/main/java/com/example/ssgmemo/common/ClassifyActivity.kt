@@ -13,16 +13,18 @@ import com.example.ssgmemo.adapter.RecyclerAdapter
 import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
+import com.example.ssgmemo.fragment.CtgrAddFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 class ClassifyActivity : AppCompatActivity(), CallbackListener {
-    lateinit var binding: ActivityClassifyBinding
+    private lateinit var binding: ActivityClassifyBinding
     lateinit var mAdView : AdView
 
     val helper = SqliteHelper(this, "ssgMemo", 1)
     var pagerAdapter: ViewPagerAdapter? = null
+    var recyclerAdapter: RecyclerAdapter? = null
     var memoList: MutableList<Memo>? = null     // 분류 메뉴에 들어올 때의 memoList
     var memoList2: MutableList<Memo>? = null    // 분류로 인해 변경된 memoList
     var midx: Long? = null                      // 현재 보고 있는 메모의 midx 값
@@ -77,11 +79,13 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         }
 
         // < 카테고리 list >
-        val recyclerAdapter = RecyclerAdapter(this)
-        recyclerAdapter.callbackListener = this
-        recyclerAdapter.fontSize = fontSize
-        recyclerAdapter.helper = helper
-        recyclerAdapter.listData.addAll(helper.selectCtgrList())                            // ctgrList를 recyclerAdapter에 추가
+        recyclerAdapter = RecyclerAdapter(this)
+        recyclerAdapter!!.callbackListener = this
+        recyclerAdapter!!.fontSize = fontSize
+        recyclerAdapter!!.helper = helper
+        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        recyclerAdapter!!.listData.addAll(helper.selectCtgrList())                            // ctgrList를 recyclerAdapter에 추가
+        recyclerAdapter!!.listData.add(ctgrAddBtn)
         binding.recyclerCtgr1.adapter = recyclerAdapter                                     // recyclerCtgr1에 recyclerAdapter 등록
         binding.recyclerCtgr1.layoutManager = GridLayoutManager(this, 4)   // layout을 그리드 4span으로 지정
 
@@ -136,5 +140,19 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 memoList!!.clear()
             }
         }
+    }
+
+    override fun fragmentOpen(item: String) {
+        if(item == "+"){
+            CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
+        }
+    }
+
+    override fun addCtgr(ctgrName: String) {
+        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
+        val index = recyclerAdapter!!.listData.size -2
+        helper.insertCtgr(ctgr)
+        recyclerAdapter!!.listData.add(index,ctgr)
+        recyclerAdapter!!.notifyDataSetChanged()
     }
 }

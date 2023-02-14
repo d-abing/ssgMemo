@@ -34,8 +34,10 @@ class CtgrAddFragment(val Callback: CallbackListener) : DialogFragment(){
             dismiss()
         }
         binding.dialogTvYes.setOnClickListener {
-            Callback.addCtgr(binding.editTextTextPersonName.text.toString())
-            dismiss()
+            if (binding.editTextTextPersonName.text.isNotEmpty()) {
+                Callback.addCtgr(binding.editTextTextPersonName.text.toString())
+                dismiss()
+            }
         }
     }
 
