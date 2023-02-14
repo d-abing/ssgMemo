@@ -69,4 +69,9 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.listData.add(index,ctgr)
         adapter.notifyDataSetChanged()
     }
+
+    override fun onRestart() {
+        super.onRestart()
+        adapter.notifyDataSetChanged()
+    }
 }

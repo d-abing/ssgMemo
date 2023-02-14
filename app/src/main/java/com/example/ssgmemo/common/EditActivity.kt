@@ -78,13 +78,11 @@ class EditActivity : AppCompatActivity() {
                 mContent = binding.writeContent.text.toString()
                 checkdiff2 = true
             }
-            // 카테고리가 변경되었으며, null이 아닌경우 우선순위 +1 부여
+            // 카테고리가 변경되었을 때 우선순위 +1 부여
             if(ctgr != memo.ctgr){
-                if (ctgr != null){
-                    if (helper.checkTop(ctgr!!) == 0){
-                        priority = helper.checkTop(ctgr!!)!! +1
-                    }
-                }
+                priority = if(helper.checkTop(ctgr!!) != null){
+                    helper.checkTop(ctgr!!)!! +1
+                }else{ 0 }
                 checkdiff3 = true
             }
             // 제목, 내용, 카테고리 하나라도 변경되었으면 db업뎃

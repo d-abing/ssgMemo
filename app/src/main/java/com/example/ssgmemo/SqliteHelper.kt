@@ -62,7 +62,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		if(diffCtgr){
 			if (memo.ctgr != null){
 				val wd = writableDatabase
-				val sql = "UPDATE memo set priority = priority-1 where ctgr = '$ctgr_before' and priority<'$priority_before'"
+				val sql = "UPDATE memo set priority = priority-1 where ctgr = '$ctgr_before' and priority>'$priority_before'"
 				wd.execSQL(sql)
 				wd.close()
 			}
@@ -283,6 +283,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return  result
 	}
 
+	@SuppressLint("Range")
 	fun selectSearchList(keyword: String, where: String, orderby: String): MutableList<Memo> {
 
 		val list = mutableListOf<Memo>()
