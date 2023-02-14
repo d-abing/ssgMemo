@@ -13,7 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
-import com.example.ssgmemo.common.ViewContentActivity
+import com.example.ssgmemo.common.ViewMemoActivity
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
@@ -48,13 +48,13 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 
 	override fun onBindViewHolder(holder: Holder, position: Int) {
 		if (parentName.equals("recyclerCtgr1") || parentName.equals("recyclerCtgr2")){
-			val ctgr: Ctgr = listData.get(position) as Ctgr
+			val ctgr: Ctgr = listData[position] as Ctgr
 			holder.setCtgr(ctgr)
 		} else if (parentName.equals("recyclerSearch")) {
-			val memo: Memo = listData.get(position) as Memo
+			val memo: Memo = listData[position] as Memo
 			holder.getMemo(memo)
 		} else {
-			val resultMemo: Memo = listData.get(position) as Memo
+			val resultMemo: Memo = listData[position] as Memo
 			holder.getMemo(resultMemo)
 		}
 	}
@@ -121,8 +121,10 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						binding.delete.setOnClickListener {
 							helper?.deleteCtgr(ctgr.idx.toString())
 							listData.clear()
-							helper?.selectCtgrList()?.let { it1 -> listData.addAll(it1) }
-							listData.add(Ctgr(null,"미분류",11))
+							listData = helper?.selectCtgrList() as MutableList<Any>
+							if(helper!!.isUnknownMemoExist()){
+								listData.add(0,Ctgr(0,"미분류",11))
+							}
 							listData.add(Ctgr(null,"+",11))
 							binding.delete.visibility = View.INVISIBLE
 							binding.repair.visibility = View.INVISIBLE
@@ -131,7 +133,9 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 							if (listData.isEmpty()) {
 								callbackListener.callmsg()
 							}
-
+							if (ctgr.name != "미분류" && ctgr.name != "+") {
+								itemView.setOnLongClickListener {return@setOnLongClickListener false}
+							}
 							notifyDataSetChanged()
 						}
 						binding.repair.setOnClickListener {
@@ -185,7 +189,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						flag = false
 						binding.delete.visibility = View.INVISIBLE
 						binding.repair.visibility = View.INVISIBLE
-						val intent = Intent(context, ViewContentActivity::class.java)
+						val intent = Intent(context, ViewMemoActivity::class.java)
 						intent.putExtra("title", "${ctgr.idx}")
 						intent.putExtra("ctgrname", "${ctgr.name}")
 						intent.putExtra("fontSize", "$fontSize")

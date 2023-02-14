@@ -290,18 +290,22 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		var condition1 = ""
 		var condition2 = ""
 
-		if( where == "제목") {
-			condition1 = "where title like '%$keyword%'"
-		} else if ( where == "내용" ) {
-			condition1 = "where content like '%$keyword%'"
-		} else if ( where == "제목+내용" ) {
-			condition1 = "where title like '%$keyword%' or content like '%$keyword%'"
+		when (where) {
+			"제목" -> {
+				condition1 = "where title like '%$keyword%'"
+			}
+			"내용" -> {
+				condition1 = "where content like '%$keyword%'"
+			}
+			"제목+내용" -> {
+				condition1 = "where title like '%$keyword%' or content like '%$keyword%'"
+			}
 		}
 
-		if( orderby == "최신순") {
-			condition2 = "order by datetime desc"
+		condition2 = if( orderby == "최신순") {
+			"order by datetime desc"
 		} else {
-			condition2 = "order by datetime asc"
+			"order by datetime asc"
 		}
 
 
@@ -324,6 +328,24 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rd.close()
 
 		return list
+	}
+
+	@SuppressLint("Range")
+	fun checkDuplicationCtgr(title: String): Boolean{
+		val sql = "select exists(select * from ctgr where name = '" + title + "') as b "
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var result: Boolean = false
+		var flag: Int = 0
+		while (rs.moveToNext()) {
+			flag = rs.getInt(rs.getColumnIndex("b"))
+		}
+		if (flag == 1){
+			result = true
+		}
+		rs.close()
+		rd.close()
+		return result
 	}
 
 }
