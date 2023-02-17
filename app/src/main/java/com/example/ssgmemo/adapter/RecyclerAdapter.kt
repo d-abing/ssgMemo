@@ -13,7 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
-import com.example.ssgmemo.common.ViewContentActivity
+import com.example.ssgmemo.common.ViewMemoActivity
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
@@ -89,6 +89,10 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				if (ctgr.name == "+"){
 					binding.txtCtgr.visibility = View.INVISIBLE
 					binding.box.setImageResource(R.drawable.add_ctgr)
+					val layoutParams = binding.box.layoutParams
+					layoutParams.height = layoutParams.height.times(1.1).toInt()
+					layoutParams.width = layoutParams.width.times(1.1).toInt()
+					binding.box.layoutParams = layoutParams
 					itemView.setOnClickListener {
 						flag = false
 						callbackListener.fragmentOpen(ctgr.name)
