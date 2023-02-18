@@ -5,43 +5,44 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ssgmemo.Memo
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.callback.ItemTouchHelperCallback
 import com.example.ssgmemo.databinding.ActivityViewContentBinding
+import com.example.ssgmemo.fragment.DeleteFragment
+import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
-class ViewMemoActivity : AppCompatActivity(){
+class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     private lateinit var binding: ActivityViewContentBinding
-
+    val helper = SqliteHelper(this, "ssgMemo", 1)
     override fun onCreate(savedInstanceState: Bundle?) {
-        val helper = SqliteHelper(this, "ssgMemo", 1)
+
         super.onCreate(savedInstanceState)
         binding = ActivityViewContentBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val title = intent.getStringExtra("title")
+
+        val title = intent.getStringExtra("idx")
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
-        val unknownMemoList = helper.selectMemoList("0")
         var adapter = RecyclerSwipeAdapter(this)
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+
+        adapter.callbackListener = this
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.helper = helper
-        adapter.itemList = helper.selectMemoList(ctgrName!!)
-        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         itemTouchHelperCallback.setClamp(150f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
+        adapter.itemList = memoList
 
-        if (title == "0"){
-            adapter.itemList.addAll(unknownMemoList)
-        }else{
-            adapter.itemList.addAll(memoList)
-        }
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
         }
@@ -49,8 +50,6 @@ class ViewMemoActivity : AppCompatActivity(){
         binding.recyclerContent1.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = adapter
-//            addItemDecoration(ItemDecoration())
-
             setOnTouchListener { _, _ ->
                 itemTouchHelperCallback.removePreviousClamp(this)
                 false
@@ -69,15 +68,14 @@ class ViewMemoActivity : AppCompatActivity(){
         val helper = SqliteHelper(this, "ssgMemo", 1)
         binding = ActivityViewContentBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val title = intent.getStringExtra("title")
+        val title = intent.getStringExtra("idx")
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
-        val unknownMemoList = helper.selectMemoList("0")
         val adapter = RecyclerSwipeAdapter(this)
 
         adapter.helper = helper
-        adapter.itemList = helper.selectMemoList(ctgrName!!)
+        adapter.itemList = memoList
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         itemTouchHelperCallback.setClamp(150f)
@@ -85,10 +83,33 @@ class ViewMemoActivity : AppCompatActivity(){
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
 
-        if (title == "0"){
-            adapter.itemList.addAll(unknownMemoList)
+    }
+
+    override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
+        super.fragmentOpen(memoCtgr, memoidx)
+        if(memoCtgr == 0){
+            val deleteFragment = DeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("memoidx",memoidx)
+            deleteFragment.arguments = bundle
+            deleteFragment.show(supportFragmentManager, "memoDelete")
         }else{
-            adapter.itemList.addAll(memoList)
+            val memoDeleteFragment = MemoDeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("memoidx",memoidx)
+            memoDeleteFragment.arguments = bundle
+            memoDeleteFragment.show(supportFragmentManager, "memoDelete")
         }
+    }
+
+    override fun deleteMemo(memoidx: String) {
+        super.deleteMemo(memoidx)
+        val memo:Memo = helper.selectMemo(memoidx)
+        helper.deleteContent(memo)
+    }
+
+    override fun deleteCtgr(memoidx: String) {
+        super.deleteCtgr(memoidx)
+        helper.deleteMemoCtgr(memoidx)
     }
 }

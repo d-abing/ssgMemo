@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.SqliteHelper
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
 import com.example.ssgmemo.callback.ItemTouchHelperListener
 import com.example.ssgmemo.databinding.RecyclerMemolistItem2Binding
@@ -18,6 +19,7 @@ import java.util.*
 class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerSwipeAdapter.Holder>(),
     ItemTouchHelperListener {
     lateinit var helper: SqliteHelper
+    lateinit var callbackListener: CallbackListener
     lateinit var itemList: MutableList<Memo>
     var fontSize: String = ""
     lateinit var  binding: ViewBinding
@@ -52,8 +54,6 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             }
 
             binding.memoItem.setOnClickListener {
-
-
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("memoIdx", "${memo.idx}")
                 intent.putExtra("fontSize", "$fontSize")
@@ -61,7 +61,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             }
 
             binding.task.setOnClickListener {
-                Log.d("gggmad","${(binding as RecyclerMemolistItem2Binding).task.isClickable}")
+                // 프레그먼트 오픈
+                callbackListener.fragmentOpen(memo.ctgr!!,memo.idx.toString())
             }
         }
     }

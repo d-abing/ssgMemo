@@ -132,7 +132,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
-    override fun fragmentOpen(item: String) {
+    override fun fragmentOpen(item: String, ctgridx:String?) {
         if(item == "+"){
             CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
         }

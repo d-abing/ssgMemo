@@ -4,6 +4,7 @@ import android.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -36,8 +37,8 @@ class EditActivity : AppCompatActivity() {
             binding.writeTitle.textSize = 24f
             binding.writeContent.textSize = 24f
         }
-        binding.category.adapter = ArrayAdapter<String>(this, R.layout.simple_list_item_1, ctgrList)
-        binding.category.setSelection(memo.ctgr as Int)
+        binding.category.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, ctgrList)
+        binding.category.setSelection(ctgr!!)
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }

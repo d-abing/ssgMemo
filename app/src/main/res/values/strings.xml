@@ -3,5 +3,7 @@
     <string name="admob_app_id">ca-app-pub-2929949424861394~3285000660</string>
     <string name="banner_ad_unit_id">ca-app-pub-2929949424861394/4568509785</string>
     <string name="banner_ad_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 

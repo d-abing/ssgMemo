@@ -210,10 +210,22 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	}
 
 	fun deleteCtgr(idx: String) {
-		//카테고리 삭제 메소드
+		// 우선순위 수정을 위함
+		val memoList = selectMemoList(idx)
+		var unclassifiedTop:Int = if(checkTop(0)==null){0}else{checkTop(0)!!}
+		//관련 메모의 카테고리 삭제 메소드
 		val wd = writableDatabase
-		val sql = "delete from ctgr where idx = '" + idx + " '"
-		wd.execSQL(sql)
+		val sql1 = "UPDATE memo set ctgr = 0 where ctgr = '" + idx + " '"
+		wd.execSQL(sql1)
+		// 카테고리 삭제
+		val sql2 = "delete from ctgr where idx = '" + idx + " '"
+		wd.execSQL(sql2)
+		// 기존의 미분류에서 우선순위 설정
+		var sql3 = ""
+		for (memoList in memoList){
+			sql3 = "UPDATE memo set priority = '" + ++unclassifiedTop + "' where idx = '" + memoList.idx + " '"
+			wd.execSQL(sql3)
+		}
 		wd.close()
 	}
 	// 미분류 메모가 있다면 true 반환
@@ -346,6 +358,19 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rs.close()
 		rd.close()
 		return result
+	}
+
+	fun deleteMemoCtgr(memoidx: String) {
+		val memo = selectMemo(memoidx)
+		val priority = if (checkTop(0) == null){ 0 } else{ checkTop(0)!!+1}
+		val wd = writableDatabase
+		val sql = "update memo set priority = '" + priority + "', ctgr = 0 where idx = '" + memoidx + "'"
+
+		val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority<'" + memo.priority + "'"
+		wd.execSQL(sql1)
+		wd.execSQL(sql)
+
+		wd.close()
 	}
 
 }

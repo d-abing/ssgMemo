@@ -2,16 +2,19 @@ package com.example.ssgmemo.common
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.Ctgr
+import com.example.ssgmemo.Memo
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
+import com.example.ssgmemo.fragment.DeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -57,19 +60,22 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.msgCtgr.visibility = View.VISIBLE
     }
 
-    override fun fragmentOpen(item: String) {
+    override fun fragmentOpen(item: String, ctgridx: String?) {
         if(item == "+"){
             CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
+        }else if(item == "delete@#"){
+            val deleteFragment = DeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("Ctgridx",ctgridx)
+            deleteFragment.arguments = bundle
+            deleteFragment.show(supportFragmentManager, "CtgrDelete")
         }
     }
     override fun addCtgr(ctgrName: String) {
         val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
         val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
         val ctgrAddBtn = Ctgr(null,"+",11111111)
-        val index = if(adapter.listData.size<2){0}
-        else{
-            adapter.listData.size-1
-        }
+
         // 첫 Ctgr의 이름이 "미분류" 라면 미분류와 + 버튼 사이에 존재 아니라면 0번째 부터
         if (!helper.checkDuplicationCtgr(ctgrName)){
             helper.insertCtgr(ctgr)
@@ -80,7 +86,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             adapter.listData.add(ctgrAddBtn)
             adapter.notifyDataSetChanged()
         }else{
-            var text = if(ctgrName == "미분류"){"사용할 수 없는 이름입니다."}else{
+            var text = if(ctgrName == "미분류" || ctgrName == "delete@#" || ctgrName == "+"){"사용할 수 없는 이름입니다."}else{
                 "이미 존재하는 카테고리 입니다."
             }
             val duration = Toast.LENGTH_SHORT
@@ -89,15 +95,28 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
+    override fun deleteCtgr(ctgridx: String) {
+        super.deleteCtgr(ctgridx)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
+        val ctgrAddBtn = Ctgr(null,"+",11111111)
+
+        helper.deleteCtgr(ctgridx)
+        adapter.listData = helper.selectCtgrList() as MutableList<Any>
+        if (helper.isUnknownMemoExist()){
+            adapter.listData.add(0,unclassifyCtgr)
+        }
+        adapter.listData.add(ctgrAddBtn)
+
+        adapter.notifyDataSetChanged()
+    }
+
     override fun onRestart() {
         super.onRestart()
-//        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
-//        val ctgrAddBtn = Ctgr(null,"+",11111111)
-//        if (helper.isUnknownMemoExist()){
-//            adapter.listData.add(0,unclassifyCtgr)
+//        val firstAdapterList = adapter.listData[0] as Ctgr
+//        val getIdx = firstAdapterList.idx.toString()
+//        if (!helper.isUnknownMemoExist() || getIdx =="0"){
+//            adapter.listData.removeAt(0)
 //        }
-//        adapter.listData.add(ctgrAddBtn)
-//        adapter.listData = helper.selectCtgrList().toMutableList()
         adapter.notifyDataSetChanged()
     }
 }

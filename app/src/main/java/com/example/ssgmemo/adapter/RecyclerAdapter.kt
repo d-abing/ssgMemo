@@ -13,7 +13,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
-import com.example.ssgmemo.common.ViewContentActivity
+import com.example.ssgmemo.common.ViewMemoActivity
 import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
 import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
 import com.example.ssgmemo.databinding.RecyclerViewItemBinding
@@ -91,7 +91,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					binding.box.setImageResource(R.drawable.add_ctgr)
 					itemView.setOnClickListener {
 						flag = false
-						callbackListener.fragmentOpen(ctgr.name)
+						callbackListener.fragmentOpen(ctgr.name, null)
 					}
 				}
 
@@ -115,24 +115,14 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 							flag = true
 						}
 						binding.delete.setOnClickListener {
-							helper?.deleteCtgr(ctgr.idx.toString())
-							listData.clear()
-							listData = helper?.selectCtgrList() as MutableList<Any>
-							if(helper!!.isUnknownMemoExist()){
-								listData.add(0,Ctgr(0,"미분류",11))
-							}
-							listData.add(Ctgr(null,"+",11))
-							binding.delete.visibility = View.INVISIBLE
-							binding.repair.visibility = View.INVISIBLE
-							flag = false
+							callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
+								binding.delete.visibility = View.INVISIBLE
+								binding.repair.visibility = View.INVISIBLE
+								flag = false
 
-							if (listData.isEmpty()) {
-								callbackListener.callmsg()
-							}
-							if (ctgr.name != "미분류" && ctgr.name != "+") {
-								itemView.setOnLongClickListener {return@setOnLongClickListener false}
-							}
-							notifyDataSetChanged()
+								if (ctgr.name != "미분류" && ctgr.name != "+") {
+									itemView.setOnLongClickListener {return@setOnLongClickListener false}
+								}
 						}
 						binding.repair.setOnClickListener {
 							flag = false
@@ -177,7 +167,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						binding.delete.visibility = View.INVISIBLE
 						binding.repair.visibility = View.INVISIBLE
 						callbackListener.fragmentOpen(
-							ctgr.name
+							ctgr.name,null
 						)
 					}
 				}else{
@@ -186,7 +176,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						binding.delete.visibility = View.INVISIBLE
 						binding.repair.visibility = View.INVISIBLE
 						val intent = Intent(context, ViewMemoActivity::class.java)
-						intent.putExtra("title", "${ctgr.idx}")
+						intent.putExtra("idx", "${ctgr.idx}")
 						intent.putExtra("ctgrname", "${ctgr.name}")
 						intent.putExtra("fontSize", "$fontSize")
 						context.startActivity(intent)
