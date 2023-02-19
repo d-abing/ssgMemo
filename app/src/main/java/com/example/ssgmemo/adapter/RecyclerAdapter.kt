@@ -94,7 +94,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					layoutParams.width = layoutParams.width.times(1.1).toInt()
 					binding.box.layoutParams = layoutParams
 					itemView.setOnClickListener {
-						flag = false
 						callbackListener.fragmentOpen(ctgr.name, null)
 					}
 				}

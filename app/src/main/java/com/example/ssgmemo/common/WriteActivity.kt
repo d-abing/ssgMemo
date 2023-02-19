@@ -60,8 +60,8 @@ class WriteActivity : AppCompatActivity() {
                 var priority = 0
 
                 // 카테고리가 있으며 첫 글이 아닌 경우 (마지막 우선순위 +1) 부여
-                if (helper.checkTop(ctgr!!) !=null){
-                    priority = helper.checkTop(ctgr!!)!! + 1
+                if (helper.checkTopMemo(ctgr!!) !=null){
+                    priority = helper.checkTopMemo(ctgr!!)!! + 1
                 }
 
                 memo = Memo(

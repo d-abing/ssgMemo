@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -106,7 +107,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         }
 
         if (memoList!!.isNotEmpty()) {                                                      // memoList가 비어있지 않을 때만 수행
-            helper.updateMemoCtgr(midx, cidx, helper.checkTop(cidx.toInt())?.plus(1)) // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
+            helper.updateMemoCtgr(midx, cidx, helper.checkTopMemo(cidx.toInt())?.plus(1)) // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
             pagerAdapter!!.listData.clear()
             memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
             pagerAdapter!!.listData.addAll(memoList2!!)
@@ -139,7 +140,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     }
 
     override fun addCtgr(ctgrName: String) {
-        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
+        val ctgr = Ctgr(helper.checkTopCtgr()!!.toLong() + 1, ctgrName, System.currentTimeMillis())
         val index = recyclerAdapter!!.listData.size -1
         helper.insertCtgr(ctgr)
         recyclerAdapter!!.listData.add(index,ctgr)

@@ -81,8 +81,8 @@ class EditActivity : AppCompatActivity() {
             }
             // 카테고리가 변경되었을 때 우선순위 +1 부여
             if(ctgr != memo.ctgr){
-                priority = if(helper.checkTop(ctgr!!) != null){
-                    helper.checkTop(ctgr!!)!! +1
+                priority = if(helper.checkTopMemo(ctgr!!) != null){
+                    helper.checkTopMemo(ctgr!!)!! +1
                 }else{ 0 }
                 checkdiff3 = true
             }

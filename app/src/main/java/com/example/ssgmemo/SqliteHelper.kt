@@ -212,7 +212,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun deleteCtgr(idx: String) {
 		// 우선순위 수정을 위함
 		val memoList = selectMemoList(idx)
-		var unclassifiedTop:Int = if(checkTop(0)==null){0}else{checkTop(0)!!}
+		var unclassifiedTop:Int = if(checkTopMemo(0)==null){0}else{checkTopMemo(0)!!}
 		//관련 메모의 카테고리 삭제 메소드
 		val wd = writableDatabase
 		val sql1 = "UPDATE memo set ctgr = 0 where ctgr = '" + idx + " '"
@@ -279,7 +279,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 
 	@SuppressLint("Range")
-	fun checkTop(ctgr: Int): Int? {
+	fun checkTopMemo(ctgr: Int): Int? {
 
 		var sql = "SELECT priority FROM memo where ctgr = '" + ctgr + "' ORDER by priority DESC LIMIT 1"
 		val rd = readableDatabase
@@ -293,6 +293,21 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rs.close()
 		rd.close()
 		return  result
+	}
+
+	fun checkTopCtgr(): Int? {
+
+		var sql = "SELECT idx FROM ctgr ORDER by datetime DESC LIMIT 1"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var result: Int? = null
+
+		if (rs.moveToNext()) {
+			result = rs.getInt(rs.getColumnIndex("idx"))
+		}
+		rs.close()
+		rd.close()
+		return result
 	}
 
 	@SuppressLint("Range")
@@ -362,7 +377,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 	fun deleteMemoCtgr(memoidx: String) {
 		val memo = selectMemo(memoidx)
-		val priority = if (checkTop(0) == null){ 0 } else{ checkTop(0)!!+1}
+		val priority = if (checkTopMemo(0) == null){ 0 } else{ checkTopMemo(0)!!+1}
 		val wd = writableDatabase
 		val sql = "update memo set priority = '" + priority + "', ctgr = 0 where idx = '" + memoidx + "'"
 
