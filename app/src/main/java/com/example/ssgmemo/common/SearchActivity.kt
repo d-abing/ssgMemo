@@ -65,21 +65,10 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-
         recyclerAdapter.helper = helper
         showDataList(recyclerAdapter, keyword, where, orderby)
         binding.recyclerSearch.adapter = recyclerAdapter
 
-        // 키워드 입력 후 돋보기 클릭
-        binding.btnSearch.setOnClickListener{
-            keyword = binding.keyword.text.toString()
-            if (keyword.isNotEmpty()) {
-                recyclerAdapter.listData.clear()
-                showDataList(recyclerAdapter, keyword, where, orderby)
-                recyclerAdapter.notifyDataSetChanged()
-                binding.keyword.setText("")
-            }
-        }
 
         // 키워드 입력 후 엔터
         binding.keyword.setOnEditorActionListener { v, actionId, event ->

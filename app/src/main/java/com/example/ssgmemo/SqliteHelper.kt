@@ -300,7 +300,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		var sql = "SELECT idx FROM ctgr ORDER by datetime DESC LIMIT 1"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
-		var result: Int? = null
+		var result = 0
 
 		if (rs.moveToNext()) {
 			result = rs.getInt(rs.getColumnIndex("idx"))

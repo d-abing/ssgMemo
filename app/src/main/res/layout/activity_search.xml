@@ -9,50 +9,37 @@
     tools:context=".common.SearchActivity">
 
     <LinearLayout
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="315dp"
+        android:layout_height="44dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/search_bar"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.21"
+        app:layout_constraintHorizontal_bias="0.302"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/keyword"
-            android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_width="261dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:background="#00FFFFFF"
             android:ems="10"
             android:hint="검색어를 입력하세요"
-            android:inputType="textPersonName"
-            android:imeOptions="actionDone"/>
+            android:imeOptions="actionDone"
+            android:inputType="textPersonName" />
 
         <ImageButton
             android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginTop="14dp"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="11dp"
             android:background="#00FFFFFF"
             android:scaleType="centerInside"
             android:tooltipText="p"
             app:srcCompat="@drawable/cancel" />
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/btnSearch"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="12dp"
-        android:background="#00FFFFFF"
-        android:scaleType="centerInside"
-        android:src="@drawable/search"
-        app:layout_constraintEnd_toStartOf="@+id/btnFilter"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/search" />
 
     <Spinner
         android:id="@+id/spinner2"
@@ -126,7 +113,7 @@
         android:id="@+id/btnFilter"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

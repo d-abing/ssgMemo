@@ -65,7 +65,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
-			if (parentName.equals("recyclerCtgr1")) {
+			if (parentName.equals("recyclerCtgr1")) { // <분류>
 				(binding as RecyclerViewItemBinding).txtCtgr.text = ctgr.name
 				if (fontSize.equals("ON")) {
 					binding.txtCtgr.textSize = 20f
@@ -86,19 +86,18 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					) // cidx값을 액티비티로 전송
 				}
 
+
 				if (ctgr.name == "+"){
 					binding.txtCtgr.visibility = View.INVISIBLE
 					binding.box.setImageResource(R.drawable.add_ctgr)
-					val layoutParams = binding.box.layoutParams
-					layoutParams.height = layoutParams.height.times(1.1).toInt()
-					layoutParams.width = layoutParams.width.times(1.1).toInt()
-					binding.box.layoutParams = layoutParams
 					itemView.setOnClickListener {
 						callbackListener.fragmentOpen(ctgr.name, null)
 					}
+				} else {
+					binding.txtCtgr.visibility = View.VISIBLE
 				}
 
-			} else if (parentName.equals("recyclerCtgr2")) {
+			} else if (parentName.equals("recyclerCtgr2")) { // <보기>
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name
 				if (ctgr.name == "+"){
@@ -187,6 +186,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				}
 			}
 		}
+
 		fun getMemo(memo: Memo) {
 			(binding as RecyclerSearchItemBinding).searchTitle.text = memo.title
 			binding.searchContent.text = memo.content
@@ -204,6 +204,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 			itemView.setOnClickListener {
 				val intent = Intent(context, EditActivity::class.java)
 				intent.putExtra("memoIdx", "${memo.idx}")
+				intent.putExtra("fontSize", "$fontSize")
 				context.startActivity(intent)
 			}
 		}
