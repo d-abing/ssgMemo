@@ -21,6 +21,7 @@ import com.google.android.gms.ads.MobileAds
 class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     private lateinit var binding: ActivityViewContentBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
+    lateinit var adapter: RecyclerSwipeAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -31,7 +32,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
-        var adapter = RecyclerSwipeAdapter(this)
+        adapter = RecyclerSwipeAdapter(this)
         val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
 
         adapter.callbackListener = this
@@ -106,10 +107,15 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         super.deleteMemo(memoidx)
         val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteContent(memo)
+        adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
+        adapter.notifyDataSetChanged()
     }
 
     override fun deleteCtgr(memoidx: String) {
         super.deleteCtgr(memoidx)
+        val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteMemoCtgr(memoidx)
+        adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
+        adapter.notifyDataSetChanged()
     }
 }
