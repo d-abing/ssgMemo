@@ -1,6 +1,7 @@
 package com.example.ssgmemo.common
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -9,14 +10,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginTop
+import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivitySearchBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
@@ -39,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
         val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
 
         // <"제목", "내용", "제목+내용">
-        if(fontSize.equals("ON")) binding.spinner4.adapter = ArrayAdapter(this, com.example.ssgmemo.R.layout.spinner_layout, conditionList1)
+        if(fontSize.equals("ON")) binding.spinner4.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList1)
         else binding.spinner4.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
         binding.spinner4.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -51,7 +53,7 @@ class SearchActivity : AppCompatActivity() {
 
 
         // <"최신순", "오래된순">
-        if(fontSize.equals("ON"))  binding.spinner2.adapter = ArrayAdapter(this, com.example.ssgmemo.R.layout.spinner_layout, conditionList2)
+        if(fontSize.equals("ON"))  binding.spinner2.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList2)
         else binding.spinner2.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList2)
         binding.spinner2.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -60,15 +62,9 @@ class SearchActivity : AppCompatActivity() {
                 orderby = binding.spinner2.getItemAtPosition(position).toString()
                 recyclerAdapter.listData.clear()
                 showDataList(recyclerAdapter, keyword, where, orderby)
-                recyclerAdapter.notifyDataSetChanged()
 
             }
         }
-
-        recyclerAdapter.helper = helper
-        showDataList(recyclerAdapter, keyword, where, orderby)
-        binding.recyclerSearch.adapter = recyclerAdapter
-
 
         // 키워드 입력 후 엔터
         binding.keyword.setOnEditorActionListener { v, actionId, event ->
@@ -76,26 +72,31 @@ class SearchActivity : AppCompatActivity() {
             if (keyword.isNotEmpty()) {
                 recyclerAdapter.listData.clear()
                 showDataList(recyclerAdapter, keyword, where, orderby)
-                recyclerAdapter.notifyDataSetChanged()
                 binding.keyword.setText("")
             }
             false
         }
+
+        recyclerAdapter.helper = helper
+        showDataList(recyclerAdapter, keyword, where, orderby)
+        binding.recyclerSearch.adapter = recyclerAdapter
 
 
         binding.btnCancel.setOnClickListener {
             recyclerAdapter.listData.clear()
             keyword = ""
             showDataList(recyclerAdapter, keyword, where, orderby)
-            recyclerAdapter.notifyDataSetChanged()
+            binding.keyword.setText("")
         }
 
         val display = this.applicationContext?.resources?.displayMetrics
         val deviceHeight = display?.heightPixels
-        val layoutParams =  binding.recyclerSearch.layoutParams
-        layoutParams.height = deviceHeight?.times(0.81)!!.toInt()
-        binding.recyclerSearch.layoutParams = layoutParams
-        binding.emptyText2.layoutParams = layoutParams
+        val layoutParams1 = binding.recyclerSearch.layoutParams
+        val layoutParams2 = binding.emptyText2.layoutParams
+        layoutParams1.height = deviceHeight?.times(0.81)!!.toInt()
+        layoutParams2.height = deviceHeight?.times(0.81)!!.toInt()
+        binding.recyclerSearch.layoutParams = layoutParams1
+        binding.emptyText2.layoutParams = layoutParams2
 
         binding.btnFilter.setOnClickListener {
             if (flag == false) {
@@ -103,18 +104,20 @@ class SearchActivity : AppCompatActivity() {
                 binding.spinner4.visibility = View.VISIBLE
                 binding.recyclerSearch.margin(top = 79F)
                 binding.emptyText2.margin(top = 79F)
-                layoutParams.height = deviceHeight?.times(0.75)!!.toInt()
-                binding.recyclerSearch.layoutParams = layoutParams
-                binding.emptyText2.layoutParams = layoutParams
+                layoutParams1.height = deviceHeight.times(0.75).toInt()
+                layoutParams2.height = deviceHeight.times(0.75).toInt()
+                binding.recyclerSearch.layoutParams = layoutParams1
+                binding.emptyText2.layoutParams = layoutParams2
                 flag = true
             } else {
                 binding.spinner2.visibility = View.GONE
                 binding.spinner4.visibility = View.GONE
                 binding.recyclerSearch.margin(top = 32F)
                 binding.emptyText2.margin(top = 32F)
-                layoutParams.height = deviceHeight?.times(0.81)!!.toInt()
-                binding.recyclerSearch.layoutParams = layoutParams
-                binding.emptyText2.layoutParams = layoutParams
+                layoutParams1.height = deviceHeight.times(0.81).toInt()
+                layoutParams2.height = deviceHeight.times(0.81).toInt()
+                binding.recyclerSearch.layoutParams = layoutParams1
+                binding.emptyText2.layoutParams = layoutParams2
                 flag = false
             }
         }
@@ -123,7 +126,7 @@ class SearchActivity : AppCompatActivity() {
 
         // 광고
         MobileAds.initialize(this) {}
-        mAdView = findViewById<AdView>(com.example.ssgmemo.R.id.adView)
+        mAdView = findViewById<AdView>(R.id.adView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
@@ -137,13 +140,14 @@ class SearchActivity : AppCompatActivity() {
     fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
         val data = helper.selectSearchList(keyword, where, orderby)
         recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
-        if(data!!.isEmpty()) {
+        if(data.isEmpty()) {
             binding.recyclerSearch.visibility = View.INVISIBLE
             binding.emptyText2.visibility = View.VISIBLE
         } else {
             binding.recyclerSearch.visibility = View.VISIBLE
             binding.emptyText2.visibility = View.INVISIBLE
         }
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
@@ -161,5 +165,4 @@ class SearchActivity : AppCompatActivity() {
 
     fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
     fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
-
 }

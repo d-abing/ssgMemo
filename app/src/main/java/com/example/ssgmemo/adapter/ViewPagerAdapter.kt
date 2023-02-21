@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.Memo
-import com.example.ssgmemo.databinding.RecyclerMemolistItemBinding
+import com.example.ssgmemo.databinding.RecyclerClassifyMemoBinding
 
 
 class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
@@ -14,7 +14,7 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
     var fontSize: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : Holder {
-        var binding: ViewBinding = RecyclerMemolistItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        var binding: ViewBinding = RecyclerClassifyMemoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return Holder(binding)
     }
@@ -28,7 +28,7 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
 
     inner class Holder(val binding: ViewBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun setMemo(memo: Memo) {
-            (binding as RecyclerMemolistItemBinding).memoTitle.text = memo.title
+            (binding as RecyclerClassifyMemoBinding).memoTitle.text = memo.title
             binding.memoContent.text = memo.content
 
             if (fontSize.equals("ON")) {

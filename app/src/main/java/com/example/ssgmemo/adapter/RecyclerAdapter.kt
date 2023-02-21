@@ -14,9 +14,9 @@ import com.example.ssgmemo.*
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
 import com.example.ssgmemo.common.ViewMemoActivity
-import com.example.ssgmemo.databinding.RecyclerCtgrViewItemBinding
-import com.example.ssgmemo.databinding.RecyclerSearchItemBinding
-import com.example.ssgmemo.databinding.RecyclerViewItemBinding
+import com.example.ssgmemo.databinding.RecyclerViewCtgrBinding
+import com.example.ssgmemo.databinding.RecyclerSearchMemoBinding
+import com.example.ssgmemo.databinding.RecyclerClassifyCtgrBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,13 +34,13 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		if (parentName.equals("recyclerCtgr1")){
 			Log.d("text","$parentName")
 			binding =
-				RecyclerViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+				RecyclerClassifyCtgrBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 		} else if (parentName.equals("recyclerCtgr2")){
 			binding =
-				RecyclerCtgrViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+				RecyclerViewCtgrBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 		} else if(parentName.equals("recyclerSearch")){
 			binding =
-				RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+				RecyclerSearchMemoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 		}
 		return Holder(binding)
 	}
@@ -66,7 +66,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) { // <분류>
-				(binding as RecyclerViewItemBinding).txtCtgr.text = ctgr.name
+				(binding as RecyclerClassifyCtgrBinding).txtCtgr.text = ctgr.name
 				if (fontSize.equals("ON")) {
 					binding.txtCtgr.textSize = 20f
 				}
@@ -98,7 +98,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				}
 
 			} else if (parentName.equals("recyclerCtgr2")) { // <보기>
-				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
+				(binding as RecyclerViewCtgrBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name
 				binding.delete.visibility = View.INVISIBLE
 				binding.repair.visibility = View.INVISIBLE
@@ -188,7 +188,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 		}
 
 		fun getMemo(memo: Memo) {
-			(binding as RecyclerSearchItemBinding).searchTitle.text = memo.title
+			(binding as RecyclerSearchMemoBinding).searchTitle.text = memo.title
 			binding.searchContent.text = memo.content
 
 			val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))

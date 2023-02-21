@@ -12,7 +12,7 @@ import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.callback.ItemTouchHelperCallback
-import com.example.ssgmemo.databinding.ActivityViewContentBinding
+import com.example.ssgmemo.databinding.ActivityViewMemoBinding
 import com.example.ssgmemo.fragment.DeleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
@@ -20,7 +20,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 class ViewMemoActivity : AppCompatActivity(), CallbackListener{
-    private lateinit var binding: ActivityViewContentBinding
+    private lateinit var binding: ActivityViewMemoBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
     lateinit var adapter: RecyclerSwipeAdapter
     private lateinit var itemTouchHelperCallback: ItemTouchHelperCallback
@@ -28,7 +28,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        binding = ActivityViewContentBinding.inflate(layoutInflater)
+        binding = ActivityViewMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         title = intent.getStringExtra("idx").toString()

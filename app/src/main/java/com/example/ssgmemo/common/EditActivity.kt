@@ -48,8 +48,8 @@ class EditActivity : AppCompatActivity() {
         if (fontSize.equals("ON")) {
             binding.writeTitle.textSize = 24f
             binding.writeContent.textSize = 24f
-        }
-        binding.category.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, ctgrList)
+            binding.category.adapter = ArrayAdapter(this, com.example.ssgmemo.R.layout.spinner_layout, ctgrList)
+        } else  binding.category.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ctgrList)
         binding.category.setSelection(ctgr!!)
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {

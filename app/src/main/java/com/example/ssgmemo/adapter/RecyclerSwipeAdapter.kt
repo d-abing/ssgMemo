@@ -12,7 +12,7 @@ import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
 import com.example.ssgmemo.callback.ItemTouchHelperListener
-import com.example.ssgmemo.databinding.RecyclerMemolistItem2Binding
+import com.example.ssgmemo.databinding.RecyclerViewMemoBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,8 +28,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         binding =
-            RecyclerMemolistItem2Binding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return Holder(binding as RecyclerMemolistItem2Binding)
+            RecyclerViewMemoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return Holder(binding as RecyclerViewMemoBinding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(itemList[position])
@@ -38,7 +38,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     override fun getItemCount(): Int {
         return itemList.size
     }
-    inner class Holder(val binding: RecyclerMemolistItem2Binding): RecyclerView.ViewHolder(binding?.root!!) {
+    inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun bind(memo: Memo) {
             binding.searchTitle2.text = memo.title
             binding.searchContent2.text = memo.content
