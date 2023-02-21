@@ -6,6 +6,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -140,10 +141,25 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     }
 
     override fun addCtgr(ctgrName: String) {
-        val ctgr = Ctgr(helper.checkTopCtgr()!!.toLong() + 1, ctgrName, System.currentTimeMillis())
-        val index = recyclerAdapter!!.listData.size -1
-        helper.insertCtgr(ctgr)
-        recyclerAdapter!!.listData.add(index,ctgr)
-        recyclerAdapter!!.notifyDataSetChanged()
+        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
+        val ctgrAddBtn = Ctgr(null,"+",11111111)
+
+
+
+
+        if (!helper.checkDuplicationCtgr(ctgrName)){
+            helper.insertCtgr(ctgr)
+            val list = helper.selectCtgrList() as MutableList<Any>
+            list.add(ctgrAddBtn)
+            recyclerAdapter!!.listData = list
+            recyclerAdapter!!.notifyDataSetChanged()
+        }else{
+            var text = if(ctgrName == "미분류" || ctgrName == "delete@#" || ctgrName == "+"){"사용할 수 없는 이름입니다."}else{
+                "이미 존재하는 카테고리 입니다."
+            }
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(applicationContext, text, duration)
+            toast.show()
+        }
     }
 }

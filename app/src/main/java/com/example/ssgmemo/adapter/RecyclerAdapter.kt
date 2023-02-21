@@ -121,10 +121,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 								binding.delete.visibility = View.INVISIBLE
 								binding.repair.visibility = View.INVISIBLE
 								flag = false
-
-								if (ctgr.name != "미분류" && ctgr.name != "+") {
-									itemView.setOnLongClickListener {return@setOnLongClickListener false}
-								}
 						}
 						binding.repair.setOnClickListener {
 							flag = false
@@ -137,6 +133,8 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						}
 						return@setOnLongClickListener true
 					}
+				}else{
+					itemView.setOnLongClickListener {return@setOnLongClickListener false}
 				}
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->

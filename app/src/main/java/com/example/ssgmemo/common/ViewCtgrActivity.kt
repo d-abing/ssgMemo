@@ -106,17 +106,19 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             adapter.listData.add(0,unclassifyCtgr)
         }
         adapter.listData.add(ctgrAddBtn)
-
         adapter.notifyDataSetChanged()
     }
 
     override fun onRestart() {
         super.onRestart()
-//        val firstAdapterList = adapter.listData[0] as Ctgr
-//        val getIdx = firstAdapterList.idx.toString()
-//        if (!helper.isUnknownMemoExist() || getIdx =="0"){
-//            adapter.listData.removeAt(0)
-//        }
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
+        val ctgrAddBtn = Ctgr(null,"+",11111111)
+
+        adapter.listData = helper.selectCtgrList() as MutableList<Any>
+        if (helper.isUnknownMemoExist()){
+            adapter.listData.add(0,unclassifyCtgr)
+        }
+        adapter.listData.add(ctgrAddBtn)
         adapter.notifyDataSetChanged()
     }
 }

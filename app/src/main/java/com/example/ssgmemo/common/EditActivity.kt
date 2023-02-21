@@ -11,9 +11,13 @@ import android.widget.ArrayAdapter
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.databinding.ActivityWriteBinding
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWriteBinding
+    lateinit var mAdView : AdView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val helper = SqliteHelper(this, "ssgMemo", 1)
@@ -26,6 +30,14 @@ class EditActivity : AppCompatActivity() {
         val ctgrList:MutableList<String> =  helper.selectCtgrMap().values.toMutableList()
         var ctgr:Int? = memo.ctgr
         var priority:Int? = memo.priority
+
+        // content 높이 조절
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams = binding.writeContent.layoutParams
+        layoutParams.height = deviceHeight?.times(0.75)!!.toInt()
+        binding.writeContent.layoutParams = layoutParams
+
         ctgrList.add(0,"미분류")
         // 수정시 버튼 숨김 및 기존 정보 불러오기
         binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
@@ -50,7 +62,7 @@ class EditActivity : AppCompatActivity() {
                     // 카테고리 이름.. = 벨류 값...
                     ctgr = getKey(helper.selectCtgrMap(), value)
                 } else{
-                    ctgr = null
+                    ctgr = 0
                     priority = null
                 }
             }
@@ -97,5 +109,12 @@ class EditActivity : AppCompatActivity() {
 
             finish()
         }
+
+        // 광고
+        MobileAds.initialize(this) {}
+        mAdView = findViewById<AdView>(com.example.ssgmemo.R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
     }
 }

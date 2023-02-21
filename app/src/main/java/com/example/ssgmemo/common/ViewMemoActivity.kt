@@ -2,6 +2,7 @@ package com.example.ssgmemo.common
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,18 +23,20 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     private lateinit var binding: ActivityViewContentBinding
     val helper = SqliteHelper(this, "ssgMemo", 1)
     lateinit var adapter: RecyclerSwipeAdapter
+    private lateinit var itemTouchHelperCallback: ItemTouchHelperCallback
+    private lateinit var title: String
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityViewContentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val title = intent.getStringExtra("idx")
+        title = intent.getStringExtra("idx").toString()
         val ctgrName = intent.getStringExtra("ctgrname")
         // list
         val memoList = helper.selectMemoList(title!!)
         adapter = RecyclerSwipeAdapter(this)
-        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
 
         adapter.callbackListener = this
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
@@ -66,23 +69,13 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
 
     override fun onRestart() {
         super.onRestart()
-        val helper = SqliteHelper(this, "ssgMemo", 1)
-        binding = ActivityViewContentBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val title = intent.getStringExtra("idx")
-        val ctgrName = intent.getStringExtra("ctgrname")
-        // list
-        val memoList = helper.selectMemoList(title!!)
-        val adapter = RecyclerSwipeAdapter(this)
-
-        adapter.helper = helper
-        adapter.itemList = memoList
-        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
-        itemTouchHelperCallback.setClamp(150f)
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
-        binding.recyclerContent1.adapter = adapter
-        binding.ctgrTitle.text = ctgrName
+        // 메모 삭제시 clamp 되어있음
+        // 메모 들어갔다가 나오면 삭제 클릭 리스너 클릭 불가
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
+        }
 
     }
 
@@ -108,6 +101,9 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteContent(memo)
         adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
         adapter.notifyDataSetChanged()
     }
 
@@ -116,6 +112,9 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteMemoCtgr(memoidx)
         adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
         adapter.notifyDataSetChanged()
     }
 }
