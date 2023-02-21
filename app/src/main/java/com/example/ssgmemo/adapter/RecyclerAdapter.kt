@@ -100,6 +100,8 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 			} else if (parentName.equals("recyclerCtgr2")) { // <보기>
 				(binding as RecyclerCtgrViewItemBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name
+				binding.delete.visibility = View.INVISIBLE
+				binding.repair.visibility = View.INVISIBLE
 				if (ctgr.name == "+"){
 					binding.ctgrBtn.setBackgroundResource(R.drawable.testback)
 				} else{
@@ -142,7 +144,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					flag = false
 					binding.delete.visibility = View.INVISIBLE
 					binding.repair.visibility = View.INVISIBLE
-					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+					if ((i == KeyEvent.KEYCODE_ENTER || i == KeyEvent.KEYCODE_BACK) && keyEvent.action == KeyEvent.ACTION_UP) {
 						// db update 문
 						helper?.updateCtgrName(
 							ctgr.idx.toString(),

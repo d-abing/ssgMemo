@@ -33,7 +33,9 @@
         </activity>
         <activity
             android:name=".common.ViewCtgrActivity"
-            android:exported="false">
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"
+            >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
