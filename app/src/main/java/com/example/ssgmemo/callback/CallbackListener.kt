@@ -1,5 +1,6 @@
 package com.example.ssgmemo.callback
 
+import android.view.View
 import com.example.ssgmemo.Ctgr
 
 interface CallbackListener {
@@ -10,4 +11,6 @@ interface CallbackListener {
     fun addCtgr(ctgrName:String) {}
     fun deleteCtgr(ctgridx: String){}
     fun deleteMemo(memoidx: String){}
+    fun openKeyBoard(view:View){}
+    fun closeKeyBoard(){}
 }

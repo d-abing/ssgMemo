@@ -82,6 +82,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		}
 		Log.d("결과","${title}")
 		db.update("memo", contentValues, "idx = ${memo.idx}", null)
+		db.close()
 	}
 
 	fun updateCtgrName(idx: String, title: String) {
@@ -90,7 +91,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		val contentValues = ContentValues().apply {
 			put("name", title)
 		}
+		Log.d("확인","${idx +"+ " + title}")
 		db.update("ctgr", contentValues, "idx = ${idx}", null)
+		db.close()
 	}
 
 	@SuppressLint("Range")
@@ -248,10 +251,10 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	}
 
 	fun deleteContent(memo: Memo) {
-		// 삭제 할 데이터 보다 우선순위가 나중인 경우 -1
+		// 삭제 할 데이터 보다 우선순위가 큰 경우 -1
 		if (memo.ctgr != null){
 			val wd1 = writableDatabase
-			val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority<'" + memo.priority + "'"
+			val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority>'" + memo.priority + "'"
 			wd1.execSQL(sql1)
 			wd1.close()
 		}
@@ -295,8 +298,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return  result
 	}
 
+	@SuppressLint("Range")
 	fun checkTopCtgr(): Int? {
-
 		var sql = "SELECT idx FROM ctgr ORDER by datetime DESC LIMIT 1"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)

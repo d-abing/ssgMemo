@@ -1,16 +1,14 @@
 package com.example.ssgmemo.common
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.Ctgr
-import com.example.ssgmemo.Memo
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
@@ -58,10 +56,14 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
-    override fun onTouchEvent(event: MotionEvent): Boolean {
+
+    override fun openKeyBoard(view: View) {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view,0)
+    }
+    override fun closeKeyBoard() {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-        return true
     }
 
     override fun callmsg() {
@@ -129,4 +131,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.listData.add(ctgrAddBtn)
         adapter.notifyDataSetChanged()
     }
+
 }
+

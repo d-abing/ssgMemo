@@ -61,8 +61,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 	}
 
 	inner class Holder(val binding: ViewBinding?): RecyclerView.ViewHolder(binding?.root!!) {
-		var flag: Boolean = false
-
 		@SuppressLint("NotifyDataSetChanged")
 		fun setCtgr(ctgr: Ctgr) {
 			if (parentName.equals("recyclerCtgr1")) { // <분류>
@@ -101,7 +99,8 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				(binding as RecyclerViewCtgrBinding).txtCtgr2.setText(ctgr.name)
 				binding.txtCtgr3.text = ctgr.name
 				binding.delete.visibility = View.INVISIBLE
-				binding.repair.visibility = View.INVISIBLE
+				binding.txtCtgr2.visibility = View.INVISIBLE
+				binding.txtCtgr3.visibility = View.VISIBLE
 				if (ctgr.name == "+"){
 					binding.ctgrBtn.setBackgroundResource(R.drawable.testback)
 				} else{
@@ -109,42 +108,49 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				}
 				if (ctgr.name != "미분류" && ctgr.name != "+") {
 					itemView.setOnLongClickListener {
-						if (flag) {
-							binding.delete.visibility = View.INVISIBLE
-							binding.repair.visibility = View.INVISIBLE
-							flag = false
-						} else {
-							binding.delete.visibility = View.VISIBLE
-							binding.repair.visibility = View.VISIBLE
-							flag = true
-						}
-						binding.delete.setOnClickListener {
-							callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
-								binding.delete.visibility = View.INVISIBLE
-								binding.repair.visibility = View.INVISIBLE
-								flag = false
-						}
-						binding.repair.setOnClickListener {
-							flag = false
-							binding.delete.visibility = View.INVISIBLE
-							binding.repair.visibility = View.INVISIBLE
-							binding.txtCtgr3.visibility = View.INVISIBLE
-							binding.txtCtgr2.visibility = View.VISIBLE
-							binding.txtCtgr2.isEnabled = true
-							binding.txtCtgr2.selectionEnd
-						}
+						binding.delete.visibility = View.VISIBLE
+						binding.txtCtgr3.visibility = View.INVISIBLE
+						binding.txtCtgr2.visibility = View.VISIBLE
+						binding.txtCtgr2.isEnabled = true
+						binding.txtCtgr2.requestFocus()
+						binding.txtCtgr2.setSelection(binding.txtCtgr2.length())
+						callbackListener.openKeyBoard(binding.txtCtgr2)
 						return@setOnLongClickListener true
+					}
+					binding.delete.setOnClickListener {
+						callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
+						binding.delete.visibility = View.INVISIBLE
+						binding.txtCtgr2.visibility = View.INVISIBLE
+						binding.txtCtgr3.visibility = View.VISIBLE
 					}
 				}else{
 					itemView.setOnLongClickListener {return@setOnLongClickListener false}
 				}
+				// 수정 중 뒤로가기 클릭시
+				binding.txtCtgr2.setOnBackPressListener(object : BackPressEditText.OnBackPressListener{
+					override fun onBackPress() {
+						helper?.updateCtgrName(
+							ctgr.idx.toString(),
+							binding.txtCtgr2.text.toString()
+						)
+						// 플레인 텍스트 값 변경
+						binding.txtCtgr3.text = binding.txtCtgr2.text
+						ctgr.name = binding.txtCtgr2.text.toString()
+						// 데이터 변경 알림
+						listData[adapterPosition] = ctgr
+						this@RecyclerAdapter.notifyDataSetChanged()
+						// 에디터와 플레인을 번갈아 가면서 노출
+						binding.txtCtgr2.visibility = View.INVISIBLE
+						binding.txtCtgr3.visibility = View.VISIBLE
+					}
+				})
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
+					// 키보드 닫기
+					callbackListener.closeKeyBoard()
 					// 엔터 그리고 키 업일 때만 적용
-					flag = false
 					binding.delete.visibility = View.INVISIBLE
-					binding.repair.visibility = View.INVISIBLE
-					if ((i == KeyEvent.KEYCODE_ENTER || i == KeyEvent.KEYCODE_BACK) && keyEvent.action == KeyEvent.ACTION_UP) {
+					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
 						// db update 문
 						helper?.updateCtgrName(
 							ctgr.idx.toString(),
@@ -165,18 +171,14 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				}
 				if (ctgr.name == "+") {
 					itemView.setOnClickListener {
-						flag = false
 						binding.delete.visibility = View.INVISIBLE
-						binding.repair.visibility = View.INVISIBLE
 						callbackListener.fragmentOpen(
 							ctgr.name,null
 						)
 					}
 				}else{
 					itemView.setOnClickListener {
-						flag = false
 						binding.delete.visibility = View.INVISIBLE
-						binding.repair.visibility = View.INVISIBLE
 						val intent = Intent(context, ViewMemoActivity::class.java)
 						intent.putExtra("idx", "${ctgr.idx}")
 						intent.putExtra("ctgrname", "${ctgr.name}")

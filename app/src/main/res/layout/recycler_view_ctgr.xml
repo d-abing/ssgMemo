@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.64" />
 
-    <EditText
+    <com.example.ssgmemo.BackPressEditText
         android:id="@+id/txtCtgr2"
         android:layout_width="116dp"
         android:layout_height="56dp"
