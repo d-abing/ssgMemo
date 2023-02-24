@@ -58,7 +58,7 @@
                 android:id="@+id/searchDate2"
                 android:layout_width="wrap_content"
                 android:layout_height="33dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
                 android:text="날짜"
                 android:textAlignment="textEnd"
