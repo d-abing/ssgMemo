@@ -3,11 +3,14 @@ package com.example.ssgmemo.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
@@ -26,6 +29,8 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 	var helper: SqliteHelper? = null
 	var parentName : String? = null
 	var fontSize : String? = null
+	var vibration : String? = null
+	var vibrator: Vibrator? = null
 	lateinit var callbackListener: CallbackListener
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -108,6 +113,11 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				}
 				if (ctgr.name != "미분류" && ctgr.name != "+") {
 					itemView.setOnLongClickListener {
+
+						if(vibration.equals("ON")) {
+							vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
+						}
+
 						binding.delete.visibility = View.VISIBLE
 						binding.txtCtgr3.visibility = View.INVISIBLE
 						binding.txtCtgr2.visibility = View.VISIBLE
@@ -146,8 +156,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				})
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
-					// 키보드 닫기
-					callbackListener.closeKeyBoard()
 					// 엔터 그리고 키 업일 때만 적용
 					binding.delete.visibility = View.INVISIBLE
 					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
@@ -183,6 +191,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						intent.putExtra("idx", "${ctgr.idx}")
 						intent.putExtra("ctgrname", "${ctgr.name}")
 						intent.putExtra("fontSize", "$fontSize")
+						intent.putExtra("vibration", "$vibration")
 						context.startActivity(intent)
 					}
 				}

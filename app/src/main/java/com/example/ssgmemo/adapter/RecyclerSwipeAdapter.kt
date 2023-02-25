@@ -22,6 +22,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     lateinit var callbackListener: CallbackListener
     lateinit var itemList: MutableList<Memo>
     var fontSize: String = ""
+    var vibration: String = ""
     lateinit var  binding: ViewBinding
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
@@ -57,6 +58,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 val intent = Intent(context, EditActivity::class.java)
                 intent.putExtra("memoIdx", "${memo.idx}")
                 intent.putExtra("fontSize", "$fontSize")
+                intent.putExtra("vibration", "$vibration")
                 context.startActivity(intent)
             }
 

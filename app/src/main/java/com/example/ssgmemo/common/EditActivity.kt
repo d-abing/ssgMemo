@@ -1,9 +1,12 @@
 package com.example.ssgmemo.common
 
 import android.R
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -26,6 +29,8 @@ class EditActivity : AppCompatActivity() {
 
         val memoIdx = intent.getStringExtra("memoIdx") as String
         val fontSize = intent.getStringExtra("fontSize") as String
+        val vibration = intent.getStringExtra("vibration")
+
         var memo = helper.selectMemo(memoIdx)
         val ctgtMap = helper.selectCtgrMap()
         val ctgrList:MutableList<String> =  ctgtMap.values.toMutableList()
@@ -102,6 +107,11 @@ class EditActivity : AppCompatActivity() {
             }
             // 제목, 내용, 카테고리 하나라도 변경되었으면 db업뎃
             if (checkdiff1||checkdiff2||checkdiff3){
+                if(vibration.equals("ON")) {
+                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
+                }
+
                 val memo_after = Memo(memo.idx, mTitle, mContent, System.currentTimeMillis(),ctgr,priority)
                 helper.updateMemo(memo_after, checkdiff3, memo.ctgr!!, memo.priority as Int)
             }

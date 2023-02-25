@@ -1,5 +1,6 @@
 package com.example.ssgmemo.common
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -38,6 +39,11 @@ class MainActivity : AppCompatActivity() {
         var startX = 0f
         var startY = 0f
 
+        // 디스플레이 크기
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val deviceWidth = display?.widthPixels
+
         // memomo 이동
         binding.memomo.setOnTouchListener { v, event ->
             when (event.action) {
@@ -57,31 +63,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if(v.x > 480 && 640 < v.y && v.y < 1164){ // 쓰기
-                        goMenu(v)
-                        val intent = Intent(this, WriteActivity::class.java)
-                        intent.putExtra("fontSize", "$fontSize")
-                        startActivity(intent)
-                    }
-                    if(v.x < 120 && 640 < v.y && v.y < 1164){ // 분류
-                        goMenu(v)
-                        val intent = Intent(this, ClassifyActivity::class.java)
-                        intent.putExtra("fontSize", "$fontSize")
-                        intent.putExtra("vibration", "$vibration")
-                        startActivity(intent)
-                    }
-                    if(v.y > 1080 && v.x > 60 && v.x < 570){ // 보기
-                        goMenu(v)
-                        val intent = Intent(this, ViewCtgrActivity::class.java)
-                        intent.putExtra("fontSize", "$fontSize")
-                        startActivity(intent)
-                    }
-                    if(v.y < 670 && v.x > 70 && v.x < 550){ // 검색
-                        goMenu(v)
-                        val intent = Intent(this, SearchActivity::class.java)
-                        intent.putExtra("fontSize", "$fontSize")
-                        startActivity(intent)
-                    }
+                    goMenu<WriteActivity>(v, v.x, v.y, deviceWidth!!, 480, 1164, 640, WriteActivity::class.java)
+                    goMenu<ClassifyActivity>(v, v.x, v.y, 120, -420, 1164, 640, ClassifyActivity::class.java)
+                    goMenu<ViewCtgrActivity>(v, v.x, v.y, 570, 60, deviceHeight!!, 1080, ViewCtgrActivity::class.java)
+                    goMenu<SearchActivity>(v, v.x, v.y, 550, 70, 670, 0, SearchActivity::class.java)
                 }
             }
             true
@@ -94,7 +79,22 @@ class MainActivity : AppCompatActivity() {
         mAdView.loadAd(adRequest)
     }
 
-    fun goMenu(v: View) {
+    // 각 Activity로 이동
+    fun <T>goMenu(v: View, x: Float, y: Float,
+                  range1: Int, range2: Int, range3: Int, range4: Int,
+                  targetActivity: Class<T>) {
+
+        if ( x < range1 && x > range2 && y < range3 && y > range4 ) {
+            goStartState(v)
+            val intent = Intent(this, targetActivity)
+            intent.putExtra("fontSize", "$fontSize")
+            intent.putExtra("vibration", "$vibration")
+            startActivity(intent)
+        }
+    }
+
+    // memomo 시작 위치로 이동
+    fun goStartState(v: View) {
         vibrate()
         v.x = 317.20898f
         v.y = 884.44336f
@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity() {
     interface onBackPressedListener {
         fun onBackPressed()
     }
-
     override fun onBackPressed(){
         val fragmentList = supportFragmentManager.fragments
         for (fragment in fragmentList) {
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().add(R.id.frameLayout, settingFragment).commit()
     }
 
-    // 진동 state Set, Get
+    // 진동 state Setter, Getter
     fun setVibrationState(vibrationState: String) {
         // 앱 설정에 등록
         MyApplication.prefs.setString("vibration", "$vibrationState")
@@ -140,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         return vibration
     }
 
-    // 폰트 사이즈 state Set, Get
+    // 폰트 사이즈 state Setter, Getter
     fun setFontSizeState(fontSizeState: String) {
         // 앱 설정에 등록
         MyApplication.prefs.setString("fontSize", "$fontSizeState")

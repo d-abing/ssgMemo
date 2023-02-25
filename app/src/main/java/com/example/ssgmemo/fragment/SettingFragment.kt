@@ -60,8 +60,8 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
         pagerAdapter = ViewPagerAdapter2()
         descriptionImageList = mutableListOf()
         descriptionImageList!!.add(R.drawable.opened_box)
-        pagerAdapter!!.listData.addAll(descriptionImageList!!)      // pagerAdapter에 추가
-        binding.viewPager.adapter = pagerAdapter        // viewpager에 pagerAdapter 등록
+        pagerAdapter!!.listData.addAll(descriptionImageList!!)
+        binding.viewPager.adapter = pagerAdapter
 
         return binding.root
     }
@@ -69,6 +69,5 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
     // 뒤로 가기
     override fun onBackPressed() {
         requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
-        //requireActivity().supportFragmentManager.popBackStack()
     }
 }

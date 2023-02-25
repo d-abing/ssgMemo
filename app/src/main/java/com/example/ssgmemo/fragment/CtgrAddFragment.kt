@@ -1,6 +1,7 @@
 package com.example.ssgmemo.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +37,7 @@ class CtgrAddFragment(val Callback: CallbackListener) : DialogFragment(){
             dismiss()
         }
         binding.dialogTvYes.setOnClickListener {
-            if (binding.editTextTextPersonName.text.isNotEmpty()) {
+            if (binding.editTextTextPersonName.text.trim().isNotEmpty()) {
                 Callback.addCtgr(binding.editTextTextPersonName.text.toString())
                 dismiss()
             }

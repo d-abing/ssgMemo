@@ -1,9 +1,12 @@
 package com.example.ssgmemo.common
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.widget.*
 import com.example.ssgmemo.Memo
@@ -23,7 +26,8 @@ class WriteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_write)
         
         // 설정 state
-        var fontSize = intent.getStringExtra("fontSize")
+        val fontSize = intent.getStringExtra("fontSize")
+        val vibration = intent.getStringExtra("vibration")
         
         // view
         val spinner = findViewById<Spinner>(R.id.category)
@@ -58,6 +62,11 @@ class WriteActivity : AppCompatActivity() {
                 if (title.text.toString() == "") mTitle = "빈 제목"
                 else mTitle = title.text.toString()
                 var priority = 0
+
+                if(vibration.equals("ON")) {
+                    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
+                }
 
                 // 카테고리가 있으며 첫 글이 아닌 경우 (마지막 우선순위 +1) 부여
                 if (helper.checkTopMemo(ctgr!!) !=null){

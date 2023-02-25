@@ -1,5 +1,6 @@
 package com.example.ssgmemo.adapter
 
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class ViewPagerAdapter() : RecyclerView.Adapter<ViewPagerAdapter.Holder>() {
         fun setMemo(memo: Memo) {
             (binding as RecyclerClassifyMemoBinding).memoTitle.text = memo.title
             binding.memoContent.text = memo.content
+            binding.memoContent.movementMethod = ScrollingMovementMethod()
 
             if (fontSize.equals("ON")) {
                 binding.memoTitle.textSize = 40f

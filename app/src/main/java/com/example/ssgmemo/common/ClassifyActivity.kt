@@ -16,6 +16,8 @@ import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
+import com.example.ssgmemo.fragment.DeleteFragment
+import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -80,6 +82,10 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             binding.emptyText.visibility = View.INVISIBLE
         }
 
+        binding.btnDelete.setOnClickListener{
+            fragmentOpen(helper.selectMemo(midx.toString()).ctgr!!, midx.toString())
+        }
+
         // < 카테고리 list >
         recyclerAdapter = RecyclerAdapter(this)
         recyclerAdapter!!.callbackListener = this
@@ -97,6 +103,39 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
+    }
+
+    override fun fragmentOpen(item: String, ctgridx:String?) {
+        if(item == "+"){
+            CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
+        }
+    }
+
+    override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
+        super.fragmentOpen(memoCtgr, memoidx)
+        if(memoCtgr == 0){
+            val deleteFragment = DeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("memoidx",memoidx)
+            deleteFragment.arguments = bundle
+            deleteFragment.show(supportFragmentManager, "memoDelete")
+        }else{
+            val memoDeleteFragment = MemoDeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("memoidx",memoidx)
+            memoDeleteFragment.arguments = bundle
+            memoDeleteFragment.show(supportFragmentManager, "memoDelete")
+        }
+    }
+
+    override fun deleteMemo(memoidx: String) {
+        super.deleteMemo(memoidx)
+        val memo:Memo = helper.selectMemo(memoidx)
+        helper.deleteContent(memo)
+        pagerAdapter!!.listData.clear()
+        memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
+        pagerAdapter!!.listData.addAll(memoList2!!)
+        pagerAdapter!!.notifyDataSetChanged()
     }
 
     override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수
@@ -134,18 +173,11 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
-    override fun fragmentOpen(item: String, ctgridx:String?) {
-        if(item == "+"){
-            CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
-        }
-    }
+
 
     override fun addCtgr(ctgrName: String) {
         val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
         val ctgrAddBtn = Ctgr(null,"+",11111111)
-
-
-
 
         if (!helper.checkDuplicationCtgr(ctgrName)){
             helper.insertCtgr(ctgr)

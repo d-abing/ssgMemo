@@ -40,6 +40,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
 
         adapter.callbackListener = this
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
+        adapter.vibration = intent.getStringExtra("vibration").toString()
         adapter.helper = helper
         itemTouchHelperCallback.setClamp(150f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)

@@ -2,11 +2,13 @@ package com.example.ssgmemo.common
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.Ctgr
 import com.example.ssgmemo.R
@@ -32,11 +34,13 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
 
         adapter = RecyclerAdapter(this)
         adapter.callbackListener = this
+        adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
         val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
         val ctgrAddBtn = Ctgr(null,"+",11111111)
         adapter.listData = helper.selectCtgrList().toMutableList()
         adapter.fontSize = intent.getStringExtra("fontSize")
+        adapter.vibration = intent.getStringExtra("vibration")
 
         if (helper.isUnknownMemoExist()){
             adapter.listData.add(0,unclassifyCtgr)

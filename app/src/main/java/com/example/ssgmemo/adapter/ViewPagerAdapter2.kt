@@ -11,7 +11,6 @@ class ViewPagerAdapter2() : RecyclerView.Adapter<ViewPagerAdapter2.Holder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : Holder {
         var binding: RecyclerSettingImageBinding = RecyclerSettingImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
         return Holder(binding)
     }
 
