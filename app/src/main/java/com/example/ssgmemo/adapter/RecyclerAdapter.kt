@@ -10,7 +10,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
@@ -106,10 +105,13 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				binding.delete.visibility = View.INVISIBLE
 				binding.txtCtgr2.visibility = View.INVISIBLE
 				binding.txtCtgr3.visibility = View.VISIBLE
+
 				if (ctgr.name == "+"){
-					binding.ctgrBtn.setBackgroundResource(R.drawable.testback)
-				} else{
-					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback)
+					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback2)
+				} else if (ctgr.name == "미분류") {
+					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback3)
+				} else {
+					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback1)
 				}
 				if (ctgr.name != "미분류" && ctgr.name != "+") {
 					itemView.setOnLongClickListener {

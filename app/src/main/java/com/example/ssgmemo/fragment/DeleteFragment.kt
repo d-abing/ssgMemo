@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
-import com.example.ssgmemo.databinding.FragmentDeleteBinding
+import com.example.ssgmemo.databinding.FragmentCtgrDeleteBinding
 
 class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
 
-    private lateinit var binding: FragmentDeleteBinding
+    private lateinit var binding: FragmentCtgrDeleteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +23,7 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentDeleteBinding.inflate(inflater, container, false)
+        binding = FragmentCtgrDeleteBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -34,7 +34,7 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
         val ctgridx: String? = bundle?.getString("Ctgridx")
         val memoidx: String? = bundle?.getString("memoidx")
         if (ctgridx == null){
-            binding.deleteMsg.text = "메모가 삭제됩니다."
+            binding.deleteMsg.text = "메모가 삭제됩니다"
         }
         binding.dialogDeleteNo.setOnClickListener {
             dismiss()

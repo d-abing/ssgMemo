@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:padding="8dp"
-        android:text="이 카테고리의 메모들은 미분류로 돌아갑니다."
+        android:text="이 카테고리의 메모들은 미분류로 돌아갑니다"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />

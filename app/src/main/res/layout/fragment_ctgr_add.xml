@@ -26,7 +26,8 @@
         android:background="@null"
         android:ems="10"
         android:gravity="center|top"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:maxLength="15" />
 
     <View
         android:layout_width="match_parent"

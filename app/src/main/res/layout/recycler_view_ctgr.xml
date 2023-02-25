@@ -12,7 +12,7 @@
         android:layout_width="169dp"
         android:layout_height="90dp"
 
-        android:background="@drawable/ctgrback"
+        android:background="@drawable/ctgrback1"
         android:focusable="auto"
         android:focusableInTouchMode="false"
         android:textColor="#000000"
@@ -54,8 +54,7 @@
         app:layout_constraintHorizontal_bias="0.695"
         app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
         app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/pencil" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/delete"
