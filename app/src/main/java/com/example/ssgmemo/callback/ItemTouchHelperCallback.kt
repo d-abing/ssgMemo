@@ -11,12 +11,11 @@ import java.lang.Float.max
 import java.lang.Float.min
 
 class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : ItemTouchHelper.Callback() {
-
-
     private var currentPosition: Int? = null
     private var previousPosition: Int? = null
     private var currentDx = 0f
     private var clamp = 0f
+
     //활성화된 이동 방향을 정의하는 플래그를 반환하는 메소드
     override fun getMovementFlags(
         recyclerView: RecyclerView,

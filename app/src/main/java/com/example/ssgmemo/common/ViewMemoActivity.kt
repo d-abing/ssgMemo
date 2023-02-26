@@ -1,7 +1,9 @@
 package com.example.ssgmemo.common
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -41,6 +43,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.callbackListener = this
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.vibration = intent.getStringExtra("vibration").toString()
+        adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
         itemTouchHelperCallback.setClamp(150f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
@@ -88,7 +91,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             bundle.putString("memoidx",memoidx)
             deleteFragment.arguments = bundle
             deleteFragment.show(supportFragmentManager, "memoDelete")
-        }else{
+        } else {
             val memoDeleteFragment = MemoDeleteFragment(this)
             val bundle:Bundle = Bundle()
             bundle.putString("memoidx",memoidx)

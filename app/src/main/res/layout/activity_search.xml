@@ -27,7 +27,7 @@
             android:background="#00FFFFFF"
             android:ems="10"
             android:hint="검색어를 입력하세요"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionSearch"
             android:inputType="textPersonName" />
 
         <ImageButton

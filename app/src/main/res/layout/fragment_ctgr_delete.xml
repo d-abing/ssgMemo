@@ -13,13 +13,53 @@
         android:layout_height="54dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:lines="2"
         android:padding="8dp"
-        android:text="이 카테고리의 메모들은 미분류로 돌아갑니다"
+        android:text="삭제 방법을 선택하세요"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />
 
+    <LinearLayout
+        android:id="@+id/ctgrlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center|center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/delete_only_ctgr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="8sp"
+            android:text="카테고리만 삭제 (미분류로 이동)"
+            android:textColor="#BDBBBB"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/delete_also_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="8sp"
+            android:text="메모까지 삭제"
+            android:textColor="#BDBBBB"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
     <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_weight="1"
+        android:background="@color/white" />
+
+    <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -33,11 +73,6 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/gray" />
-
         <TextView
             android:id="@+id/dialog_delete_no"
             android:layout_width="0dp"
@@ -47,6 +82,11 @@
             android:padding="8dp"
             android:text="취소"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/dialog_delete_yes"

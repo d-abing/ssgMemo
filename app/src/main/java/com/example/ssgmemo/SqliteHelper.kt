@@ -391,6 +391,13 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 	}
 
+    fun deleteMemoFromCtgr(cidx: String) {
+		val wd = writableDatabase
+		val sql = "delete from memo where ctgr = '" + cidx + "'"
+		wd.execSQL(sql)
+		wd.close()
+    }
+
 }
 
 data class Ctgr(var idx: Long?, var name: String, var datetime: Long)

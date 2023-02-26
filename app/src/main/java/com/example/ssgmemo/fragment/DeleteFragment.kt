@@ -1,9 +1,11 @@
 package com.example.ssgmemo.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.FragmentCtgrDeleteBinding
@@ -33,19 +35,56 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
         val bundle:Bundle? = arguments
         val ctgridx: String? = bundle?.getString("Ctgridx")
         val memoidx: String? = bundle?.getString("memoidx")
+        var ctgrSelected:Boolean = false
+        var memoSelected:Boolean = false
+
         if (ctgridx == null){
             binding.deleteMsg.text = "메모가 삭제됩니다"
+            binding.ctgrlayout.visibility = View.GONE
+        }
+        binding.deleteOnlyCtgr.setOnClickListener {
+            ctgrSelected = if(ctgrSelected){
+                binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#BDBBBB"))
+                false
+            } else{
+                binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#41AFE1"))
+                binding.deleteAlsoMemo.setTextColor(Color.parseColor("#BDBBBB"))
+                memoSelected = false
+                true
+            }
+        }
+        binding.deleteAlsoMemo.setOnClickListener {
+            memoSelected = if(memoSelected){
+                binding.deleteAlsoMemo.setTextColor(Color.parseColor("#BDBBBB"))
+                false
+            } else{
+                binding.deleteAlsoMemo.setTextColor(Color.parseColor("#41AFE1"))
+                binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#BDBBBB"))
+                ctgrSelected = false
+                true
+            }
         }
         binding.dialogDeleteNo.setOnClickListener {
             dismiss()
         }
         binding.dialogDeleteYes.setOnClickListener {
-            if (ctgridx != null){
+            if (ctgrSelected){
                 listener.deleteCtgr(ctgridx!!)
-            }else{
-                listener.deleteMemo(memoidx!!)
+                dismiss()
+            } else if (memoSelected){
+                listener.deleteMemoFromCtgr(ctgridx!!)
+                dismiss()
+            } else{
+                if (ctgridx != null){
+                    var text = "하나를 선택해 주세요."
+                    val duration = Toast.LENGTH_SHORT
+                    val toast = Toast.makeText(getActivity(), text, duration)
+                    toast.show()
+                }else{
+                    listener.deleteMemo(memoidx!!)
+                }
+                dismiss()
             }
-            dismiss()
         }
     }
 }

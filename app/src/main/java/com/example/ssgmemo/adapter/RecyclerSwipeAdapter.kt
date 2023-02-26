@@ -2,9 +2,12 @@ package com.example.ssgmemo.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.Memo
@@ -23,6 +26,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     lateinit var itemList: MutableList<Memo>
     var fontSize: String = ""
     var vibration: String = ""
+    var vibrator: Vibrator? = null
     lateinit var  binding: ViewBinding
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
@@ -70,6 +74,10 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
 
     override fun onItemMove(from: Int, to: Int) : Boolean {
+
+        if(vibration.equals("ON")) {
+            vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
+        }
 
         //리스트 갱신
         var priority_gap =itemList[from].priority!! - itemList[to].priority!!

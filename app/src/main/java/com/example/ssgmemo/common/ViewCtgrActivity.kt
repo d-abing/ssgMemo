@@ -123,6 +123,12 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.notifyDataSetChanged()
     }
 
+    override fun deleteMemoFromCtgr(cidx: String) {
+        super.deleteMemoFromCtgr(cidx)
+        helper.deleteMemoFromCtgr(cidx)
+        deleteCtgr(cidx)
+    }
+
     override fun onRestart() {
         super.onRestart()
         val unclassifyCtgr = Ctgr(0, "미분류", 11111111)

@@ -25,11 +25,11 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center|center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/delete_ctgr_txt"
-            android:layout_width="72dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -51,6 +51,13 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_weight="1"
+        android:background="@color/white" />
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -64,11 +71,6 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/gray" />
-
         <TextView
             android:id="@+id/dialog_memo_delete_no"
             android:layout_width="0dp"
@@ -78,6 +80,11 @@
             android:padding="8dp"
             android:text="취소"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/dialog_memo_delete_yes"

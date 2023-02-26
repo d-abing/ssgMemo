@@ -17,6 +17,8 @@ import com.example.ssgmemo.databinding.ActivityWriteBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import java.text.SimpleDateFormat
+import java.util.*
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWriteBinding
@@ -46,16 +48,23 @@ class EditActivity : AppCompatActivity() {
 
         ctgrList.add(0,"미분류")
         // 수정시 버튼 숨김 및 기존 정보 불러오기
+        binding.date.visibility = View.VISIBLE
+        val t_dateFormat = SimpleDateFormat("마지막 수정 : yyyy년 M월 d일 H시 m분 s초", Locale("ko", "KR"))
+        val str_date = t_dateFormat.format(Date(memo.datetime))
+        binding.date.text = str_date
         binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
         binding.saveContent.layoutParams.width = 80
         binding.saveContent.layoutParams.height = 80
         binding.writeTitle.setText(memo.title)
         binding.writeContent.setText(memo.content)
         if (fontSize.equals("ON")) {
+            binding.date.textSize = 20f
             binding.writeTitle.textSize = 24f
             binding.writeContent.textSize = 24f
+            binding.category.adapter = ArrayAdapter(this, com.example.ssgmemo.R.layout.spinner_layout, ctgrList)
+        } else {
+            binding.category.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, ctgrList)
         }
-        binding.category.adapter = ArrayAdapter(this, R.layout.simple_list_item_1, ctgrList)
 
         binding.category.setSelection(ctgrList.indexOf(ctgtMap[ctgr]))
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {

@@ -43,11 +43,6 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/gray" />
-
         <TextView
             android:id="@+id/dialog_tv_no"
             android:layout_width="0dp"
@@ -57,6 +52,11 @@
             android:padding="8dp"
             android:text="취소"
             android:textColor="@color/black" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
 
         <TextView
             android:id="@+id/dialog_tv_yes"
