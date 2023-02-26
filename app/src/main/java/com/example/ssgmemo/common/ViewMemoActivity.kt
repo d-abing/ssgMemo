@@ -105,6 +105,11 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
         }
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
+        }
         adapter.notifyDataSetChanged()
     }
 
@@ -115,6 +120,11 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
+        }
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
         }
         adapter.notifyDataSetChanged()
     }
