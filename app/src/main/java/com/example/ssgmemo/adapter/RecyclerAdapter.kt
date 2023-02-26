@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
@@ -141,40 +142,73 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				// 수정 중 뒤로가기 클릭시
 				binding.txtCtgr2.setOnBackPressListener(object : BackPressEditText.OnBackPressListener{
 					override fun onBackPress() {
-						helper?.updateCtgrName(
-							ctgr.idx.toString(),
-							binding.txtCtgr2.text.toString()
-						)
-						// 플레인 텍스트 값 변경
-						binding.txtCtgr3.text = binding.txtCtgr2.text
-						ctgr.name = binding.txtCtgr2.text.toString()
-						// 데이터 변경 알림
-						listData[adapterPosition] = ctgr
-						this@RecyclerAdapter.notifyDataSetChanged()
-						// 에디터와 플레인을 번갈아 가면서 노출
-						binding.txtCtgr2.visibility = View.INVISIBLE
-						binding.txtCtgr3.visibility = View.VISIBLE
+						// 중복 체크 미분류, +
+						val ctgrName = binding.txtCtgr2.text.toString().trim()
+						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+							if (!helper!!.checkDuplicationCtgr(ctgrName)) {
+								// 이름 업데이트
+								helper?.updateCtgrName(
+									ctgr.idx.toString(),
+									binding.txtCtgr2.text.toString()
+								)
+								// 플레인 텍스트 값 변경
+								binding.txtCtgr3.text = binding.txtCtgr2.text
+								ctgr.name = binding.txtCtgr2.text.toString()
+								// 데이터 변경 알림
+								listData[adapterPosition] = ctgr
+								this@RecyclerAdapter.notifyDataSetChanged()
+								// 에디터와 플레인을 번갈아 가면서 노출
+//								binding.txtCtgr2.visibility = View.INVISIBLE
+//								binding.txtCtgr3.visibility = View.VISIBLE
+							}else if(ctgrName == binding.txtCtgr3.text){
+								this@RecyclerAdapter.notifyDataSetChanged()
+							}else{
+								val text = "이미 사용중 입니다."
+								val duration = Toast.LENGTH_SHORT
+								val toast = Toast.makeText(context, text, duration)
+								toast.show()
+							}
+						}else{
+							val text = "사용할 수 없는 이름입니다."
+							val duration = Toast.LENGTH_SHORT
+							val toast = Toast.makeText(context, text, duration)
+							toast.show()
+						}
 					}
 				})
 				// 수정 완료 후 엔터 클릭 시
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
-					// 엔터 그리고 키 업일 때만 적용
-					binding.delete.visibility = View.INVISIBLE
 					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
-						// db update 문
-						helper?.updateCtgrName(
-							ctgr.idx.toString(),
-							binding.txtCtgr2.text.toString()
-						)
-						// 플레인 텍스트 값 변경
-						binding.txtCtgr3.text = binding.txtCtgr2.text
-						ctgr.name = binding.txtCtgr2.text.toString()
-						// 데이터 변경 알림
-						listData[adapterPosition] = ctgr
-						this@RecyclerAdapter.notifyDataSetChanged()
-						// 에디터와 플레인을 번갈아 가면서 노출
-						binding.txtCtgr2.visibility = View.INVISIBLE
-						binding.txtCtgr3.visibility = View.VISIBLE
+						val ctgrName = binding.txtCtgr2.text.toString().trim()
+						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+							if (!helper!!.checkDuplicationCtgr(ctgrName)){
+								binding.delete.visibility = View.INVISIBLE
+								// 이름 업데이트
+								helper?.updateCtgrName(
+									ctgr.idx.toString(),
+									binding.txtCtgr2.text.toString())
+								// 플레인 텍스트 값 변경
+								binding.txtCtgr3.text = binding.txtCtgr2.text
+								ctgr.name = binding.txtCtgr2.text.toString()
+								// 데이터 변경 알림
+								listData[adapterPosition] = ctgr
+								callbackListener.closeKeyBoard()
+								this@RecyclerAdapter.notifyDataSetChanged()
+							}else if(ctgrName == binding.txtCtgr3.text){
+								callbackListener.closeKeyBoard()
+								this@RecyclerAdapter.notifyDataSetChanged()
+							}else{
+								val text = "이미 사용중 입니다."
+								val duration = Toast.LENGTH_SHORT
+								val toast = Toast.makeText(context, text, duration)
+								toast.show()
+							}
+						}else{
+							val text = "사용할 수 없는 이름입니다."
+							val duration = Toast.LENGTH_SHORT
+							val toast = Toast.makeText(context, text, duration)
+							toast.show()
+						}
 						return@setOnKeyListener true
 					}
 					return@setOnKeyListener false

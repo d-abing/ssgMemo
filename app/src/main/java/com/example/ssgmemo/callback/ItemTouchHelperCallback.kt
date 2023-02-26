@@ -36,6 +36,11 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
         return listener.onItemMove(viewHolder.adapterPosition,target.adapterPosition)
     }
 
+    override fun isLongPressDragEnabled(): Boolean {
+        listener.onItemDrag()
+        return super.isLongPressDragEnabled()
+    }
+
     //사용자에 의해 swipe될 때 호출
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 //        listener.onItemSwipe(viewHolder.adapterPosition)
