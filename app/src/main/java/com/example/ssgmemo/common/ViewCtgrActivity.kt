@@ -91,22 +91,29 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         val ctgrAddBtn = Ctgr(null,"+",11111111)
 
         // 첫 Ctgr의 이름이 "미분류" 라면 미분류와 + 버튼 사이에 존재 아니라면 0번째 부터
-        if (!helper.checkDuplicationCtgr(ctgrName)){
-            helper.insertCtgr(ctgr)
-            adapter.listData = helper.selectCtgrList() as MutableList<Any>
-            if (helper.isUnknownMemoExist()){
-                adapter.listData.add(0,unclassifyCtgr)
+        if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+            if (!helper.checkDuplicationCtgr(ctgrName)){
+                helper.insertCtgr(ctgr)
+                adapter.listData = helper.selectCtgrList() as MutableList<Any>
+                if (helper.isUnknownMemoExist()){
+                    adapter.listData.add(0,unclassifyCtgr)
+                }
+                adapter.listData.add(ctgrAddBtn)
+                adapter.notifyDataSetChanged()
+            }else{
+                val text = "이미 사용중 입니다."
+                val duration = Toast.LENGTH_SHORT
+                val toast = Toast.makeText(applicationContext, text, duration)
+                toast.show()
             }
-            adapter.listData.add(ctgrAddBtn)
-            adapter.notifyDataSetChanged()
         }else{
-            var text = if(ctgrName == "미분류" || ctgrName == "delete@#" || ctgrName == "+"){"사용할 수 없는 이름입니다."}else{
-                "이미 존재하는 카테고리 입니다."
-            }
+            val text = "사용할 수 없는 이름입니다."
             val duration = Toast.LENGTH_SHORT
             val toast = Toast.makeText(applicationContext, text, duration)
             toast.show()
         }
+
+
     }
 
     override fun deleteCtgr(ctgridx: String) {

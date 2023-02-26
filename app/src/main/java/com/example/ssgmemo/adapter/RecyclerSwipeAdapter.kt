@@ -3,6 +3,7 @@ package com.example.ssgmemo.adapter
 import android.content.Context
 import android.content.Intent
 import android.os.VibrationEffect
+import android.util.Log
 import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
@@ -97,12 +98,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         notifyItemMoved(from,to)
         return true
     }
-    // 아이템 스와이프되면 호출되는 메소드
-//    override fun onItemSwipe(position: Int) {
-//        // 리스트 아이템 삭제
-//        helper.deleteContent(itemList[position])
-//        itemList.removeAt(position)
-//        notifyItemRemoved(position)
-//    }
-
+    override fun onItemDrag() {
+      Log.d("test","49898")
+    }
 }
