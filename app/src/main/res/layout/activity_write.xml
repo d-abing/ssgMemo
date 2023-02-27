@@ -48,14 +48,13 @@
 
     <ImageButton
         android:id="@+id/saveContent"
-        android:layout_width="48dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="25dp"
         android:background="#00FFFFFF"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:src="@drawable/save1"
-        android:text="생각모으기"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date" />
 
@@ -64,8 +63,8 @@
     <EditText
         android:id="@+id/writeTitle"
         android:layout_width="285dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:textSize="20sp"

@@ -2,22 +2,17 @@ package com.example.ssgmemo.common
 
 import android.R
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.Handler
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.marginTop
 import com.example.ssgmemo.BackPressEditText
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.SqliteHelper
@@ -68,8 +63,6 @@ class EditActivity : AppCompatActivity() {
         val str_date = t_dateFormat.format(Date(memo.datetime))
         binding.date.text = str_date
         binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.read)
-        binding.saveContent.layoutParams.width = 80
-        binding.saveContent.layoutParams.height = 80
         binding.writeTitle.setText(memo.title)
         binding.writeContent.setText(memo.content)
         if (fontSize.equals("ON")) {
@@ -113,7 +106,7 @@ class EditActivity : AppCompatActivity() {
         binding.saveContent.setOnClickListener {
             if (readmode) {
                 readmode = false
-                binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
+                binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify)
                 binding.writeContent.isFocusableInTouchMode = true
             } else {
                 readmode = true
@@ -127,7 +120,7 @@ class EditActivity : AppCompatActivity() {
         binding.writeContent.setOnClickListener {
             if (!scroll) {
                 readmode = false
-                binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2)
+                binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify)
                 binding.writeContent.isFocusableInTouchMode = true
             }
             scroll = false
@@ -190,12 +183,6 @@ class EditActivity : AppCompatActivity() {
                         )
                         helper.updateMemo(memo_after, checkdiff3, memo.ctgr!!, memo.priority as Int)
                     }
-                    binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify1)
-                    val handler = Handler()
-                    handler.postDelayed(
-                        Runnable { binding.saveContent.setImageResource(com.example.ssgmemo.R.drawable.modify2) },
-                        200
-                    ) // 0.5초 후에 다시 닫아주기
 
                     finish()
                 } else {

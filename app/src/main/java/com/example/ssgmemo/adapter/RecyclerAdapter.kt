@@ -102,6 +102,9 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 
 			} else if (parentName.equals("recyclerCtgr2")) { // <보기>
 				(binding as RecyclerViewCtgrBinding).txtCtgr2.setText(ctgr.name)
+				if (fontSize.equals("ON")) {
+					binding.txtCtgr3.textSize = 30f
+				}
 				binding.txtCtgr3.text = ctgr.name
 				binding.delete.visibility = View.INVISIBLE
 				binding.txtCtgr2.visibility = View.INVISIBLE

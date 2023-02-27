@@ -23,7 +23,7 @@
             android:id="@+id/memoItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background"
+            android:background="@drawable/memoback"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
 

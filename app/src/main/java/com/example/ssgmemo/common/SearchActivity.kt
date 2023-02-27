@@ -41,8 +41,10 @@ class SearchActivity : AppCompatActivity() {
         val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
 
         // <"제목", "내용", "제목+내용">
-        if(fontSize.equals("ON")) binding.spinner4.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList1)
-        else binding.spinner4.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
+        if(fontSize.equals("ON")) {
+            binding.spinner4.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList1)
+            binding.keyword.textSize = 20f
+        } else binding.spinner4.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
         binding.spinner4.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
