@@ -99,6 +99,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return true
     }
     override fun onItemDrag() {
-      Log.d("test","49898")
+        if(vibration.equals("ON")) {
+            vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
+        }
     }
 }

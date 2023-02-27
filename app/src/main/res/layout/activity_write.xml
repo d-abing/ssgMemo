@@ -51,14 +51,15 @@
         android:layout_width="48dp"
         android:layout_height="44dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
         android:background="#00FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/save1"
         android:text="생각모으기"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.659"
-        app:layout_constraintStart_toEndOf="@+id/category"
         app:layout_constraintTop_toBottomOf="@+id/date" />
+
+    ]
 
     <EditText
         android:id="@+id/writeTitle"
@@ -69,13 +70,11 @@
         android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.166"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 
-    ]
-
-    <com.google.android.material.textfield.TextInputEditText
+    <com.example.ssgmemo.BackPressEditText
         android:id="@+id/writeContent"
         android:layout_width="352dp"
         android:layout_height="533dp"
