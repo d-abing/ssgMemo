@@ -2,6 +2,7 @@ package com.example.ssgmemo.common
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     lateinit var adapter: RecyclerSwipeAdapter
     private lateinit var itemTouchHelperCallback: ItemTouchHelperCallback
     private lateinit var title: String
+    var mode : Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -41,11 +44,12 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.vibration = intent.getStringExtra("vibration").toString()
         adapter.helper = helper
-        itemTouchHelperCallback.setClamp(150f)
+        itemTouchHelperCallback.setClamp(130f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
-        adapter.itemList = memoList
+        adapter.itemList = helper.selectMemoList(title!!)
+        Log.d("test다11","${adapter.itemList}")
 
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
@@ -57,6 +61,46 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             setOnTouchListener { _, _ ->
                 itemTouchHelperCallback.removePreviousClamp(this)
                 false
+            }
+        }
+
+        var modeChange = false
+
+        binding.selectBtn.setOnClickListener {
+            if (!modeChange) {
+                adapter.mode = 1
+                adapter.selectedList = mutableListOf()
+                adapter.selectAll = false
+                adapter.notifyDataSetChanged()
+                binding.deleteLayout.visibility = View.VISIBLE
+                modeChange = true
+            } else {
+                adapter.mode = 0
+                adapter.selectedList = mutableListOf()
+                adapter.selectAll = false
+                adapter.notifyDataSetChanged()
+                binding.deleteLayout.visibility = View.INVISIBLE
+                modeChange = false
+            }
+        }
+
+        binding.selectAll.setOnClickListener {
+            if (adapter.selectAll == false){
+                adapter.selectAll = true
+                adapter.selectedList = memoList
+                Log.d("test다", "${adapter.selectedList}")
+            }else if(adapter.selectAll == true){
+                adapter.selectAll = false
+                adapter.selectedList = mutableListOf()
+                Log.d("test다", "${adapter.selectedList}")
+            }
+            adapter.notifyDataSetChanged()
+        }
+
+        binding.deleteSelected.setOnClickListener {
+            Log.d("test다", "${adapter.selectedList}")
+            for(selectedList in adapter.selectedList){
+                helper.deleteContent(selectedList)
             }
         }
 
@@ -77,9 +121,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             itemTouchHelperCallback.removePreviousClamp(this)
         }
         adapter.itemList = helper.selectMemoList(title)
+
         adapter.notifyDataSetChanged()
-
-
     }
 
     override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
@@ -129,5 +172,12 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             itemTouchHelperCallback.removePreviousClamp(this)
         }
         adapter.notifyDataSetChanged()
+    }
+    fun getIdx(memoList: MutableList<Memo>):MutableList<String>{
+        var result: MutableList<String> = mutableListOf()
+        for (memoList in memoList){
+            result.add(memoList.idx.toString())
+        }
+        return  result
     }
 }

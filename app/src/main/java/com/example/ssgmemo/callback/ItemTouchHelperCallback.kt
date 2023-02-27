@@ -18,6 +18,7 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
     private var currentDx = 0f
     private var clamp = 0f
     //활성화된 이동 방향을 정의하는 플래그를 반환하는 메소드
+
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
@@ -102,6 +103,15 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
                 isCurrentlyActive
             )
         }
+    }
+
+    override fun getAnimationDuration(
+        recyclerView: RecyclerView,
+        animationType: Int,
+        animateDx: Float,
+        animateDy: Float
+    ): Long {
+        return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy)
     }
 
     private fun clampViewPositionHorizontal(

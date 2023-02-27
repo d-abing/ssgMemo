@@ -1,13 +1,17 @@
 package com.example.ssgmemo.adapter
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.Memo
+import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.common.EditActivity
@@ -24,6 +28,10 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     var fontSize: String = ""
     var vibration: String = ""
     lateinit var  binding: ViewBinding
+    var mode = 0
+    var selectAll = false
+    var selectedList : MutableList<Memo> = mutableListOf()
+
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
     }
@@ -33,12 +41,29 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return Holder(binding as RecyclerViewMemoBinding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
+
+        if (mode == 1){
+            animationTranslateOpen(holder.itemView.findViewById(R.id.memoItem))
+        }else if(mode == 0){
+            animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
+        }
         holder.bind(itemList[position])
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
+    private fun animationTranslateOpen(view:View){
+        ObjectAnimator.ofFloat(view, "translationX", 130f).apply {
+            start()
+        }
+    }
+    private fun animationTranslateClose(view:View){
+        ObjectAnimator.ofFloat(view, "translationX", 0f).apply {
+            start()
+        }
+    }
+
     inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun bind(memo: Memo) {
             binding.searchTitle2.text = memo.title
@@ -46,7 +71,28 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
 
             val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
+            var toggle_checked: Boolean
             binding.searchDate2.text = str_date
+
+            if(mode == 1){
+                binding.task.visibility = View.GONE
+                binding.toggleButton.visibility = View.VISIBLE
+                callbackListener.callback(mode.toLong())
+            }else{
+                val handler = android.os.Handler()
+                handler.postDelayed(
+                    Runnable {  binding.task.visibility = View.VISIBLE
+                        binding.toggleButton.visibility = View.GONE },
+                    190
+                )
+            }
+            if (selectAll) {
+                binding.toggleButton.isChecked = true
+                toggle_checked =true
+            }else{
+                binding.toggleButton.isChecked = false
+                toggle_checked =false
+            }
 
             if (fontSize!!.equals("ON")) {
                 binding.searchTitle2.textSize = 24f
@@ -66,11 +112,27 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 // 프레그먼트 오픈
                 callbackListener.fragmentOpen(memo.ctgr!!,memo.idx.toString())
             }
+            binding.toggleButton.setOnClickListener {
+                binding.toggleButton.isChecked = !toggle_checked
+                if(!toggle_checked){
+                    selectedList.add(memo)
+                    if (selectedList.size == itemList.size){
+                        selectAll = true
+                    }
+                }else{
+                    Log.d("test다1","${itemList}")
+                    selectedList.remove(memo)
+                    if (selectedList.isEmpty()){
+                        selectAll = false
+                    }
+                }
+                Log.d("test다1","${itemList}")
+                toggle_checked = !toggle_checked
+            }
         }
     }
 
     override fun onItemMove(from: Int, to: Int) : Boolean {
-
         //리스트 갱신
         var priority_gap =itemList[from].priority!! - itemList[to].priority!!
         if (priority_gap == 1){
