@@ -13,4 +13,5 @@ interface CallbackListener {
     fun deleteMemo(memoidx: String){}
     fun openKeyBoard(view:View){}
     fun closeKeyBoard(){}
+    fun selectedListDel(){}
 }

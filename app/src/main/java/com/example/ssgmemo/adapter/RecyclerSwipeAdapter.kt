@@ -120,13 +120,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                         selectAll = true
                     }
                 }else{
-                    Log.d("test다1","${itemList}")
                     selectedList.remove(memo)
                     if (selectedList.isEmpty()){
                         selectAll = false
                     }
                 }
-                Log.d("test다1","${itemList}")
                 toggle_checked = !toggle_checked
             }
         }
@@ -152,6 +150,5 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return true
     }
     override fun onItemDrag() {
-      Log.d("test","49898")
     }
 }

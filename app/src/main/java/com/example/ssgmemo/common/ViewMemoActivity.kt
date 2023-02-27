@@ -98,10 +98,12 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
 
         binding.deleteSelected.setOnClickListener {
-            Log.d("test다", "${adapter.selectedList}")
-            for(selectedList in adapter.selectedList){
-                helper.deleteContent(selectedList)
-            }
+
+            val deleteFragment = DeleteFragment(this)
+            val bundle:Bundle = Bundle()
+            bundle.putString("selected","selected")
+            deleteFragment.arguments = bundle
+            deleteFragment.show(supportFragmentManager, "memoDelete")
         }
 
         // 광고
@@ -121,7 +123,6 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             itemTouchHelperCallback.removePreviousClamp(this)
         }
         adapter.itemList = helper.selectMemoList(title)
-
         adapter.notifyDataSetChanged()
     }
 
@@ -173,11 +174,14 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
         adapter.notifyDataSetChanged()
     }
-    fun getIdx(memoList: MutableList<Memo>):MutableList<String>{
-        var result: MutableList<String> = mutableListOf()
-        for (memoList in memoList){
-            result.add(memoList.idx.toString())
+    override fun selectedListDel(){
+        for(selectedList in adapter.selectedList){
+            helper.deleteContent(selectedList)
         }
-        return  result
+        adapter.itemList = helper.selectMemoList(title)
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        adapter.notifyDataSetChanged()
     }
 }
