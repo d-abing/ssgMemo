@@ -76,6 +76,9 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             adapter = adapter
             itemTouchHelperCallback.removePreviousClamp(this)
         }
+        adapter.itemList = helper.selectMemoList(title)
+        adapter.notifyDataSetChanged()
+
 
     }
 
