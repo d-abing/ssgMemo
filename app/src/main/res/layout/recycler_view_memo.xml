@@ -10,15 +10,14 @@
         android:layout_height="wrap_content"
         android:background="@null">
 
-        <TextView
+        <ImageButton
             android:id="@+id/task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginLeft="10dp"
-            android:text="삭제"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:background="#00FFFFFF"
+            android:scaleType="fitXY"
+            android:src="@drawable/delete" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/memoItem"

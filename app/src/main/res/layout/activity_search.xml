@@ -9,36 +9,50 @@
     tools:context=".common.SearchActivity">
 
     <LinearLayout
-        android:layout_width="315dp"
-        android:layout_height="44dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="360dp"
+        android:layout_height="47dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/search_bar"
+        android:background="@drawable/brownsearchbar"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.302"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/keyword"
-            android:layout_width="261dp"
+            android:layout_width="230dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="1dp"
             android:background="#00FFFFFF"
             android:ems="10"
             android:hint="검색어를 입력하세요"
             android:imeOptions="actionSearch"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textAlignment="textStart"
+            android:textColor="#5A4C3D" />
 
         <ImageButton
             android:id="@+id/btnCancel"
             android:layout_width="15dp"
             android:layout_height="20dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="12dp"
             android:background="#00FFFFFF"
             android:scaleType="centerInside"
             android:tooltipText="p"
             app:srcCompat="@drawable/cancel" />
+
+        <ImageView
+            android:id="@+id/btnFilter"
+            android:layout_width="35dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="28dp"
+            android:paddingLeft="15dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/filter" />
     </LinearLayout>
 
     <Spinner
@@ -68,22 +82,22 @@
         android:layout_width="352dp"
         android:layout_height="518dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="5dp"
         android:background="#1AEDC089"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFilter"
-        tools:listitem="@layout/recycler_search_item" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:listitem="@layout/recycler_search_memo" />
 
     <TextView
         android:id="@+id/emptyText2"
         android:layout_width="352dp"
         android:layout_height="516dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="5dp"
         android:background="#1AEDC089"
         android:fontFamily="@font/diligent"
@@ -94,7 +108,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFilter" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -108,15 +122,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
-
-    <ImageView
-        android:id="@+id/btnFilter"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/filter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
