@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.FragmentCtgrDeleteBinding
 
-class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
+class DeleteFragment (var listener:CallbackListener) : DialogFragment() {
 
     private lateinit var binding: FragmentCtgrDeleteBinding
 
@@ -32,21 +32,23 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle:Bundle? = arguments
+        val bundle: Bundle? = arguments
         val ctgridx: String? = bundle?.getString("Ctgridx")
         val memoidx: String? = bundle?.getString("memoidx")
-        var ctgrSelected:Boolean = false
-        var memoSelected:Boolean = false
+        var ctgrSelected: Boolean = false
+        var memoSelected: Boolean = false
 
-        if (ctgridx == null){
+        if (ctgridx == null && memoidx == null) {
+            binding.deleteMsg.text = "선택된 메모가 삭제 됩니다."
+        } else {
             binding.deleteMsg.text = "메모가 삭제됩니다"
             binding.ctgrlayout.visibility = View.GONE
         }
         binding.deleteOnlyCtgr.setOnClickListener {
-            ctgrSelected = if(ctgrSelected){
+            ctgrSelected = if (ctgrSelected) {
                 binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#BDBBBB"))
                 false
-            } else{
+            } else {
                 binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#41AFE1"))
                 binding.deleteAlsoMemo.setTextColor(Color.parseColor("#BDBBBB"))
                 memoSelected = false
@@ -54,10 +56,10 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
             }
         }
         binding.deleteAlsoMemo.setOnClickListener {
-            memoSelected = if(memoSelected){
+            memoSelected = if (memoSelected) {
                 binding.deleteAlsoMemo.setTextColor(Color.parseColor("#BDBBBB"))
                 false
-            } else{
+            } else {
                 binding.deleteAlsoMemo.setTextColor(Color.parseColor("#41AFE1"))
                 binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#BDBBBB"))
                 ctgrSelected = false
@@ -68,23 +70,25 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment(){
             dismiss()
         }
         binding.dialogDeleteYes.setOnClickListener {
-            if (ctgrSelected){
+            if (ctgridx == null && memoidx == null) {
+                listener.selectedListDel()
+            } else if (ctgrSelected) {
                 listener.deleteCtgr(ctgridx!!)
-                dismiss()
-            } else if (memoSelected){
+            } else if (memoSelected) {
                 listener.deleteMemoFromCtgr(ctgridx!!)
-                dismiss()
-            } else{
-                if (ctgridx != null){
+            } else if (ctgridx != null) {
+                listener.deleteCtgr(ctgridx!!)
+            } else {
+                if (ctgridx != null) {
                     var text = "하나를 선택해 주세요."
                     val duration = Toast.LENGTH_SHORT
                     val toast = Toast.makeText(getActivity(), text, duration)
                     toast.show()
-                }else{
+                } else {
                     listener.deleteMemo(memoidx!!)
                 }
-                dismiss()
             }
+            dismiss()
         }
     }
 }

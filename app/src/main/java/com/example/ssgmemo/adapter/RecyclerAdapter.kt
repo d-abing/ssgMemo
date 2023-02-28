@@ -10,7 +10,10 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.ssgmemo.*
@@ -32,6 +35,11 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 	var vibration : String? = null
 	var vibrator: Vibrator? = null
 	lateinit var callbackListener: CallbackListener
+	private var selectedItemPosition = -1
+	private var selectedlayout: ConstraintLayout? = null
+	private var selected1: BackPressEditText? = null
+	private var selected2: TextView? = null
+	private var selected3: ImageButton? = null
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 		parentName = parent.resources.getResourceEntryName(parent.id).toString()
@@ -51,7 +59,60 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 	}
 
 	override fun onBindViewHolder(holder: Holder, position: Int) {
-		if (parentName.equals("recyclerCtgr1") || parentName.equals("recyclerCtgr2")){
+		if(parentName.equals("recyclerCtgr1")){
+			val ctgr: Ctgr = listData[position] as Ctgr
+			holder.setCtgr(ctgr)
+		}else if (parentName.equals("recyclerCtgr2")){
+			val layout = holder.itemView.findViewById<ConstraintLayout>(R.id.ctgr_item)
+			val delete = holder.itemView.findViewById<ImageButton>(R.id.delete)
+			val txtCtgr2 = holder.itemView.findViewById<BackPressEditText>(R.id.txtCtgr2)
+			val txtCtgr3 = holder.itemView.findViewById<TextView>(R.id.txtCtgr3)
+
+			if (position == selectedItemPosition) {
+				delete.visibility = View.VISIBLE
+				txtCtgr2.visibility = View.VISIBLE
+				txtCtgr3.visibility = View.INVISIBLE
+			} else {
+				delete.visibility = View.INVISIBLE
+				txtCtgr2.visibility = View.INVISIBLE
+				txtCtgr3.visibility = View.VISIBLE
+			}
+
+			layout.setOnLongClickListener {
+				val currentPosition = holder.adapterPosition
+				if (selectedItemPosition == currentPosition) {
+					selectedItemPosition = -1
+					selected1?.visibility = View.INVISIBLE
+					selected2?.visibility = View.INVISIBLE
+					selected3?.visibility = View.VISIBLE
+					selectedlayout = null
+				}else {
+					// Item New Selected
+					if (selectedItemPosition >= 0 || selectedlayout != null) {
+						selected1?.visibility = View.INVISIBLE
+						selected2?.visibility = View.VISIBLE
+						selected3?.visibility = View.INVISIBLE
+					}
+
+					selectedItemPosition = currentPosition
+					selectedlayout = layout
+					selected1 = txtCtgr2
+					selected2 = txtCtgr3
+					selected3 = delete
+				}
+				if(vibration.equals("ON")) {
+					vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
+				}
+				delete.visibility = View.VISIBLE
+				txtCtgr2.visibility = View.VISIBLE
+				txtCtgr3.visibility = View.INVISIBLE
+				txtCtgr2.isEnabled = true
+				txtCtgr2.requestFocus()
+				txtCtgr2.setSelection(txtCtgr2.length())
+				callbackListener.openKeyBoard(txtCtgr2)
+				return@setOnLongClickListener true
+			}
+
 			val ctgr: Ctgr = listData[position] as Ctgr
 			holder.setCtgr(ctgr)
 		} else {
@@ -110,6 +171,10 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				binding.txtCtgr2.visibility = View.INVISIBLE
 				binding.txtCtgr3.visibility = View.VISIBLE
 
+				if (ctgr.name == "미분류" || ctgr.name == "+") {
+					itemView.setOnLongClickListener {return@setOnLongClickListener false}
+				}
+
 				if (ctgr.name == "+"){
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback2)
 				} else if (ctgr.name == "미분류") {
@@ -117,30 +182,11 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				} else {
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback1)
 				}
-				if (ctgr.name != "미분류" && ctgr.name != "+") {
-					itemView.setOnLongClickListener {
-
-						if(vibration.equals("ON")) {
-							vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
-						}
-
-						binding.delete.visibility = View.VISIBLE
-						binding.txtCtgr3.visibility = View.INVISIBLE
-						binding.txtCtgr2.visibility = View.VISIBLE
-						binding.txtCtgr2.isEnabled = true
-						binding.txtCtgr2.requestFocus()
-						binding.txtCtgr2.setSelection(binding.txtCtgr2.length())
-						callbackListener.openKeyBoard(binding.txtCtgr2)
-						return@setOnLongClickListener true
-					}
-					binding.delete.setOnClickListener {
-						callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
-						binding.delete.visibility = View.INVISIBLE
-						binding.txtCtgr2.visibility = View.INVISIBLE
-						binding.txtCtgr3.visibility = View.VISIBLE
-					}
-				}else{
-					itemView.setOnLongClickListener {return@setOnLongClickListener false}
+				binding.delete.setOnClickListener {
+					callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
+					binding.delete.visibility = View.INVISIBLE
+					binding.txtCtgr2.visibility = View.INVISIBLE
+					binding.txtCtgr3.visibility = View.VISIBLE
 				}
 				// 수정 중 뒤로가기 클릭시
 				binding.txtCtgr2.setOnBackPressListener(object : BackPressEditText.OnBackPressListener{
@@ -222,6 +268,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 						callbackListener.fragmentOpen(
 							ctgr.name,null
 						)
+						notifyDataSetChanged()
 					}
 				}else{
 					itemView.setOnClickListener {
