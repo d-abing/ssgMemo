@@ -191,7 +191,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	@SuppressLint("Range")
 	fun selectMemo(idx:String): Memo {
 		// 메모 // 보기에서 메모 불러올 때 사용
-		var memo:Memo? = null
+		lateinit var memo:Memo
 		var sql = "select * from memo where idx = '"+ idx +"' order by priority desc"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
@@ -209,7 +209,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rs.close()
 		rd.close()
 
-		return memo as Memo
+		return memo
 	}
 
 	fun deleteCtgr(idx: String) {
@@ -237,6 +237,23 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		var result: Boolean = false
 		var flag: Int? = null
 		val sql = "select exists(select * from memo where ctgr = 0) as b"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		while (rs.moveToNext()) {
+			flag = rs.getInt(rs.getColumnIndex("b"))
+		}
+		if (flag == 1){
+			result = true
+		}
+		rs.close()
+		rd.close()
+		return result
+	}
+	@SuppressLint("Range")
+	fun isCtgrMemoExist(ctgrIdx:String): Boolean{
+		var result: Boolean = false
+		var flag: Int? = null
+		val sql = "select exists(select * from memo where ctgr = '" + ctgrIdx + "') as b"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 		while (rs.moveToNext()) {
@@ -384,7 +401,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		val wd = writableDatabase
 		val sql = "update memo set priority = '" + priority + "', ctgr = 0 where idx = '" + memoidx + "'"
 
-		val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority<'" + memo.priority + "'"
+		val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority>'" + memo.priority + "'"
 		wd.execSQL(sql1)
 		wd.execSQL(sql)
 

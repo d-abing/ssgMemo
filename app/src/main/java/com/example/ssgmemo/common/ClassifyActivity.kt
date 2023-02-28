@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,7 @@ import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
-import com.example.ssgmemo.fragment.DeleteFragment
+import com.example.ssgmemo.fragment.CtgrDeleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -114,11 +113,11 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
         super.fragmentOpen(memoCtgr, memoidx)
         if(memoCtgr == 0){
-            val deleteFragment = DeleteFragment(this)
+            val ctgrDeleteFragment = CtgrDeleteFragment(this)
             val bundle:Bundle = Bundle()
             bundle.putString("memoidx",memoidx)
-            deleteFragment.arguments = bundle
-            deleteFragment.show(supportFragmentManager, "memoDelete")
+            ctgrDeleteFragment.arguments = bundle
+            ctgrDeleteFragment.show(supportFragmentManager, "memoDelete")
         }else{
             val memoDeleteFragment = MemoDeleteFragment(this)
             val bundle:Bundle = Bundle()
@@ -172,8 +171,6 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             }
         }
     }
-
-
 
     override fun addCtgr(ctgrName: String) {
         val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())

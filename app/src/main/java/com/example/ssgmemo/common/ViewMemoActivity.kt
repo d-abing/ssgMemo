@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ssgmemo.Memo
@@ -15,7 +16,6 @@ import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.callback.ItemTouchHelperCallback
 import com.example.ssgmemo.databinding.ActivityViewMemoBinding
-import com.example.ssgmemo.fragment.DeleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -101,12 +101,14 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
 
         binding.deleteSelected.setOnClickListener {
-
-            val deleteFragment = DeleteFragment(this)
-            val bundle:Bundle = Bundle()
-            bundle.putString("selected","selected")
-            deleteFragment.arguments = bundle
-            deleteFragment.show(supportFragmentManager, "memoDelete")
+            if (adapter.selectedList.size == 1){
+                val memoidx = adapter.selectedList[0].idx.toString()
+                fragmentOpen(title, memoidx, false)
+            }else if(adapter.selectedList.isEmpty()) {
+                Toast.makeText(this,"선택된 값이 없습니다.",Toast.LENGTH_SHORT).show()
+            }else{
+                fragmentOpen(title, adapter.selectedList[0].idx.toString(), true)
+            }
         }
 
         // 광고
@@ -129,21 +131,16 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.notifyDataSetChanged()
     }
 
-    override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
-        super.fragmentOpen(memoCtgr, memoidx)
-        if(memoCtgr == 0){
-            val deleteFragment = DeleteFragment(this)
-            val bundle:Bundle = Bundle()
-            bundle.putString("memoidx",memoidx)
-            deleteFragment.arguments = bundle
-            deleteFragment.show(supportFragmentManager, "memoDelete")
-        } else {
-            val memoDeleteFragment = MemoDeleteFragment(this)
-            val bundle:Bundle = Bundle()
-            bundle.putString("memoidx",memoidx)
-            memoDeleteFragment.arguments = bundle
-            memoDeleteFragment.show(supportFragmentManager, "memoDelete")
-        }
+    override fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean) {
+        super.fragmentOpen(memoCtgr, memoidx, isList)
+        // 리스트 인지 하나인지 미분류인지 아닌지...
+        val deleteFragment = MemoDeleteFragment(this)
+        val bundle:Bundle = Bundle()
+        bundle.putString("memoCtgr",memoCtgr)
+        bundle.putString("memoidx",memoidx)
+        bundle.putBoolean("isList",isList)
+        deleteFragment.arguments = bundle
+        deleteFragment.show(supportFragmentManager, "memoDelete")
     }
 
     override fun deleteMemo(memoidx: String) {
@@ -177,7 +174,23 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
         adapter.notifyDataSetChanged()
     }
-    override fun selectedListDel(){
+    override fun deleteCtgrList() {
+        super.deleteCtgrList()
+        for (list in adapter.selectedList){
+            helper.deleteMemoCtgr(list.idx.toString())
+        }
+        if(helper.selectMemoList(title).isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        adapter.itemList = helper.selectMemoList(title)
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
+        }
+        adapter.notifyDataSetChanged()
+    }
+    override fun deleteMemoList(){
         for(selectedList in adapter.selectedList){
             helper.deleteContent(selectedList)
         }

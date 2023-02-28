@@ -113,7 +113,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
 
             binding.task.setOnClickListener {
                 // 프레그먼트 오픈
-                callbackListener.fragmentOpen(memo.ctgr!!,memo.idx.toString())
+                callbackListener.fragmentOpen(memo.ctgr!!.toString(),memo.idx.toString(),false)
             }
             binding.toggleButton.setOnClickListener {
                 binding.toggleButton.isChecked = !toggle_checked

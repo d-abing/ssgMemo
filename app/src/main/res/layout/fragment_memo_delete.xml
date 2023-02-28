@@ -21,6 +21,7 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/del_option"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

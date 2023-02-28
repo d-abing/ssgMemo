@@ -2,6 +2,7 @@ package com.example.ssgmemo.fragment
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.FragmentCtgrDeleteBinding
 
-class DeleteFragment (var listener:CallbackListener) : DialogFragment() {
+class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
 
     private lateinit var binding: FragmentCtgrDeleteBinding
 
@@ -19,31 +20,22 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment() {
         //false로 설정해 주면 화면밖 혹은 뒤로가기 버튼시 다이얼로그라 dismiss 되지 않는다.
         isCancelable = true
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCtgrDeleteBinding.inflate(inflater, container, false)
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("as1d23","1da56")
         val bundle: Bundle? = arguments
         val ctgridx: String? = bundle?.getString("Ctgridx")
-        val memoidx: String? = bundle?.getString("memoidx")
-        var ctgrSelected: Boolean = false
-        var memoSelected: Boolean = false
+        var ctgrSelected: Boolean = false // ctgr만 지울 것인가
+        var memoSelected: Boolean = false // 내부의 메모도 함께 지울 것 인가.
 
-        if (ctgridx == null && memoidx == null) {
-            binding.deleteMsg.text = "선택된 메모가 삭제 됩니다."
-        } else {
-            binding.deleteMsg.text = "메모가 삭제됩니다"
-            binding.ctgrlayout.visibility = View.GONE
-        }
         binding.deleteOnlyCtgr.setOnClickListener {
             ctgrSelected = if (ctgrSelected) {
                 binding.deleteOnlyCtgr.setTextColor(Color.parseColor("#BDBBBB"))
@@ -70,23 +62,15 @@ class DeleteFragment (var listener:CallbackListener) : DialogFragment() {
             dismiss()
         }
         binding.dialogDeleteYes.setOnClickListener {
-            if (ctgridx == null && memoidx == null) {
-                listener.selectedListDel()
-            } else if (ctgrSelected) {
-                listener.deleteCtgr(ctgridx!!)
-            } else if (memoSelected) {
-                listener.deleteMemoFromCtgr(ctgridx!!)
-            } else if (ctgridx != null) {
-                listener.deleteCtgr(ctgridx!!)
-            } else {
-                if (ctgridx != null) {
-                    var text = "하나를 선택해 주세요."
-                    val duration = Toast.LENGTH_SHORT
-                    val toast = Toast.makeText(getActivity(), text, duration)
-                    toast.show()
+            if (ctgridx != null) {
+                if (ctgrSelected) {
+                    listener.deleteCtgr(ctgridx!!)
+                } else if (memoSelected) {
+                    listener.deleteMemoFromCtgr(ctgridx!!)
                 } else {
-                    listener.deleteMemo(memoidx!!)
+                    Toast.makeText(activity, "하나를 선택해 주세요.", Toast.LENGTH_SHORT).show()
                 }
+                Toast.makeText(activity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
             }
             dismiss()
         }

@@ -3,12 +3,11 @@ package com.example.ssgmemo.common
 import android.content.Context
 import android.os.Bundle
 import android.os.Vibrator
-import android.view.KeyEvent
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.ssgmemo.Ctgr
 import com.example.ssgmemo.R
@@ -17,7 +16,7 @@ import com.example.ssgmemo.adapter.RecyclerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityViewCtgrBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
-import com.example.ssgmemo.fragment.DeleteFragment
+import com.example.ssgmemo.fragment.CtgrDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -46,6 +45,8 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             adapter.listData.add(0,unclassifyCtgr)
         }
         adapter.listData.add(ctgrAddBtn)
+
+
         // helper.selectMemo()의 리턴값인 리스트를 통째로 listData 리스트에 넣음
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
@@ -78,11 +79,12 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         if(item == "+"){
             CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
         }else if(item == "delete@#"){
-            val deleteFragment = DeleteFragment(this)
+            Log.d("d이게맞나?","ㅁㄴㅇ")
+            val ctgrDeleteFragment = CtgrDeleteFragment(this)
             val bundle:Bundle = Bundle()
             bundle.putString("Ctgridx",ctgridx)
-            deleteFragment.arguments = bundle
-            deleteFragment.show(supportFragmentManager, "CtgrDelete")
+            ctgrDeleteFragment.arguments = bundle
+            ctgrDeleteFragment.show(supportFragmentManager, "DeleteFragment1")
         }
     }
     override fun addCtgr(ctgrName: String) {
@@ -112,8 +114,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             val toast = Toast.makeText(applicationContext, text, duration)
             toast.show()
         }
-
-
     }
 
     override fun deleteCtgr(ctgridx: String) {

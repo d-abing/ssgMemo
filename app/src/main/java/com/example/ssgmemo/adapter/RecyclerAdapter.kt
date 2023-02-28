@@ -183,7 +183,22 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback1)
 				}
 				binding.delete.setOnClickListener {
-					callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
+					// 해당 crgr에 메모가 존재하는지 판다.
+					if(helper?.isCtgrMemoExist(ctgr.idx.toString()) == true){
+						callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
+
+					}else{
+						// 아니면 바로 삭제
+						val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
+						val ctgrAddBtn = Ctgr(null,"+",11111111)
+						helper?.deleteCtgr(ctgr.idx.toString())
+						listData = helper?.selectCtgrList() as MutableList<Any>
+						if (helper?.isUnknownMemoExist()!!){
+							listData.add(0,unclassifyCtgr)
+						}
+						listData.add(ctgrAddBtn)
+						notifyDataSetChanged()
+					}
 					binding.delete.visibility = View.INVISIBLE
 					binding.txtCtgr2.visibility = View.INVISIBLE
 					binding.txtCtgr3.visibility = View.VISIBLE
