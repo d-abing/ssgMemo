@@ -9,6 +9,7 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -50,6 +51,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         }else if(mode == 0){
             animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
         }
+        holder.setIsRecyclable(false)
         holder.bind(itemList[position])
     }
 
@@ -60,11 +62,17 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         ObjectAnimator.ofFloat(view, "translationX", 130f).apply {
             start()
         }
+//        AnimationUtils.loadAnimation(context, R.anim.item_anime).also { hyperspaceJumpAnimation ->
+//            view.startAnimation(hyperspaceJumpAnimation)
+//        }
     }
     private fun animationTranslateClose(view:View){
         ObjectAnimator.ofFloat(view, "translationX", 0f).apply {
             start()
         }
+//        AnimationUtils.loadAnimation(context, R.anim.item_anime).also { hyperspaceJumpAnimation ->
+//            view.startAnimation(hyperspaceJumpAnimation)
+//        }
     }
 
     inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
@@ -82,12 +90,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.toggleButton.visibility = View.VISIBLE
                 callbackListener.callback(mode.toLong())
             }else{
-                val handler = android.os.Handler()
-                handler.postDelayed(
-                    Runnable {  binding.task.visibility = View.VISIBLE
-                        binding.toggleButton.visibility = View.GONE },
-                    190
-                )
+                binding.task.visibility = View.VISIBLE
+                binding.toggleButton.visibility = View.GONE
             }
             if (selectAll) {
                 binding.toggleButton.isChecked = true
