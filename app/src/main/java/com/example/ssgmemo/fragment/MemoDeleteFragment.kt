@@ -43,7 +43,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
 
         // 버튼 기본 값
         binding.dialogMemoDeleteYes.setOnClickListener {
-            var text = "하나를 선택해 주세요."
+            var text = "하나를 선택해 주세요"
             val duration = Toast.LENGTH_SHORT
             val toast = Toast.makeText(getActivity(), text, duration)
             toast.show()
@@ -54,7 +54,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
 
         if(memoCtgr == "0"){
             // 선택된 메모가 미분류 라면 선택지 제한
-            binding.deleteMemoMsg.text = "선택된 메모가 삭제됩니다."
+            binding.deleteMemoMsg.text = "선택된 메모가 삭제됩니다"
             binding.delOption.visibility = View.GONE
             if(isList!!){
                 // 선택된 메모가 리스트라면 리스트 전체 삭제
@@ -104,7 +104,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
                         listener.deleteMemoList()
                         dismiss()
                     }else{
-                        var text = "하나를 선택해 주세요."
+                        var text = "하나를 선택해 주세요"
                         val duration = Toast.LENGTH_SHORT
                         val toast = Toast.makeText(activity, text, duration)
                         toast.show()
@@ -118,7 +118,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
                         listener.deleteMemo(memoidx!!)
                         dismiss()
                     }else{
-                        var text = "하나를 선택해 주세요."
+                        var text = "하나를 선택해 주세요"
                         val duration = Toast.LENGTH_SHORT
                         val toast = Toast.makeText(activity, text, duration)
                         toast.show()

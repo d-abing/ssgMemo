@@ -415,6 +415,19 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
     }
 
+	fun getTopPriority(ctgr: Int?) : Int {
+		val sql = "select priority from memo where ctgr = '" + ctgr + "' order by priority desc limit 1"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var result: Int = 0
+		if (rs.moveToNext()) {
+			result = rs.getInt(rs.getColumnIndex("priority"))
+		}
+		rs.close()
+		rd.close()
+		return result
+	}
+
 }
 
 data class Ctgr(var idx: Long?, var name: String, var datetime: Long)

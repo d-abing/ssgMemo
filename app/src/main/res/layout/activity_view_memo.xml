@@ -11,7 +11,7 @@
         android:id="@+id/ctgrTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/diligent"
         android:text="카테고리 이름"
         android:textSize="24sp"
@@ -75,18 +75,6 @@
         app:layout_constraintStart_toStartOf="parent">
     </com.google.android.gms.ads.AdView>
 
-    <TextView
-        android:id="@+id/select_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="선택"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.909"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628" />
-
     <LinearLayout
         android:id="@+id/deleteLayout"
         android:layout_width="407dp"
@@ -127,5 +115,19 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/select_btn"
+        android:layout_width="25dp"
+        android:layout_height="24dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.911"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85"
+        app:srcCompat="@drawable/check" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

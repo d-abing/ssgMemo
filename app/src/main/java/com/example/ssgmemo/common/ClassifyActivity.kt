@@ -112,19 +112,12 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
     override fun fragmentOpen(memoCtgr: Int, memoidx: String) {
         super.fragmentOpen(memoCtgr, memoidx)
-        if(memoCtgr == 0){
-            val ctgrDeleteFragment = CtgrDeleteFragment(this)
-            val bundle:Bundle = Bundle()
-            bundle.putString("memoidx",memoidx)
-            ctgrDeleteFragment.arguments = bundle
-            ctgrDeleteFragment.show(supportFragmentManager, "memoDelete")
-        }else{
-            val memoDeleteFragment = MemoDeleteFragment(this)
-            val bundle:Bundle = Bundle()
-            bundle.putString("memoidx",memoidx)
-            memoDeleteFragment.arguments = bundle
-            memoDeleteFragment.show(supportFragmentManager, "memoDelete")
-        }
+        val ctgrDeleteFragment = MemoDeleteFragment(this)
+        val bundle: Bundle = Bundle()
+        bundle.putString("memoidx", memoidx)
+        bundle.putString("memoCtgr", memoCtgr.toString())
+        ctgrDeleteFragment.arguments = bundle
+        ctgrDeleteFragment.show(supportFragmentManager, "memoDelete")
     }
 
     override fun deleteMemo(memoidx: String) {

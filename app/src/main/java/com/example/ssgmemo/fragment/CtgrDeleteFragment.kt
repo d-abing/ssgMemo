@@ -68,9 +68,9 @@ class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
                 } else if (memoSelected) {
                     listener.deleteMemoFromCtgr(ctgridx!!)
                 } else {
-                    Toast.makeText(activity, "하나를 선택해 주세요.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "하나를 선택해 주세요", Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(activity, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "잘못된 접근입니다", Toast.LENGTH_SHORT).show()
             }
             dismiss()
         }
