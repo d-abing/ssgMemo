@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
@@ -55,7 +56,6 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
         adapter.itemList = helper.selectMemoList(title!!)
-        Log.d("test다11","${adapter.itemList}")
 
         val display = this.applicationContext?.resources?.displayMetrics
         val deviceHeight = display?.heightPixels
@@ -120,6 +120,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 fragmentOpen(title, adapter.selectedList[0].idx.toString(), true)
             }
         }
+
+
 
         // 광고
         MobileAds.initialize(this) {}
@@ -207,6 +209,11 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.itemList = helper.selectMemoList(title)
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
+        }
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
         }
         adapter.notifyDataSetChanged()
     }
