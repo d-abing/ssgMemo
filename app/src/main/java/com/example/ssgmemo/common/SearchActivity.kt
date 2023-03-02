@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.marginTop
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.RecyclerAdapter
@@ -79,6 +81,9 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerSearch.context, LinearLayoutManager(this).orientation)
+        binding.recyclerSearch.addItemDecoration(dividerItemDecoration)
+
         recyclerAdapter.helper = helper
         showDataList(recyclerAdapter, keyword, where, orderby)
         binding.recyclerSearch.adapter = recyclerAdapter
@@ -104,18 +109,18 @@ class SearchActivity : AppCompatActivity() {
             if (flag == false) {
                 binding.spinner2.visibility = View.VISIBLE
                 binding.spinner4.visibility = View.VISIBLE
-                binding.recyclerSearch.margin(top = 79F)
-                binding.emptyText2.margin(top = 79F)
-                layoutParams1.height = deviceHeight.times(0.75).toInt()
-                layoutParams2.height = deviceHeight.times(0.75).toInt()
+                binding.recyclerSearch.margin(top = 60F)
+                binding.emptyText2.margin(top = 60F)
+                layoutParams1.height = deviceHeight.times(0.76).toInt()
+                layoutParams2.height = deviceHeight.times(0.76).toInt()
                 binding.recyclerSearch.layoutParams = layoutParams1
                 binding.emptyText2.layoutParams = layoutParams2
                 flag = true
             } else {
                 binding.spinner2.visibility = View.GONE
                 binding.spinner4.visibility = View.GONE
-                binding.recyclerSearch.margin(top = 32F)
-                binding.emptyText2.margin(top = 32F)
+                binding.recyclerSearch.margin(top = 20F)
+                binding.emptyText2.margin(top = 20F)
                 layoutParams1.height = deviceHeight.times(0.81).toInt()
                 layoutParams2.height = deviceHeight.times(0.81).toInt()
                 binding.recyclerSearch.layoutParams = layoutParams1

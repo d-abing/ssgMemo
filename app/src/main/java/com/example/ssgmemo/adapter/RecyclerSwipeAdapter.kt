@@ -9,6 +9,7 @@ import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.RadioButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -50,6 +51,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         }else if(mode == 0){
             animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
         }
+        holder.setIsRecyclable(false)
         holder.bind(itemList[position])
     }
 
@@ -77,17 +79,39 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             var toggle_checked: Boolean
             binding.searchDate2.text = str_date
 
+             if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
+                binding.memoItem.setBackgroundResource(R.drawable.memoback2)
+            }
+
             if(mode == 1){
                 binding.task.visibility = View.GONE
                 binding.toggleButton.visibility = View.VISIBLE
                 callbackListener.callback(mode.toLong())
+                binding.memoItem.setOnClickListener {
+                    binding.toggleButton.isChecked = !toggle_checked
+                    if(!toggle_checked){
+                        selectedList.add(memo)
+                        if (selectedList.size == itemList.size){
+                            selectAll = true
+                        }
+                    }else{
+                        selectedList.remove(memo)
+                        if (selectedList.isEmpty()){
+                            selectAll = false
+                        }
+                    }
+                    toggle_checked = !toggle_checked
+                }
             }else{
-                val handler = android.os.Handler()
-                handler.postDelayed(
-                    Runnable {  binding.task.visibility = View.VISIBLE
-                        binding.toggleButton.visibility = View.GONE },
-                    190
-                )
+                binding.task.visibility = View.VISIBLE
+                binding.toggleButton.visibility = View.GONE
+                binding.memoItem.setOnClickListener {
+                    val intent = Intent(context, EditActivity::class.java)
+                    intent.putExtra("memoIdx", "${memo.idx}")
+                    intent.putExtra("fontSize", "$fontSize")
+                    intent.putExtra("vibration", "$vibration")
+                    context.startActivity(intent)
+                }
             }
             if (selectAll) {
                 binding.toggleButton.isChecked = true
@@ -101,14 +125,6 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.searchTitle2.textSize = 24f
                 binding.searchContent2.textSize = 20f
                 binding.searchDate2.textSize = 20f
-            }
-
-            binding.memoItem.setOnClickListener {
-                val intent = Intent(context, EditActivity::class.java)
-                intent.putExtra("memoIdx", "${memo.idx}")
-                intent.putExtra("fontSize", "$fontSize")
-                intent.putExtra("vibration", "$vibration")
-                context.startActivity(intent)
             }
 
             binding.task.setOnClickListener {

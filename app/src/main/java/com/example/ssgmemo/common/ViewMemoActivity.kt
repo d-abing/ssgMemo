@@ -7,6 +7,7 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ssgmemo.Memo
@@ -47,15 +48,24 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.vibration = intent.getStringExtra("vibration").toString()
         adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
-        itemTouchHelperCallback.setClamp(130f)
+        itemTouchHelperCallback.setClamp(150f)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerContent1.context, LinearLayoutManager(this).orientation)
+        binding.recyclerContent1.addItemDecoration(dividerItemDecoration)
         binding.recyclerContent1.adapter = adapter
         binding.ctgrTitle.text = ctgrName
         adapter.itemList = helper.selectMemoList(title!!)
         Log.d("test다11","${adapter.itemList}")
 
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams1 = binding.recyclerContent1.layoutParams
+        layoutParams1.height = deviceHeight?.times(0.82)!!.toInt()
+        binding.recyclerContent1.layoutParams = layoutParams1
+
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
+            binding.selectBtn.visibility = View.INVISIBLE
         }
 
         binding.recyclerContent1.apply {
