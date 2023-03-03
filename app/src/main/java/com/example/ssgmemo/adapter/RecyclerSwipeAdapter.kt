@@ -45,13 +45,12 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return Holder(binding as RecyclerViewMemoBinding)
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
-
+        holder.setIsRecyclable(false)
         if (mode == 1){
             animationTranslateOpen(holder.itemView.findViewById(R.id.memoItem))
         }else if(mode == 0){
             animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
         }
-        holder.setIsRecyclable(false)
         holder.bind(itemList[position])
     }
 

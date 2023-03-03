@@ -15,6 +15,7 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
     private var previousPosition: Int? = null
     private var currentDx = 0f
     private var clamp = 0f
+    private var mode = 0
 
     //활성화된 이동 방향을 정의하는 플래그를 반환하는 메소드
 
@@ -23,7 +24,8 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipeFlgs = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        val swipeFlgs = ItemTouchHelper.RIGHT
+
         return makeMovementFlags(dragFlags,swipeFlgs)
     }
 
@@ -41,9 +43,17 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
         return super.isLongPressDragEnabled()
     }
 
+    override fun isItemViewSwipeEnabled(): Boolean {
+        return if (mode == 0){
+            super.isItemViewSwipeEnabled()
+        }else{
+            false
+        }
+    }
+
     //사용자에 의해 swipe될 때 호출
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//        listener.onItemSwipe(viewHolder.adapterPosition)
+        true
     }
 
     override fun getSwipeEscapeVelocity(defaultValue: Float): Float {
@@ -68,11 +78,15 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
     }
 
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
-        // 여기서 아이템에 접근이 가능한가?
         val isClamped = getTag(viewHolder)
-        Log.d("gggmad","$isClamped")
         // 현재 View가 고정되어있지 않고 사용자가 -clamp 이상 swipe시 isClamped true로 변경 아닐시 false로 변경
+        if(mode == 0){
+            val isClamped = getTag(viewHolder)
+        }else{
+            val isClamped = false
+        }
         setTag(viewHolder, !isClamped && currentDx >= clamp)
+
         return 2f
     }
 
@@ -85,8 +99,7 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-
-        if (actionState == ACTION_STATE_SWIPE) {
+        if (actionState == ACTION_STATE_SWIPE ) {
             val view = getView(viewHolder)
             val isClamped = getTag(viewHolder)
             val x =  clampViewPositionHorizontal(view, dX, isClamped, isCurrentlyActive)
@@ -124,6 +137,7 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
         // RIGHT 방향으로 swipe 막기
         val max: Float = 250f
 
+
         val x = if (isClamped) {
             // View가 고정되었을 때 swipe되는 영역 제한
             if (isCurrentlyActive) dX + clamp else + clamp
@@ -141,6 +155,10 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
     private fun getTag(viewHolder: RecyclerView.ViewHolder) : Boolean {
         // isClamped를 view의 tag로 관리
         return viewHolder.itemView.tag as? Boolean ?: false
+    }
+
+    fun setMode(mode: Int){
+        this.mode = mode
     }
 
     fun setClamp(clamp: Float) {

@@ -83,18 +83,20 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         binding.selectBtn.setOnClickListener {
             if (!modeChange) {
                 adapter.mode = 1
-                adapter.selectedList = mutableListOf()
+                adapter.selectedList.clear()
                 adapter.selectAll = false
                 adapter.notifyDataSetChanged()
                 binding.deleteLayout.visibility = View.VISIBLE
                 modeChange = true
+                itemTouchHelperCallback.setMode(1)
             } else {
                 adapter.mode = 0
-                adapter.selectedList = mutableListOf()
+                adapter.selectedList.clear()
                 adapter.selectAll = false
                 adapter.notifyDataSetChanged()
                 binding.deleteLayout.visibility = View.INVISIBLE
                 modeChange = false
+                itemTouchHelperCallback.setMode(0)
             }
         }
 
@@ -105,7 +107,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 Log.d("test다", "${adapter.selectedList}")
             }else if(adapter.selectAll == true){
                 adapter.selectAll = false
-                adapter.selectedList = mutableListOf()
+                adapter.selectedList.clear()
                 Log.d("test다", "${adapter.selectedList}")
             }
             adapter.notifyDataSetChanged()
