@@ -415,6 +415,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
     }
 
+	@SuppressLint("Range")
 	fun getTopPriority(ctgr: Int?) : Int {
 		val sql = "select priority from memo where ctgr = '" + ctgr + "' order by priority desc limit 1"
 		val rd = readableDatabase
@@ -426,6 +427,22 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rs.close()
 		rd.close()
 		return result
+	}
+
+	fun updatePriority(cidx: Long?) {
+		val sql1 = "select idx from memo where ctgr = '" + cidx + "' order by priority"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql1, null)
+		var priority = 0
+		val wd = writableDatabase
+		while (rs.moveToNext()) {
+			val sql2 = "update memo set priority = '" + priority + "', ctgr = " + cidx + " where idx = '" + rs.getLong(rs.getColumnIndex("idx")) + "'"
+			wd.execSQL(sql2)
+			priority ++
+		}
+		wd.close()
+		rs.close()
+		rd.close()
 	}
 
 }

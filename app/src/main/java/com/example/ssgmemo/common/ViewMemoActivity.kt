@@ -21,6 +21,7 @@ import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import java.util.Collections
 
 class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     private lateinit var binding: ActivityViewMemoBinding
@@ -186,9 +187,12 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     }
     override fun deleteCtgrList() {
         super.deleteCtgrList()
-        for (list in adapter.selectedList){
+        var sortedList = adapter.selectedList.sortedBy { it.priority }
+        val cidx = adapter.selectedList.get(0).ctgr!!.toLong()
+        for (list in sortedList){
             helper.deleteMemoCtgr(list.idx.toString())
         }
+        helper.updatePriority(cidx)
         if(helper.selectMemoList(title).isEmpty()){
             binding.msgText.visibility = View.VISIBLE
         }

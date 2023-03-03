@@ -138,8 +138,10 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
             vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
         }
 
-        if (memoList!!.isNotEmpty()) {                                                      // memoList가 비어있지 않을 때만 수행
-            helper.updateMemoCtgr(midx, cidx, helper.checkTopMemo(cidx.toInt())?.plus(1)) // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
+        if (memoList!!.isNotEmpty()) { // memoList가 비어있지 않을 때만 수행
+            var priority = if (helper.checkTopMemo(cidx.toInt()) != null)  {helper.checkTopMemo(cidx.toInt())?.plus(1)} else {0}
+            helper.updateMemoCtgr(midx, cidx, priority) // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
+            helper.updatePriority(0)
             pagerAdapter!!.listData.clear()
             memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
             pagerAdapter!!.listData.addAll(memoList2!!)

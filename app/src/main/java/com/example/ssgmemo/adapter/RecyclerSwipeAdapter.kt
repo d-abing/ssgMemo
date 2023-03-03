@@ -76,7 +76,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
 
             val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
-            var toggle_checked: Boolean
+            var toggle_checked: Boolean = false
             binding.searchDate2.text = str_date
 
              if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
