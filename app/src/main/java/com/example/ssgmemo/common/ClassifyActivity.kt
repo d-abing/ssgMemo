@@ -132,6 +132,23 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         memoList2 = helper.selectUnclassifiedMemoList()                                 // 삭제로 인해 변경된 memoList 가져오기
         pagerAdapter!!.listData.addAll(memoList2!!)
         pagerAdapter!!.notifyDataSetChanged()
+
+        if(memoList2 != null && memoList2!!.isNotEmpty()) {                             // 분류후에도 분류할 memoList가 남아있으면
+            if (memoList2!!.size > tmp_position) { // 마지막 메모가 아니라면
+                // Log.d("midx", "마지막메모x")
+            } else { // 마지막 메모라면
+                tmp_position = 0
+                // Log.d("midx", "마지막메모o")
+            }
+            midx = memoList2!![tmp_position].idx
+            // Log.d("midx", "tmp_position : $tmp_position")
+            // Log.d("midx", "midx : $midx")
+        } else {                                                                        // 분류후 분류할 메모리스트가 남아있지 않을 경우
+            // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
+            binding.viewpager.visibility = View.INVISIBLE
+            binding.emptyText.visibility = View.VISIBLE
+            memoList!!.clear()
+        }
     }
 
     override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수

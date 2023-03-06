@@ -10,9 +10,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.Layout
-import android.text.Spannable
-import android.text.SpannableStringBuilder
+import android.text.*
 import android.text.style.AlignmentSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -41,6 +39,7 @@ class EditActivity : AppCompatActivity() {
     var scroll = false
     val SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD = 128
 
+
     val helper = SqliteHelper(this, "ssgMemo", 1)
     lateinit var mAdView : AdView
     private lateinit var binding: ActivityWriteBinding
@@ -49,6 +48,13 @@ class EditActivity : AppCompatActivity() {
     var memo = Memo(null,"","",1111111,0,0)
     var ctgr: Int = 0
     var priority: Int = 0
+
+    var isBold = false
+    var isItalic = false
+    var isUnderline = false
+    var isLeftAlign = false
+    var isCenterAlign = false
+    var isRightAlign = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,12 +100,12 @@ class EditActivity : AppCompatActivity() {
             Toast.makeText(this, "클립보드에 복사되었습니다", Toast.LENGTH_SHORT).show()
         }
 
-        // content 높이 조절
+/*        // content 높이 조절
         val display = this.applicationContext?.resources?.displayMetrics
         val deviceHeight = display?.heightPixels
         val layoutParams = binding.writeContent.layoutParams
-        layoutParams.height = deviceHeight?.times(0.7)!!.toInt()
-        binding.writeContent.layoutParams = layoutParams
+        layoutParams.height = deviceHeight?.times(0.69)!!.toInt()
+        binding.writeContent.layoutParams = layoutParams*/
 
         // 수정시 버튼 숨김 및 기존 정보 불러오기
         binding.date.visibility = View.VISIBLE
@@ -156,16 +162,12 @@ class EditActivity : AppCompatActivity() {
                 readmode = false
                 binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.modify)
                 binding.writeContent.isFocusableInTouchMode = true
-                binding.fontBar.visibility = View.VISIBLE
-                binding.adView.visibility = View.GONE
             } else {
                 readmode = true
                 binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.read)
                 binding.writeContent.isFocusableInTouchMode = false
                 binding.writeContent.isFocusable = false
                 softkeyboardHide()
-                binding.fontBar.visibility = View.GONE
-                binding.adView.visibility = View.VISIBLE
             }
         }
 
@@ -174,8 +176,6 @@ class EditActivity : AppCompatActivity() {
                 readmode = false
                 binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.modify)
                 binding.writeContent.isFocusableInTouchMode = true
-                binding.fontBar.visibility = View.VISIBLE
-                binding.adView.visibility = View.GONE
             }
             scroll = false
         }
@@ -187,8 +187,6 @@ class EditActivity : AppCompatActivity() {
             binding.writeContent.isFocusableInTouchMode = false
             binding.writeContent.isFocusable = false
             softkeyboardHide()
-            binding.fontBar.visibility = View.GONE
-            binding.adView.visibility = View.VISIBLE
         }
 
         binding.writeContent.setOnBackPressListener(object : BackPressEditText.OnBackPressListener {
@@ -198,14 +196,14 @@ class EditActivity : AppCompatActivity() {
                     binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.read)
                     binding.writeContent.isFocusableInTouchMode = false
                     binding.writeContent.isFocusable = false
-                    binding.fontBar.visibility = View.VISIBLE
-                    binding.adView.visibility = View.GONE
                 }
             }
         })
 
         binding.fontBar.visibility = View.GONE
         binding.adView.visibility = View.VISIBLE
+
+        var startKeyboardHeight: Int = 0
 
         binding.writeLayout.viewTreeObserver.addOnGlobalLayoutListener {
             // 현재 레이아웃의 크기
@@ -216,12 +214,14 @@ class EditActivity : AppCompatActivity() {
             val screenHeight = binding.writeLayout.rootView.height
             val keyboardHeight = screenHeight - rect.bottom
 
+            startKeyboardHeight = if(startKeyboardHeight < keyboardHeight) keyboardHeight else startKeyboardHeight
+
             // EditText의 크기 조정
             val layoutParams = content.layoutParams
             layoutParams.height = screenHeight - keyboardHeight - content.y.toInt() - 300
             content.layoutParams = layoutParams
 
-            if (layoutParams.height == screenHeight) {
+            if (startKeyboardHeight > keyboardHeight) {
                 binding.adView.visibility = View.VISIBLE
                 binding.fontBar.visibility = View.GONE
             } else {
@@ -241,106 +241,55 @@ class EditActivity : AppCompatActivity() {
             if ( cursorLineIndex > 8 && cursorLineIndex == lastLineIndex) {
                 val scrollAmount = content.layout.getLineBottom(content.lineCount - 1) - content.height + 65
                 content.scrollTo(0, scrollAmount)
-                Log.d("test다", "마지막줄")
             } else if ( cursorLineIndex > 8 && !(content.scrollY >= scrollY && content.scrollY <= scrollY + 608)) {
                 val scrollAmount = content.layout.getLineBottom(cursorLineIndex - 1) - content.height + 110
                 content.scrollTo(0, scrollY)
-                Log.d("test다", "중간줄")
             }
         }
 
-        // 드래그한 텍스트를 저장할 변수
-        var isSelected: Boolean = false
 
-        // EditText에 터치 리스너 등록
-        content.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_UP -> {
-                    if (content.hasSelection()) {
-                        isSelected = true
-                    }
-                    false
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isBold) {
+                    s?.setSpan(StyleSpan(Typeface.BOLD), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
-                else -> false
+                if (isItalic) {
+                    s?.setSpan(StyleSpan(Typeface.ITALIC), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
         }
+
+        content.addTextChangedListener(textWatcher)
+
 
         binding.bold.setOnClickListener {
-            if (isSelected) {
-                // 드래그한 텍스트가 있을 때 bold체로 변경
-                val start = content.selectionStart
-                val end = content.selectionEnd
-                val ssb = SpannableStringBuilder(content.text)
-                ssb.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                content.text = ssb
-            }
+            fontStyleChange("bold")
         }
 
         binding.italic.setOnClickListener {
-            if (isSelected) {
-                // 드래그한 텍스트가 있을 때 italic체로 변경
-                val start = content.selectionStart
-                val end = content.selectionEnd
-                val ssb = SpannableStringBuilder(content.text)
-                ssb.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                content.text = ssb
-            }
+            fontStyleChange("italic")
         }
 
         binding.underline.setOnClickListener {
-            if (isSelected) {
-                // 드래그한 텍스트가 있을 때 underline체로 변경
-                val start = content.selectionStart
-                val end = content.selectionEnd
-                val ssb = SpannableStringBuilder(content.text)
-                ssb.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                content.text = ssb
-            }
+            fontStyleChange("underline")
         }
 
         binding.leftAlign.setOnClickListener {
-            // 현재 커서 위치를 가져옵니다.
-            val selectionStart = content.selectionStart
-            val layout = content.layout
-            val line = layout.getLineForOffset(selectionStart)
-
-            // 현재 커서 위치의 줄의 시작점과 끝점을 가져옵니다.
-            val lineStart = layout.getLineStart(line)
-            val lineEnd = layout.getLineEnd(line)
-
-            val ssb = SpannableStringBuilder(content.text)
-            ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            content.text = ssb
+            alignChange("leftAlign")
         }
 
         binding.centerAlign.setOnClickListener {
-            // 현재 커서 위치를 가져옵니다.
-            val selectionStart = content.selectionStart
-            val layout = content.layout
-            val line = layout.getLineForOffset(selectionStart)
-
-            // 현재 커서 위치의 줄의 시작점과 끝점을 가져옵니다.
-            val lineStart = layout.getLineStart(line)
-            val lineEnd = layout.getLineEnd(line)
-
-            val ssb = SpannableStringBuilder(content.text)
-            ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            content.text = ssb
+            alignChange("centerAlign")
         }
 
         binding.rightAlign.setOnClickListener {
-            // 현재 커서 위치를 가져옵니다.
-            val selectionStart = content.selectionStart
-            val layout = content.layout
-            val line = layout.getLineForOffset(selectionStart)
+            alignChange("rightAlign")
+        }
 
-            // 현재 커서 위치의 줄의 시작점과 끝점을 가져옵니다.
-            val lineStart = layout.getLineStart(line)
-            val lineEnd = layout.getLineEnd(line)
-
-            val ssb = SpannableStringBuilder(content.text)
-            ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            content.text = ssb
+        // 체크박스...
+        binding.checklist.setOnClickListener {
         }
 
         // 광고
@@ -425,9 +374,132 @@ class EditActivity : AppCompatActivity() {
     }
 
     fun Context.copyToClipboard(text: String) {
-        val clipboardManager = getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            getSystemService(AppCompatActivity.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("label", text)
         clipboardManager.setPrimaryClip(clipData)
+    }
+
+    fun fontStyleChange(fontKind: String) {
+        val start =  binding.writeContent.selectionStart
+        val end =  binding.writeContent.selectionEnd
+
+        if (start == end) { // 드래그하지 않은 경우
+            setNextFontStyle(fontKind)
+        } else { // 드래그한 경우
+            setSeletecFontStyle(fontKind)
+        }
+    }
+
+    fun setNextFontStyle(fontKind: String) {
+        when (fontKind) {
+            "bold" ->
+                if (!isBold) {
+                    isBold = true
+                    setNextSelection()
+                } else {
+                    isBold = false
+                }
+
+            "italic" ->
+                if (!isItalic) {
+                    isItalic = true
+                    setNextSelection()
+                } else {
+                    isItalic = false
+                }
+
+            "underline" ->
+                if (!isUnderline) {
+                    isUnderline = true
+                    setNextSelection()
+                } else {
+                    isUnderline = false
+                }
+        }
+    }
+
+    fun setSeletecFontStyle(fontKind: String) {
+        val start =  binding.writeContent.selectionStart
+        val end =  binding.writeContent.selectionEnd
+        val spans = binding.writeContent.text!!.getSpans(start, end, StyleSpan::class.java)
+
+        if (spans.isNotEmpty()) {
+            for (span in spans) {
+                when (fontKind) {
+                    "bold" ->
+                        checkStyle(span, start, end, Typeface.BOLD)
+
+                    "italic" ->
+                        checkStyle(span, start, end, Typeface.ITALIC)
+
+                    "underline" ->
+                        if (span == UnderlineSpan()) { // ?? 어케해야댐.....
+                            binding.writeContent.text!!.removeSpan(span)
+                            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        } else {
+                            binding.writeContent.text!!.removeSpan(span)
+                            binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                }
+            }
+        } else {
+            when (fontKind) {
+                "bold" ->
+                    binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                "italic" ->
+                    binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                "underline" ->
+                    binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
+
+    fun checkStyle(span: StyleSpan, start: Int, end: Int, style: Int) {
+        binding.writeContent.text!!.removeSpan(span)
+        if (span.style == style) { // 현재 스타일과 버튼이 같을 때
+            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else if (span.style == Typeface.NORMAL) { // 현재 스타일이 normal일때
+            binding.writeContent.text!!.setSpan(StyleSpan(style), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
+            when (style) {
+                Typeface.BOLD -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                Typeface.ITALIC -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        } else { // 두 스타일 모두 적용
+            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD_ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
+    fun setNextSelection(){
+        val start = binding.writeContent.length()
+        binding.writeContent.append(" ")
+        binding.writeContent.setSelection(start, start + 1)
+    }
+
+    fun alignChange(alignKind: String) {
+        // 현재 커서 위치를 가져옵니다.
+        val selectionStart = binding.writeContent.selectionStart
+        val layout = binding.writeContent.layout
+        val line = layout.getLineForOffset(selectionStart)
+
+        // 현재 커서 위치의 줄의 시작점과 끝점을 가져옵니다.
+        val lineStart = layout.getLineStart(line)
+        val lineEnd = layout.getLineEnd(line)
+
+        val ssb = SpannableStringBuilder(binding.writeContent.text)
+        when (alignKind) {
+            "leftAlign" ->
+                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            "centerAlign" ->
+                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            "rightAlign" ->
+                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        binding.writeContent.text = ssb
+        binding.writeContent.setSelection(lineEnd - 1)
     }
 
 }
