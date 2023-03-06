@@ -1,11 +1,13 @@
 package com.example.ssgmemo.fragment
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
@@ -25,6 +27,8 @@ class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentCtgrDeleteBinding.inflate(inflater, container, false)
         return binding.root
     }

@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/fragment_decoration"
     android:elevation="20dp"
     android:gravity="center"
     android:orientation="vertical">
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_weight="1"
-        android:background="@color/white" />
 
     <TextView
         android:id="@+id/delete_memo_msg"
@@ -23,8 +16,7 @@
         android:padding="8dp"
         android:text="삭제할 항목을 선택하세요"
         android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textSize="15sp" />
 
     <LinearLayout
         android:id="@+id/del_option"

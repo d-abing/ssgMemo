@@ -1,11 +1,14 @@
 package com.example.ssgmemo.fragment
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.callback.CallbackListener
@@ -26,6 +29,8 @@ class CtgrAddFragment(val Callback: CallbackListener) : DialogFragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentCtgrAddBinding.inflate(inflater, container, false)
         return binding.root
     }

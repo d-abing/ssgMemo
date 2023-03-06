@@ -141,7 +141,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun selectUnclassifiedMemoList(): MutableList<Memo> {
 		// 메모 리스트 // 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
-		val sql = "select * from memo where ctgr = '0'"
+		val sql = "select * from memo where ctgr = '0' order by priority asc"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 
@@ -448,6 +448,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 }
 
 data class Ctgr(var idx: Long?, var name: String, var datetime: Long)
-data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int?, var priority: Int?)
+data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int, var priority: Int)
 // memo 테이블의 레코드 하나를 저장할 수 있는 데이터 클래스
 // idx는 primary key이므로 자동증가값으로 설정되어 값이 없을 수도 있으므로 null값을 허용(?)

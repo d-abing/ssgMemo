@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/fragment_decoration"
+    android:backgroundTint="@color/white"
     android:elevation="20dp"
     android:gravity="center"
     android:orientation="vertical">
@@ -15,8 +16,7 @@
         android:padding="8dp"
         android:text="카테고리 이름을 입력하세요"
         android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/editTextTextPersonName"

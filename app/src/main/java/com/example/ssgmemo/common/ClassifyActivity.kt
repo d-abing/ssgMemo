@@ -1,10 +1,13 @@
 package com.example.ssgmemo.common
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -76,6 +79,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         if(memoList!!.isEmpty()) { // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
             binding.viewpager.visibility = View.INVISIBLE
             binding.emptyText.visibility = View.VISIBLE
+            binding.btnDelete.visibility = View.GONE
         } else {
             binding.viewpager.visibility = View.VISIBLE
             binding.emptyText.visibility = View.INVISIBLE
@@ -125,7 +129,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteContent(memo)
         pagerAdapter!!.listData.clear()
-        memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
+        memoList2 = helper.selectUnclassifiedMemoList()                                 // 삭제로 인해 변경된 memoList 가져오기
         pagerAdapter!!.listData.addAll(memoList2!!)
         pagerAdapter!!.notifyDataSetChanged()
     }

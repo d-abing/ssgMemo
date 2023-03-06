@@ -59,7 +59,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return itemList.size
     }
     private fun animationTranslateOpen(view:View){
-        ObjectAnimator.ofFloat(view, "translationX", 130f).apply {
+        ObjectAnimator.ofFloat(view, "translationX", 150f).apply {
             start()
         }
     }
@@ -158,11 +158,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         //리스트 갱신
         var priority_gap =itemList[from].priority!! - itemList[to].priority!!
         if (priority_gap == 1){
-            itemList[to].priority = itemList[to].priority?.plus(1)
-            itemList[from].priority = itemList[from].priority?.minus(1)
+            itemList[to].priority = itemList[to].priority.plus(1)
+            itemList[from].priority = itemList[from].priority.minus(1)
         }else if (priority_gap == -1){
-            itemList[to].priority = itemList[to].priority?.minus(1)
-            itemList[from].priority = itemList[from].priority?.plus(1)
+            itemList[to].priority = itemList[to].priority.minus(1)
+            itemList[from].priority = itemList[from].priority.plus(1)
         }
         val data = itemList[from]
         helper.movePriority(itemList[from], itemList[to])

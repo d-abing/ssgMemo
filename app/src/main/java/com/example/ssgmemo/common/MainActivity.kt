@@ -22,6 +22,7 @@ import com.google.android.gms.ads.MobileAds
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     lateinit var mAdView : AdView
+    var backFlag = false
 
     // 설정 state
     var vibration =  MyApplication.prefs.getString("vibration", "")
@@ -33,7 +34,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 설정 fragment
-        binding.btnSetting1.setOnClickListener { setFragment() }
+        binding.btnSetting1.setOnClickListener {
+            setFragment()
+            backFlag = true
+        }
 
         // memomo 이동 좌표
         var startX = 0f
@@ -113,12 +117,16 @@ class MainActivity : AppCompatActivity() {
         fun onBackPressed()
     }
     override fun onBackPressed(){
-        val fragmentList = supportFragmentManager.fragments
-        for (fragment in fragmentList) {
-            if (fragment is onBackPressedListener) {
-                (fragment as onBackPressedListener).onBackPressed()
-                return
+        if (backFlag) {
+            val fragmentList = supportFragmentManager.fragments
+            for (fragment in fragmentList) {
+                if (fragment is onBackPressedListener) {
+                    (fragment as onBackPressedListener).onBackPressed()
+                    return
+                }
             }
+        } else {
+            super.onBackPressed()
         }
     }
 
