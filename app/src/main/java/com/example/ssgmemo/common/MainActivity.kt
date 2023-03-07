@@ -1,6 +1,5 @@
 package com.example.ssgmemo.common
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.ssgmemo.*
 import com.example.ssgmemo.databinding.ActivityMainBinding
 import com.example.ssgmemo.fragment.SettingFragment
@@ -70,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                     goMenu<WriteActivity>(v, v.x, v.y, deviceWidth!!, 480, 1164, 640, WriteActivity::class.java)
                     goMenu<ClassifyActivity>(v, v.x, v.y, 120, -420, 1164, 640, ClassifyActivity::class.java)
                     goMenu<ViewCtgrActivity>(v, v.x, v.y, 570, 60, deviceHeight!!, 1080, ViewCtgrActivity::class.java)
-                    goMenu<SearchActivity>(v, v.x, v.y, 550, 70, 670, 0, SearchActivity::class.java)
+                    // goMenu<SearchActivity>(v, v.x, v.y, 550, 70, 670, 0, SearchActivity::class.java)
                 }
             }
             true
@@ -78,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         // 광고
         MobileAds.initialize(this) {}
-        mAdView = findViewById<AdView>(R.id.adView)
+        mAdView = findViewById<AdView>(R.id.sizeup)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }

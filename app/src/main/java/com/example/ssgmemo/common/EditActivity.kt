@@ -11,12 +11,15 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.*
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.AlignmentSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -27,18 +30,21 @@ import com.example.ssgmemo.Memo
 import com.example.ssgmemo.SpinnerModel
 import com.example.ssgmemo.SqliteHelper
 import com.example.ssgmemo.adapter.SpinnerAdapter
+import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityWriteBinding
+import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditActivity : AppCompatActivity() {
+class EditActivity : AppCompatActivity(), CallbackListener {
     var readmode = true
     var scroll = false
     val SOFT_KEYBOARD_HEIGHT_DP_THRESHOLD = 128
 
+    private val fontSizeList = listOf("20", "22", "24", "26", "28", "30")
 
     val helper = SqliteHelper(this, "ssgMemo", 1)
     lateinit var mAdView : AdView
@@ -62,6 +68,8 @@ class EditActivity : AppCompatActivity() {
         binding = ActivityWriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        var selectedIndex2 : Int = 0
+        var textFontSize : Int = 20
 
         val content = findViewById<TextView>(com.example.ssgmemo.R.id.writeContent)
 
@@ -73,6 +81,8 @@ class EditActivity : AppCompatActivity() {
         ctgr = memo.ctgr
         priority = memo.priority
 
+        binding.category.margin(top = 70F)
+
         ctgrList.add(0, SpinnerModel(com.example.ssgmemo.R.drawable.closed_box, "미분류"))
         for (i in helper.selectCtgrMap().values.toMutableList()) {
             val spinnerModel = SpinnerModel(com.example.ssgmemo.R.drawable.closed_box, i)
@@ -82,6 +92,7 @@ class EditActivity : AppCompatActivity() {
         binding.writeContent.isFocusableInTouchMode = false
         binding.btnCopy.visibility = View.VISIBLE
         binding.btnShare.visibility = View.VISIBLE
+        binding.btnDelete.visibility = View.VISIBLE
 
         binding.btnShare.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
@@ -100,16 +111,13 @@ class EditActivity : AppCompatActivity() {
             Toast.makeText(this, "클립보드에 복사되었습니다", Toast.LENGTH_SHORT).show()
         }
 
-/*        // content 높이 조절
-        val display = this.applicationContext?.resources?.displayMetrics
-        val deviceHeight = display?.heightPixels
-        val layoutParams = binding.writeContent.layoutParams
-        layoutParams.height = deviceHeight?.times(0.69)!!.toInt()
-        binding.writeContent.layoutParams = layoutParams*/
+        binding.btnDelete.setOnClickListener {
+            fragmentOpen(memo.ctgr!!.toString(),memo.idx.toString(),false)
+        }
 
         // 수정시 버튼 숨김 및 기존 정보 불러오기
         binding.date.visibility = View.VISIBLE
-        val t_dateFormat = SimpleDateFormat("yyyy년 M월 d일 a hh:mm:ss 수정", Locale("ko", "KR"))
+        val t_dateFormat = SimpleDateFormat("yyyy년 M월 d일\n a hh:mm:ss 수정", Locale("ko", "KR"))
         val str_date = t_dateFormat.format(Date(memo.datetime))
         binding.date.text = str_date
         binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.read)
@@ -154,6 +162,28 @@ class EditActivity : AppCompatActivity() {
 
             fun <K, V> getKey(map: Map<K, V>, target: V): K {
                 return map.keys.first { target == map[it] }
+            }
+        }
+
+        binding.fontSize.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fontSizeList.toMutableList())
+        binding.fontSize.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                changeFontSize(binding.fontSize.getItemAtPosition(position).toString())
+                textFontSize = binding.fontSize.getItemAtPosition(position).toString().toInt()
+                selectedIndex = position
+            }
+        }
+
+        binding.sizedown.setOnClickListener {
+            if ( selectedIndex != 0 ) {
+                binding.fontSize.setSelection(selectedIndex - 1)
+            }
+        }
+
+        binding.sizeup.setOnClickListener {
+            if ( selectedIndex != fontSizeList.size - 1 ) {
+                binding.fontSize.setSelection(selectedIndex + 1)
             }
         }
 
@@ -218,7 +248,7 @@ class EditActivity : AppCompatActivity() {
 
             // EditText의 크기 조정
             val layoutParams = content.layoutParams
-            layoutParams.height = screenHeight - keyboardHeight - content.y.toInt() - 300
+            layoutParams.height = screenHeight - keyboardHeight - content.y.toInt() - 310
             content.layoutParams = layoutParams
 
             if (startKeyboardHeight > keyboardHeight) {
@@ -249,6 +279,7 @@ class EditActivity : AppCompatActivity() {
 
 
         val textWatcher = object : TextWatcher {
+            //
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -258,11 +289,15 @@ class EditActivity : AppCompatActivity() {
                 if (isItalic) {
                     s?.setSpan(StyleSpan(Typeface.ITALIC), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
+                if (isUnderline) {
+                    s?.setSpan(UnderlineSpan(), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                // s?.setSpan(AbsoluteSizeSpan(dpToPx(textFontSize.toInt())),  s.length - 1, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
 
         content.addTextChangedListener(textWatcher)
-
 
         binding.bold.setOnClickListener {
             fontStyleChange("bold")
@@ -287,6 +322,7 @@ class EditActivity : AppCompatActivity() {
         binding.rightAlign.setOnClickListener {
             alignChange("rightAlign")
         }
+
 
         // 체크박스...
         binding.checklist.setOnClickListener {
@@ -387,11 +423,12 @@ class EditActivity : AppCompatActivity() {
         if (start == end) { // 드래그하지 않은 경우
             setNextFontStyle(fontKind)
         } else { // 드래그한 경우
-            setSeletecFontStyle(fontKind)
+            setSeletedFontStyle(fontKind, start, end)
         }
     }
 
     fun setNextFontStyle(fontKind: String) {
+        // 드래그하지 않은 경우
         when (fontKind) {
             "bold" ->
                 if (!isBold) {
@@ -419,12 +456,27 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    fun setSeletecFontStyle(fontKind: String) {
-        val start =  binding.writeContent.selectionStart
-        val end =  binding.writeContent.selectionEnd
+    fun setSeletedFontStyle(fontKind: String, start: Int, end: Int) {
+        // 드래그한 경우
         val spans = binding.writeContent.text!!.getSpans(start, end, StyleSpan::class.java)
+        val underlines = binding.writeContent.text!!.getSpans(start, end, UnderlineSpan::class.java)
 
-        if (spans.isNotEmpty()) {
+        if (spans.isNotEmpty() && underlines.isNotEmpty()) {
+            for (span in spans) {
+                for (underline in underlines) {
+                    when (fontKind) {
+                        "bold" ->
+                            checkStyle(span, start, end, Typeface.BOLD)
+
+                        "italic" ->
+                            checkStyle(span, start, end, Typeface.ITALIC)
+
+                        "underline" ->
+                            binding.writeContent.text!!.removeSpan(underline)
+                    }
+                }
+            }
+        } else if (spans.isNotEmpty()) {
             for (span in spans) {
                 when (fontKind) {
                     "bold" ->
@@ -434,13 +486,19 @@ class EditActivity : AppCompatActivity() {
                         checkStyle(span, start, end, Typeface.ITALIC)
 
                     "underline" ->
-                        if (span == UnderlineSpan()) { // ?? 어케해야댐.....
-                            binding.writeContent.text!!.removeSpan(span)
-                            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        } else {
-                            binding.writeContent.text!!.removeSpan(span)
-                            binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
+                        binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                }
+            }
+        } else if (underlines.isNotEmpty()) {
+            for (underline in underlines) {
+                when (fontKind) {
+                    "bold" ->
+                        binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    "italic" ->
+                        binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    "underline" ->
+                        binding.writeContent.text!!.removeSpan(underline)
                 }
             }
         } else {
@@ -459,16 +517,12 @@ class EditActivity : AppCompatActivity() {
 
     fun checkStyle(span: StyleSpan, start: Int, end: Int, style: Int) {
         binding.writeContent.text!!.removeSpan(span)
-        if (span.style == style) { // 현재 스타일과 버튼이 같을 때
-            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else if (span.style == Typeface.NORMAL) { // 현재 스타일이 normal일때
-            binding.writeContent.text!!.setSpan(StyleSpan(style), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
+        if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
             when (style) {
                 Typeface.BOLD -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 Typeface.ITALIC -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-        } else { // 두 스타일 모두 적용
+        } else if ( span.style != style ) { // 두 스타일 모두 적용
             binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD_ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
@@ -489,17 +543,97 @@ class EditActivity : AppCompatActivity() {
         val lineStart = layout.getLineStart(line)
         val lineEnd = layout.getLineEnd(line)
 
-        val ssb = SpannableStringBuilder(binding.writeContent.text)
+        // 현재 커서가 위치한 줄이 비어 있는 경우 공백 문자로 채워줍니다.
+        if (lineStart == lineEnd) {
+            binding.writeContent.text!!.insert(lineStart, " ")
+            binding.writeContent.setSelection(lineStart + 1)
+        }
+
         when (alignKind) {
             "leftAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
             "centerAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             "rightAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
         }
-        binding.writeContent.text = ssb
-        binding.writeContent.setSelection(lineEnd - 1)
+        binding.writeContent.setSelection(selectionStart)
     }
 
+    fun changeFontSize(fontSize: String) {
+        val start =  binding.writeContent.selectionStart
+        val end =  binding.writeContent.selectionEnd
+
+        if (start == end) { // 드래그하지 않은 경우
+            setNextFontSize(fontSize)
+        } else { // 드래그한 경우
+            setSeletedFontSize(fontSize, start, end)
+        }
+    }
+
+    fun setNextFontSize(fontSize: String) {
+        setNextSelection()
+    }
+
+    fun setSeletedFontSize(fontSize: String, start: Int, end: Int) {
+        val originalSpans = binding.writeContent.text!!.getSpans(start, end, AbsoluteSizeSpan::class.java)
+
+        // 선택한 텍스트에서 기존에 AbsoluteSizeSpan 스팬을 찾아서 제거합니다.
+        for (span in originalSpans) {
+            binding.writeContent.text!!.removeSpan(span)
+        }
+
+        // 새로운 AbsoluteSizeSpan 스팬을 적용합니다.
+        binding.writeContent.text!!.setSpan(AbsoluteSizeSpan(dpToPx(fontSize.toInt())), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+
+    fun dpToPx(dp: Int) : Int {
+        val metrics = resources.displayMetrics
+        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), metrics).toInt()
+        return px
+    }
+
+    fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
+        layoutParams<ViewGroup.MarginLayoutParams> {
+            left?.run { leftMargin = dpToPx(this) }
+            top?.run { topMargin = dpToPx(this) }
+            right?.run { rightMargin = dpToPx(this) }
+            bottom?.run { bottomMargin = dpToPx(this) }
+        }
+    }
+
+    inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) {
+        if (layoutParams is T) block(layoutParams as T)
+    }
+
+    fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
+    fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
+
+
+    override fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean) {
+        super.fragmentOpen(memoCtgr, memoidx, isList)
+        // 리스트 인지 하나인지 미분류인지 아닌지...
+        val deleteFragment = MemoDeleteFragment(this)
+        val bundle:Bundle = Bundle()
+        bundle.putString("memoCtgr",memoCtgr)
+        bundle.putString("memoidx",memoidx)
+        bundle.putBoolean("isList",isList)
+        deleteFragment.arguments = bundle
+        deleteFragment.show(supportFragmentManager, "memoDelete")
+    }
 }

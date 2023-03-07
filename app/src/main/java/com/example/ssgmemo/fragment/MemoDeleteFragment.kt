@@ -57,7 +57,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
 
         if(memoCtgr == "0"){
             // 선택된 메모가 미분류 라면 선택지 제한
-            binding.deleteMemoMsg.text = "선택된 메모가 삭제됩니다"
+            binding.deleteMemoMsg.text = "메모가 삭제됩니다"
             binding.view2.visibility = View.GONE
             binding.delOption.visibility = View.GONE
             if(isList!!){

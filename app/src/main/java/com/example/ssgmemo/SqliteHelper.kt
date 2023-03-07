@@ -282,7 +282,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.execSQL(sql)
 		wd.close()
 
-
 	}
 
 	fun movePriority(itemList_from: Memo, itemList_to: Memo) {
@@ -443,6 +442,33 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		wd.close()
 		rs.close()
 		rd.close()
+	}
+
+    fun selectCtgrName(memoCtgr: String?): String {
+		var sql = "select name from ctgr where idx = '"+ memoCtgr +"'"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var name : String = ""
+
+		if (rs.moveToNext()) {
+			name = rs.getString(rs.getColumnIndex("name"))
+		}
+		rs.close()
+		rd.close()
+
+		return name
+    }
+
+	fun moveContent(memo: Memo, ctgr: Long) {
+
+		if (memo.ctgr != null){
+			val wd1 = writableDatabase
+			val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority>'" + memo.priority + "'"
+			wd1.execSQL(sql1)
+			wd1.close()
+		}
+		// 데이터 이동
+		updateMemoCtgr(memo.idx, ctgr, getTopPriority(ctgr.toInt()) + 1)
 	}
 
 }

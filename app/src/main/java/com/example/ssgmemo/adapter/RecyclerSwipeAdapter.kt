@@ -79,12 +79,14 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             var toggle_checked: Boolean = false
             binding.searchDate2.text = str_date
 
-             if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
+            if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
                 binding.memoItem.setBackgroundResource(R.drawable.memoback2)
+            } else {
+                binding.memoItem.setBackgroundResource(R.drawable.memoback)
             }
 
             if(mode == 1){
-                binding.task.visibility = View.GONE
+                binding.btnMerge.visibility = View.GONE
                 binding.toggleButton.visibility = View.VISIBLE
                 callbackListener.callback(mode.toLong())
                 binding.memoItem.setOnClickListener {
@@ -103,7 +105,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                     toggle_checked = !toggle_checked
                 }
             }else{
-                binding.task.visibility = View.VISIBLE
+                binding.btnMerge.visibility = View.VISIBLE
                 binding.toggleButton.visibility = View.GONE
                 binding.memoItem.setOnClickListener {
                     val intent = Intent(context, EditActivity::class.java)
@@ -127,10 +129,10 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.searchDate2.textSize = 20f
             }
 
-            binding.task.setOnClickListener {
-                // 프레그먼트 오픈
-                callbackListener.fragmentOpen(memo.ctgr!!.toString(),memo.idx.toString(),false)
+            binding.btnMerge.setOnClickListener {
+                //머지
             }
+
             binding.toggleButton.setOnClickListener {
                 binding.toggleButton.isChecked = !toggle_checked
                 if(!toggle_checked){

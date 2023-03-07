@@ -1,13 +1,10 @@
 package com.example.ssgmemo.common
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
-import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,7 +15,6 @@ import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
-import com.example.ssgmemo.fragment.CtgrDeleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -102,7 +98,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
         // 광고
         MobileAds.initialize(this) {}
-        mAdView = findViewById<AdView>(R.id.adView)
+        mAdView = findViewById<AdView>(R.id.sizeup)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 

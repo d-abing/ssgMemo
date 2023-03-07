@@ -62,7 +62,7 @@
         app:layout_constraintVertical_bias="0.574" />
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+        android:id="@+id/sizeup"
         android:layout_width="412dp"
         android:layout_height="49dp"
         android:layout_alignParentBottom="true"
@@ -76,14 +76,14 @@
     </com.google.android.gms.ads.AdView>
 
     <LinearLayout
-        android:id="@+id/deleteLayout"
+        android:id="@+id/selectLayout"
         android:layout_width="407dp"
         android:layout_height="50dp"
         android:backgroundTint="@color/black"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="@+id/sizeup"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -99,6 +99,23 @@
 
         <View
             android:id="@+id/view"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
+
+        <TextView
+            android:id="@+id/move_selected"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#3A3A3A"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="이동"
+            android:textColor="@color/white" />
+
+        <View
+            android:id="@+id/view4"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/gray" />

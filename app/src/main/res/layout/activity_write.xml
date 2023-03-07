@@ -43,9 +43,9 @@
         android:inputType="textPersonName"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveMemo" />
+        app:layout_constraintTop_toBottomOf="@+id/category" />
 
     <com.example.ssgmemo.BackPressEditText
         android:id="@+id/writeContent"
@@ -70,11 +70,15 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="28dp"
-        android:text="2023년 2월 26일 00시 00분 00초"
+        android:text="2023년 2월 26일 \n 00시 00분 00초"
+        android:textAlignment="viewEnd"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/writeContent" />
+        app:layout_constraintHorizontal_bias="0.96"
+        app:layout_constraintStart_toEndOf="@+id/category"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/btn_copy"
@@ -101,6 +105,19 @@
         app:layout_constraintEnd_toStartOf="@+id/btn_copy"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/share" />
+
+    <ImageButton
+        android:id="@+id/btn_Delete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btn_Share"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/delete2" />
 
     <LinearLayout
         android:id="@+id/fontBar"
@@ -191,7 +208,7 @@
             android:src="@drawable/right_align" />
 
         <ImageButton
-            android:id="@+id/imageButton10"
+            android:id="@+id/sizedown"
             android:layout_width="85dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -201,7 +218,7 @@
             android:src="@drawable/size_down" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/fontSize"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -209,7 +226,7 @@
             android:scaleType="fitCenter" />
 
         <ImageButton
-            android:id="@+id/imageButton11"
+            android:id="@+id/sizeup"
             android:layout_width="85dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

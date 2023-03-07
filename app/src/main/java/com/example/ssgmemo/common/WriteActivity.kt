@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.*
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.AlignmentSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
@@ -47,6 +49,9 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         super.onCreate(savedInstanceState)
         binding = ActivityWriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var selectedIndex : Int = 0
+        var textFontSize : Int = 20
         
         // 설정 state
         val fontSize = intent.getStringExtra("fontSize")
@@ -87,11 +92,25 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             }
         }
 
-        binding.spinner.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fontSizeList.toMutableList())
-        binding.spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+        binding.fontSize.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fontSizeList.toMutableList())
+        binding.fontSize.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val contentFontSize = binding.spinner.getItemAtPosition(position)
+                changeFontSize(binding.fontSize.getItemAtPosition(position).toString())
+                textFontSize = binding.fontSize.getItemAtPosition(position).toString().toInt()
+                selectedIndex = position
+            }
+        }
+
+        binding.sizedown.setOnClickListener {
+            if ( selectedIndex != 0 ) {
+                binding.fontSize.setSelection(selectedIndex - 1)
+            }
+        }
+
+        binding.sizeup.setOnClickListener {
+            if ( selectedIndex != fontSizeList.size - 1 ) {
+                binding.fontSize.setSelection(selectedIndex + 1)
             }
         }
 
@@ -125,7 +144,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 helper.insertMemo(memo)
                 binding.writeTitle.setText("")
                 content.text = ""
-                binding.spinner.setSelection(0)
+                binding.category.setSelection(0)
 
                 binding.saveMemo.setImageResource(R.drawable.save2)
                 val handler = android.os.Handler()
@@ -176,6 +195,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
         content.doOnTextChanged { _, _, _, _ ->
             // EditText의 텍스트가 변경될 때마다 실행
+            // 스크롤 변경
             val cursorPosition = content.selectionStart
             val cursorLineIndex = content.layout.getLineForOffset(cursorPosition)
             val lastLineIndex = content.layout.getLineForOffset(content.length())
@@ -193,6 +213,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
 
         val textWatcher = object : TextWatcher {
+            //
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -202,6 +223,11 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 if (isItalic) {
                     s?.setSpan(StyleSpan(Typeface.ITALIC), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
+                if (isUnderline) {
+                    s?.setSpan(UnderlineSpan(), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                // s?.setSpan(AbsoluteSizeSpan(dpToPx(textFontSize.toInt())),  s.length - 1, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
 
@@ -250,11 +276,12 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         if (start == end) { // 드래그하지 않은 경우
             setNextFontStyle(fontKind)
         } else { // 드래그한 경우
-            setSeletecFontStyle(fontKind)
+            setSeletedFontStyle(fontKind, start, end)
         }
     }
 
     fun setNextFontStyle(fontKind: String) {
+        // 드래그하지 않은 경우
         when (fontKind) {
             "bold" ->
                 if (!isBold) {
@@ -282,12 +309,27 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
-    fun setSeletecFontStyle(fontKind: String) {
-        val start =  binding.writeContent.selectionStart
-        val end =  binding.writeContent.selectionEnd
+    fun setSeletedFontStyle(fontKind: String, start: Int, end: Int) {
+        // 드래그한 경우
         val spans = binding.writeContent.text!!.getSpans(start, end, StyleSpan::class.java)
+        val underlines = binding.writeContent.text!!.getSpans(start, end, UnderlineSpan::class.java)
 
-        if (spans.isNotEmpty()) {
+        if (spans.isNotEmpty() && underlines.isNotEmpty()) {
+            for (span in spans) {
+                for (underline in underlines) {
+                    when (fontKind) {
+                        "bold" ->
+                            checkStyle(span, start, end, Typeface.BOLD)
+
+                        "italic" ->
+                            checkStyle(span, start, end, Typeface.ITALIC)
+
+                        "underline" ->
+                            binding.writeContent.text!!.removeSpan(underline)
+                    }
+                }
+            }
+        } else if (spans.isNotEmpty()) {
             for (span in spans) {
                 when (fontKind) {
                     "bold" ->
@@ -297,13 +339,19 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                         checkStyle(span, start, end, Typeface.ITALIC)
 
                     "underline" ->
-                        if (span == UnderlineSpan()) { // ?? 어케해야댐.....
-                            binding.writeContent.text!!.removeSpan(span)
-                            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        } else {
-                            binding.writeContent.text!!.removeSpan(span)
-                            binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
+                        binding.writeContent.text!!.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                }
+            }
+        } else if (underlines.isNotEmpty()) {
+            for (underline in underlines) {
+                when (fontKind) {
+                    "bold" ->
+                        binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    "italic" ->
+                        binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    "underline" ->
+                        binding.writeContent.text!!.removeSpan(underline)
                 }
             }
         } else {
@@ -322,16 +370,12 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
     fun checkStyle(span: StyleSpan, start: Int, end: Int, style: Int) {
         binding.writeContent.text!!.removeSpan(span)
-        if (span.style == style) { // 현재 스타일과 버튼이 같을 때
-            binding.writeContent.text!!.setSpan(StyleSpan(Typeface.NORMAL), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else if (span.style == Typeface.NORMAL) { // 현재 스타일이 normal일때
-            binding.writeContent.text!!.setSpan(StyleSpan(style), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } else if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
+        if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
             when (style) {
                 Typeface.BOLD -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 Typeface.ITALIC -> binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-        } else { // 두 스타일 모두 적용
+        } else if ( span.style != style ) { // 두 스타일 모두 적용
             binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD_ITALIC), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
@@ -352,18 +396,71 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         val lineStart = layout.getLineStart(line)
         val lineEnd = layout.getLineEnd(line)
 
-        val ssb = SpannableStringBuilder(binding.writeContent.text)
+        // 현재 커서가 위치한 줄이 비어 있는 경우 공백 문자로 채워줍니다.
+        if (lineStart == lineEnd) {
+            binding.writeContent.text!!.insert(lineStart, " ")
+            binding.writeContent.setSelection(lineStart + 1)
+        }
+
         when (alignKind) {
             "leftAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
             "centerAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             "rightAlign" ->
-                ssb.setSpan( AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), lineStart, lineEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.writeContent.text!!.setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE),
+                    lineStart,
+                    lineEnd,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
         }
-        binding.writeContent.text = ssb
-        binding.writeContent.setSelection(lineEnd - 1)
+        binding.writeContent.setSelection(selectionStart)
     }
+
+    fun changeFontSize(fontSize: String) {
+        val start =  binding.writeContent.selectionStart
+        val end =  binding.writeContent.selectionEnd
+
+        if (start == end) { // 드래그하지 않은 경우
+            setNextFontSize(fontSize)
+        } else { // 드래그한 경우
+            setSeletedFontSize(fontSize, start, end)
+        }
+    }
+
+    fun setNextFontSize(fontSize: String) {
+       setNextSelection()
+    }
+
+    fun setSeletedFontSize(fontSize: String, start: Int, end: Int) {
+        val originalSpans = binding.writeContent.text!!.getSpans(start, end, AbsoluteSizeSpan::class.java)
+
+        // 선택한 텍스트에서 기존에 AbsoluteSizeSpan 스팬을 찾아서 제거합니다.
+        for (span in originalSpans) {
+            binding.writeContent.text!!.removeSpan(span)
+        }
+
+        // 새로운 AbsoluteSizeSpan 스팬을 적용합니다.
+        binding.writeContent.text!!.setSpan(AbsoluteSizeSpan(dpToPx(fontSize.toInt())), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+
+    fun dpToPx(dp: Int) : Int {
+        val metrics = resources.displayMetrics
+        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), metrics).toInt()
+        return px
+    }
+
 
     override fun onBackPressed() {
        if(backFlag) {
