@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewMemoLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,14 +13,14 @@
         tools:ignore="MissingConstraints">
 
         <ImageButton
-            android:id="@+id/task"
+            android:id="@+id/btnMerge"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="start|center_vertical"
             android:layout_marginLeft="8dp"
             android:background="#00FFFFFF"
             android:scaleType="fitXY"
-            android:src="@drawable/delete" />
+            android:src="@drawable/merge" />
 
         <RadioButton
             android:id="@+id/toggleButton"

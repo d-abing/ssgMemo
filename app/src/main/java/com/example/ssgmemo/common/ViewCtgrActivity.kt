@@ -4,11 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
+import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ssgmemo.BackPressEditText
 import com.example.ssgmemo.Ctgr
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
@@ -51,13 +60,117 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerCtgr2.adapter = adapter
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
-        if(adapter.listData.isEmpty()){
-            binding.msgCtgr.visibility = View.VISIBLE
+
+        val recyclerAdapter = RecyclerAdapter(this)
+        var fontSize = intent.getStringExtra("fontSize")
+        recyclerAdapter.fontSize = fontSize
+        var where = "제목+내용"          // sql where 조건
+        var orderby = "최신순"          // sql orderby 조건
+        var keyword = ""               // sql where의 keyword
+        var flag = false
+
+        var conditionList1: MutableList<String> = arrayListOf("제목+내용", "제목", "내용")
+        val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
+
+        // <"제목", "내용", "제목+내용">
+        if(fontSize.equals("ON")) {
+            binding.spinner3.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList1)
+            binding.keyword.textSize = 20f
+        } else binding.spinner3.adapter =  ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList1)
+        binding.spinner3.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // where 조건 변경
+                where = binding.spinner3.getItemAtPosition(position).toString()
+            }
         }
+
+
+        // <"최신순", "오래된순">
+        if(fontSize.equals("ON"))  binding.spinner5.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList2)
+        else binding.spinner5.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList2)
+        binding.spinner5.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // order by 조건 바꿔서 select
+                orderby = binding.spinner5.getItemAtPosition(position).toString()
+                recyclerAdapter.listData.clear()
+                showDataList(recyclerAdapter, keyword, where, orderby)
+
+            }
+        }
+
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerSearch.context, LinearLayoutManager(this).orientation)
+        binding.recyclerSearch.addItemDecoration(dividerItemDecoration)
+
+        recyclerAdapter.helper = helper
+        showDataList(recyclerAdapter, keyword, where, orderby)
+        binding.recyclerSearch.adapter = recyclerAdapter
+
+
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams1 = binding.recyclerSearch.layoutParams
+        val layoutParams2 = binding.emptyText4.layoutParams
+        layoutParams1.height = deviceHeight?.times(0.81)!!.toInt()
+        layoutParams2.height = deviceHeight?.times(0.81)!!.toInt()
+        binding.recyclerSearch.layoutParams = layoutParams1
+        binding.emptyText4.layoutParams = layoutParams2
+
+        binding.keyword.setOnBackPressListener(object : BackPressEditText.OnBackPressListener{
+            override fun onBackPress() {
+                // keyword에서 포커스 제거 binding.keyword.isFocusableInTouchMode = false
+            }
+        })
+
+        binding.btnFilter.setOnClickListener {
+            if (flag == false) {
+                binding.spinner5.visibility = View.VISIBLE
+                binding.spinner3.visibility = View.VISIBLE
+                binding.recyclerCtgr2.margin(top = 48F)
+                binding.recyclerSearch.margin(top = 60F)
+                binding.emptyText4.margin(top = 60F)
+                layoutParams1.height = deviceHeight.times(0.76).toInt()
+                layoutParams2.height = deviceHeight.times(0.76).toInt()
+                binding.recyclerSearch.layoutParams = layoutParams1
+                binding.emptyText4.layoutParams = layoutParams2
+                flag = true
+            } else {
+                binding.spinner5.visibility = View.GONE
+                binding.spinner3.visibility = View.GONE
+                binding.recyclerCtgr2.margin(top = 0F)
+                binding.recyclerSearch.margin(top = 20F)
+                binding.emptyText4.margin(top = 20F)
+                layoutParams1.height = deviceHeight.times(0.81).toInt()
+                layoutParams2.height = deviceHeight.times(0.81).toInt()
+                binding.recyclerSearch.layoutParams = layoutParams1
+                binding.emptyText4.layoutParams = layoutParams2
+                flag = false
+            }
+        }
+
+        binding.viewCtgrLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            if (binding.keyword.hasFocus()) {
+                binding.recyclerSearch.visibility = View.VISIBLE
+                binding.recyclerCtgr2.visibility = View.INVISIBLE
+            } else {
+                binding.recyclerCtgr2.visibility = View.VISIBLE
+                binding.recyclerSearch.visibility = View.INVISIBLE
+                binding.emptyText4.visibility = View.INVISIBLE
+            }
+        }
+
+        binding.keyword.doOnTextChanged { _, _, _, _ ->
+            keyword = binding.keyword.text.toString()
+            recyclerAdapter.listData.clear()
+            showDataList(recyclerAdapter, keyword, where, orderby)
+            false
+        }
+
 
         // 광고
         MobileAds.initialize(this) {}
-        val mAdView = findViewById<AdView>(R.id.adView)
+        val mAdView = findViewById<AdView>(R.id.sizeup)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
@@ -69,10 +182,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     override fun closeKeyBoard() {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-    }
-
-    override fun callmsg() {
-        binding.msgCtgr.visibility = View.VISIBLE
     }
 
     override fun fragmentOpen(item: String, ctgridx: String?) {
@@ -151,6 +260,41 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.notifyDataSetChanged()
 
     }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        return true
+    }
+
+    fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
+        val data = helper.selectSearchList(keyword, where, orderby)
+        recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
+        if(data.isEmpty()) {
+            binding.recyclerSearch.visibility = View.INVISIBLE
+            binding.emptyText4.visibility = View.VISIBLE
+        } else {
+            binding.recyclerSearch.visibility = View.VISIBLE
+            binding.emptyText4.visibility = View.INVISIBLE
+        }
+        recyclerAdapter.notifyDataSetChanged()
+    }
+
+    fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
+        layoutParams<ViewGroup.MarginLayoutParams> {
+            left?.run { leftMargin = dpToPx(this) }
+            top?.run { topMargin = dpToPx(this) }
+            right?.run { rightMargin = dpToPx(this) }
+            bottom?.run { bottomMargin = dpToPx(this) }
+        }
+    }
+
+    inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) {
+        if (layoutParams is T) block(layoutParams as T)
+    }
+
+    fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
+    fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
 
 }
 

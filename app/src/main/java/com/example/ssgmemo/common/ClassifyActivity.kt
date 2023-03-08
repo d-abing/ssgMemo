@@ -15,7 +15,6 @@ import com.example.ssgmemo.adapter.ViewPagerAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.databinding.ActivityClassifyBinding
 import com.example.ssgmemo.fragment.CtgrAddFragment
-import com.example.ssgmemo.fragment.CtgrDeleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -76,6 +75,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         if(memoList!!.isEmpty()) { // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
             binding.viewpager.visibility = View.INVISIBLE
             binding.emptyText.visibility = View.VISIBLE
+            binding.btnDelete.visibility = View.GONE
         } else {
             binding.viewpager.visibility = View.VISIBLE
             binding.emptyText.visibility = View.INVISIBLE
@@ -98,7 +98,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
         // 광고
         MobileAds.initialize(this) {}
-        mAdView = findViewById<AdView>(R.id.adView)
+        mAdView = findViewById<AdView>(R.id.sizeup)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
@@ -125,9 +125,26 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         val memo:Memo = helper.selectMemo(memoidx)
         helper.deleteContent(memo)
         pagerAdapter!!.listData.clear()
-        memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
+        memoList2 = helper.selectUnclassifiedMemoList()                                 // 삭제로 인해 변경된 memoList 가져오기
         pagerAdapter!!.listData.addAll(memoList2!!)
         pagerAdapter!!.notifyDataSetChanged()
+
+        if(memoList2 != null && memoList2!!.isNotEmpty()) {                             // 분류후에도 분류할 memoList가 남아있으면
+            if (memoList2!!.size > tmp_position) { // 마지막 메모가 아니라면
+                // Log.d("midx", "마지막메모x")
+            } else { // 마지막 메모라면
+                tmp_position = 0
+                // Log.d("midx", "마지막메모o")
+            }
+            midx = memoList2!![tmp_position].idx
+            // Log.d("midx", "tmp_position : $tmp_position")
+            // Log.d("midx", "midx : $midx")
+        } else {                                                                        // 분류후 분류할 메모리스트가 남아있지 않을 경우
+            // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
+            binding.viewpager.visibility = View.INVISIBLE
+            binding.emptyText.visibility = View.VISIBLE
+            memoList!!.clear()
+        }
     }
 
     override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수

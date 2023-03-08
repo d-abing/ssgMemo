@@ -1,12 +1,14 @@
 package com.example.ssgmemo.fragment
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.ssgmemo.callback.CallbackListener
@@ -27,8 +29,9 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentMemoDeleteBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -54,7 +57,8 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
 
         if(memoCtgr == "0"){
             // 선택된 메모가 미분류 라면 선택지 제한
-            binding.deleteMemoMsg.text = "선택된 메모가 삭제됩니다"
+            binding.deleteMemoMsg.text = "메모가 삭제됩니다"
+            binding.view2.visibility = View.GONE
             binding.delOption.visibility = View.GONE
             if(isList!!){
                 // 선택된 메모가 리스트라면 리스트 전체 삭제

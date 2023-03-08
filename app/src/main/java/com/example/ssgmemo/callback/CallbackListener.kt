@@ -17,4 +17,8 @@ interface CallbackListener {
     fun deleteMemoList(){}
     fun deleteMemoFromCtgr(cidx: String) {}
     fun deleteCtgrList(){}
+    fun moveCtgrList(oldctgr: Long, ctgr: Long){}
+    fun moveCtgr(memoidx: Long?, ctgr: Long){}
+
+
 }

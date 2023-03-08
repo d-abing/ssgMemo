@@ -3,31 +3,33 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/fragment_decoration"
-    android:backgroundTint="@color/white"
     android:elevation="20dp"
     android:gravity="center"
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/move_memo_msg"
+        android:layout_width="300dp"
         android:layout_height="54dp"
         android:layout_weight="1"
         android:gravity="center"
         android:padding="8dp"
-        android:text="카테고리 이름을 입력하세요"
+        android:text="이동할 카테고리를 선택해 주세요"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
-    <EditText
-        android:id="@+id/editTextTextPersonName"
+    <Spinner
+        android:id="@+id/category2"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <View
+        android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="10dp"
         android:layout_weight="1"
-        android:background="@null"
-        android:ems="10"
-        android:gravity="center|top"
-        android:inputType="textPersonName"
-        android:maxLength="15" />
+        android:background="@color/white" />
 
     <View
         android:layout_width="match_parent"
@@ -44,7 +46,7 @@
         android:weightSum="2">
 
         <TextView
-            android:id="@+id/dialog_tv_no"
+            android:id="@+id/dialog_memo_move_no"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -59,7 +61,7 @@
             android:background="@color/gray" />
 
         <TextView
-            android:id="@+id/dialog_tv_yes"
+            android:id="@+id/dialog_memo_move_yes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

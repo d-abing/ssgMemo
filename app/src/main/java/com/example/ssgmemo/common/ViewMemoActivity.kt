@@ -18,10 +18,10 @@ import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.callback.ItemTouchHelperCallback
 import com.example.ssgmemo.databinding.ActivityViewMemoBinding
 import com.example.ssgmemo.fragment.MemoDeleteFragment
+import com.example.ssgmemo.fragment.MemoMoveFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import java.util.Collections
 
 class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     private lateinit var binding: ActivityViewMemoBinding
@@ -86,7 +86,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 adapter.selectedList.clear()
                 adapter.selectAll = false
                 adapter.notifyDataSetChanged()
-                binding.deleteLayout.visibility = View.VISIBLE
+                binding.selectLayout.visibility = View.VISIBLE
                 modeChange = true
                 itemTouchHelperCallback.setMode(1)
             } else {
@@ -94,7 +94,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 adapter.selectedList.clear()
                 adapter.selectAll = false
                 adapter.notifyDataSetChanged()
-                binding.deleteLayout.visibility = View.INVISIBLE
+                binding.selectLayout.visibility = View.INVISIBLE
                 modeChange = false
                 itemTouchHelperCallback.setMode(0)
             }
@@ -124,9 +124,20 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
 
+        binding.moveSelected.setOnClickListener {
+            if (adapter.selectedList.size == 1){
+                val memoidx = adapter.selectedList[0].idx.toString()
+                fragmentOpen(title, memoidx, false, 1)
+            }else if(adapter.selectedList.isEmpty()) {
+                Toast.makeText(this,"선택된 값이 없습니다.",Toast.LENGTH_SHORT).show()
+            }else{
+                fragmentOpen(title, adapter.selectedList[0].ctgr.toString(), true, 1)
+            }
+        }
+
         // 광고
         MobileAds.initialize(this) {}
-        val mAdView = findViewById<AdView>(R.id.adView)
+        val mAdView = findViewById<AdView>(R.id.sizeup)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
@@ -154,6 +165,19 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         bundle.putBoolean("isList",isList)
         deleteFragment.arguments = bundle
         deleteFragment.show(supportFragmentManager, "memoDelete")
+    }
+
+    fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean, move: Int) {
+        super.fragmentOpen(memoCtgr, memoidx, isList)
+        // 리스트 인지 하나인지 미분류인지 아닌지...
+        val moveFragment = MemoMoveFragment(this)
+        moveFragment.helper = helper
+        val bundle:Bundle = Bundle()
+        bundle.putString("memoCtgr",memoCtgr)
+        bundle.putString("memoidx",memoidx)
+        bundle.putBoolean("isList",isList)
+        moveFragment.arguments = bundle
+        moveFragment.show(supportFragmentManager, "memoMove")
     }
 
     override fun deleteMemo(memoidx: String) {
@@ -210,6 +234,36 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         for(selectedList in adapter.selectedList){
             helper.deleteContent(selectedList)
         }
+        adapter.itemList = helper.selectMemoList(title)
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun moveCtgr(memoidx: Long?, ctgr: Long) {
+        super.moveCtgr(memoidx, ctgr)
+        val memo:Memo = helper.selectMemo(memoidx.toString())
+        helper.updateMemoCtgr(memoidx, ctgr, helper.getTopPriority(ctgr.toInt()) + 1)
+        helper.updatePriority(memo.ctgr.toLong())
+        adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        binding.recyclerContent1.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = adapter
+            itemTouchHelperCallback.removePreviousClamp(this)
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun moveCtgrList(oldctgr: Long, ctgr: Long){
+        var sortedList = adapter.selectedList.sortedBy { it.priority }
+        for( memo in sortedList){
+            helper.moveContent(memo, ctgr)
+        }
+        helper.updatePriority(oldctgr)
         adapter.itemList = helper.selectMemoList(title)
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE

@@ -1,12 +1,15 @@
 package com.example.ssgmemo.fragment
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ssgmemo.Memo
@@ -31,7 +34,10 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentSettingBinding.inflate(inflater, container, false)
-        binding.btnSetting2.setOnClickListener { onBackPressed() }
+        binding.btnSetting2.setOnClickListener {
+            mainActivity.backFlag = false
+            onBackPressed()
+        }
 
         // 앱 설정 확인 후 switch에 적용
         if(mainActivity.getVibrationState().equals("ON")) {
@@ -68,6 +74,7 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
 
     // 뒤로 가기
     override fun onBackPressed() {
+        mainActivity.backFlag = false
         requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
     }
 }

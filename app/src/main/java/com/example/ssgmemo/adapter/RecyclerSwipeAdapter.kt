@@ -58,7 +58,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         return itemList.size
     }
     private fun animationTranslateOpen(view:View){
-        ObjectAnimator.ofFloat(view, "translationX", 130f).apply {
+        ObjectAnimator.ofFloat(view, "translationX", 150f).apply {
             start()
         }
     }
@@ -83,12 +83,14 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             var toggle_checked: Boolean = false
             binding.searchDate2.text = str_date
 
-             if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
+            if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
                 binding.memoItem.setBackgroundResource(R.drawable.memoback2)
+            } else {
+                binding.memoItem.setBackgroundResource(R.drawable.memoback)
             }
 
             if(mode == 1){
-                binding.task.visibility = View.GONE
+                binding.btnMerge.visibility = View.GONE
                 binding.toggleButton.visibility = View.VISIBLE
                 callbackListener.callback(mode.toLong())
                 binding.memoItem.setOnClickListener {
@@ -107,7 +109,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                     toggle_checked = !toggle_checked
                 }
             }else{
-                binding.task.visibility = View.VISIBLE
+                binding.btnMerge.visibility = View.VISIBLE
                 binding.toggleButton.visibility = View.GONE
                 binding.memoItem.setOnClickListener {
                     val intent = Intent(context, EditActivity::class.java)
@@ -131,10 +133,10 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.searchDate2.textSize = 20f
             }
 
-            binding.task.setOnClickListener {
-                // 프레그먼트 오픈
-                callbackListener.fragmentOpen(memo.ctgr!!.toString(),memo.idx.toString(),false)
+            binding.btnMerge.setOnClickListener {
+                //머지
             }
+
             binding.toggleButton.setOnClickListener {
                 binding.toggleButton.isChecked = !toggle_checked
                 if(!toggle_checked){
@@ -162,11 +164,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         //리스트 갱신
         var priority_gap =itemList[from].priority!! - itemList[to].priority!!
         if (priority_gap == 1){
-            itemList[to].priority = itemList[to].priority?.plus(1)
-            itemList[from].priority = itemList[from].priority?.minus(1)
+            itemList[to].priority = itemList[to].priority.plus(1)
+            itemList[from].priority = itemList[from].priority.minus(1)
         }else if (priority_gap == -1){
-            itemList[to].priority = itemList[to].priority?.minus(1)
-            itemList[from].priority = itemList[from].priority?.plus(1)
+            itemList[to].priority = itemList[to].priority.minus(1)
+            itemList[from].priority = itemList[from].priority.plus(1)
         }
         val data = itemList[from]
         helper.movePriority(itemList[from], itemList[to])
