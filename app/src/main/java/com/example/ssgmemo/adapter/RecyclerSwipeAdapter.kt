@@ -46,11 +46,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.setIsRecyclable(false)
-        if (mode == 1){
-            animationTranslateOpen(holder.itemView.findViewById(R.id.memoItem))
-        }else if(mode == 0){
-            animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
-        }
+//        if (mode == 1){
+//            animationTranslateOpen(holder.itemView.findViewById(R.id.memoItem))
+//        }else if(mode == 0){
+//            animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
+//        }
         holder.bind(itemList[position])
     }
 
@@ -72,6 +72,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
         fun bind(memo: Memo) {
             binding.searchTitle2.text = memo.title
             binding.searchContent2.text = memo.content
+            if (mode == 1){
+                animationTranslateOpen(binding.memoItem)
+            }else if(mode == 0){
+                animationTranslateClose(binding.memoItem)
+            }
 
             val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
