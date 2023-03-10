@@ -8,8 +8,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.AlignmentSpan
@@ -17,13 +15,10 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.util.TypedValue
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginTop
 import androidx.core.widget.doOnTextChanged
 import com.example.ssgmemo.BackPressEditText
 import com.example.ssgmemo.Memo
@@ -55,6 +50,7 @@ class EditActivity : AppCompatActivity(), CallbackListener {
     var ctgr: Int = 0
     var priority: Int = 0
 
+    var ischecked = false
     var isBold = false
     var isItalic = false
     var isUnderline = false
@@ -210,6 +206,17 @@ class EditActivity : AppCompatActivity(), CallbackListener {
             scroll = false
         }
 
+        binding.writeContent.setOnKeyListener { view, i, keyEvent ->
+            if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP && ischecked){
+                val mainLayout = binding.writeLayout
+                val newLayout = LayoutInflater.from(this).inflate(com.example.ssgmemo.R.layout.item_edittext_checkbox, null)
+
+                mainLayout.addView(newLayout)
+                return@setOnKeyListener true
+            }
+            false
+        }
+
         binding.writeContent.setOnScrollChangeListener { view, i, i2, i3, i4 ->
             scroll = true
             readmode = true
@@ -322,10 +329,9 @@ class EditActivity : AppCompatActivity(), CallbackListener {
         binding.rightAlign.setOnClickListener {
             alignChange("rightAlign")
         }
-
-
         // 체크박스...
         binding.checklist.setOnClickListener {
+            ischecked = !ischecked
         }
 
         // 광고

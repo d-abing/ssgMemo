@@ -14,7 +14,8 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.util.TypedValue
-import android.view.MotionEvent
+import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
     private val backKeyHandler = BackKeyHandler(this)
     var backFlag = false
 
+    var ischecked = false
     var isBold = false
     var isItalic = false
     var isUnderline = false
@@ -56,9 +58,10 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         // 설정 state
         val fontSize = intent.getStringExtra("fontSize")
         val vibration = intent.getStringExtra("vibration")
-        
+
         // view
         val content = findViewById<TextView>(R.id.writeContent)
+        val inputContent = binding.inputContent
 
         // spinner
         var ctgr = 0
@@ -151,6 +154,8 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 handler.postDelayed( Runnable { binding.saveMemo.setImageResource(R.drawable.save1) }, 200 ) // 0.5초 후에 다시 닫아주기
             }
         }
+
+        //
 
 
         // onbackpressed 플래그 조절
@@ -259,7 +264,33 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
 
         // 체크박스...
+        // 외부에서 뷰를 초기호 하면 추가할 때 같은 객체를 추가하기 때문에 에러발생
         binding.checklist.setOnClickListener {
+            ischecked = !ischecked
+            val checkBoxItem = LayoutInflater.from(this).inflate(R.layout.item_edittext_checkbox, null)
+            val checkList = checkBoxItem.findViewById<BackPressEditText>(R.id.checkList)
+            // 체크리스트에서 엔터를 눌렀을 경우
+            checkList.setOnKeyListener { view, i, keyEvent ->
+                if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP && ischecked){
+                    val mainLayout = binding.inputContent
+                    val newLayout = LayoutInflater.from(this).inflate(R.layout.item_edittext_checkbox, null)
+                    mainLayout.addView(newLayout,0)
+                    return@setOnKeyListener true
+                }
+                false
+            }
+            checkList.setGetIndexListener {}
+            checkList.setOnClickListener { view ->
+                // clickedIndex 인덱스 정보를 저장한 변수
+                val clickedIndex = inputContent.indexOfChild(view)
+                Log.d("0123","${clickedIndex}")
+            }
+            if(ischecked){
+                inputContent.addView(checkBoxItem,0)
+
+            }else{
+                inputContent.removeViewAt(0)
+            }
         }
 
         // 광고
