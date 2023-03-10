@@ -21,6 +21,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:nestedScrollingEnabled="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:id="@+id/recyclerContent1"
         android:layout_width="366dp"
         android:layout_height="596dp"

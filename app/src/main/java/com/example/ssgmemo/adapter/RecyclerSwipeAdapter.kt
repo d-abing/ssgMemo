@@ -36,6 +36,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     var selectAll = false
     var selectedList : MutableList<Memo> = mutableListOf()
 
+
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
     }
@@ -46,71 +47,73 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.setIsRecyclable(false)
-//        if (mode == 1){
-//            animationTranslateOpen(holder.itemView.findViewById(R.id.memoItem))
-//        }else if(mode == 0){
-//            animationTranslateClose(holder.itemView.findViewById(R.id.memoItem))
-//        }
         holder.bind(itemList[position])
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
-    private fun animationTranslateOpen(view:View){
-        ObjectAnimator.ofFloat(view, "translationX", 150f).apply {
-            start()
-        }
-    }
-    private fun animationTranslateClose(view:View){
-        ObjectAnimator.ofFloat(view, "translationX", 0f).apply {
-            start()
-        }
-    }
 
     inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun bind(memo: Memo) {
-            binding.searchTitle2.text = memo.title
-            binding.searchContent2.text = memo.content
-            if (mode == 1){
-                animationTranslateOpen(binding.memoItem)
-            }else if(mode == 0){
-                animationTranslateClose(binding.memoItem)
-            }
-
+            // 변수 선언
             val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
             var toggle_checked: Boolean = false
+            // 아이템 초기화
+            binding.searchTitle2.text = memo.title
+            binding.searchContent2.text = memo.content
+            binding.btnMerge.visibility = View.VISIBLE
+            binding.toggleButton.visibility = View.GONE
             binding.searchDate2.text = str_date
-
-            if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
-                binding.memoItem.setBackgroundResource(R.drawable.memoback2)
-            } else {
-                binding.memoItem.setBackgroundResource(R.drawable.memoback)
+            // 토글 버튼 클릭 리스너 초기화
+            binding.toggleButton.setOnClickListener {
+                binding.toggleButton.isChecked = !toggle_checked
+                if (!toggle_checked) {
+                    memo.sel = true
+                    selectedList.add(memo)
+                    if (selectedList.size == itemList.size) {
+                        selectAll = true
+                    }
+                } else {
+                    memo.sel = false
+                    selectedList.remove(memo)
+                    if (selectedList.isEmpty()) {
+                        selectAll = false
+                    }
+                }
+                toggle_checked = !toggle_checked
             }
-
+            // 메모가 전체 선택일 때 또는 하나 선택 되었을 때 재활용해도 체크 유지
+            if(memo.sel || selectAll){
+                binding.toggleButton.isChecked = true
+                toggle_checked = true
+            }
+            // 선택 모드일 때 재사용하는 아이템들 초기화
             if(mode == 1){
+                binding.memoItem.translationX = 150f
                 binding.btnMerge.visibility = View.GONE
                 binding.toggleButton.visibility = View.VISIBLE
-                callbackListener.callback(mode.toLong())
+                // 아이템 클릭 리스너 초기화
                 binding.memoItem.setOnClickListener {
                     binding.toggleButton.isChecked = !toggle_checked
-                    if(!toggle_checked){
+                    if (!toggle_checked) {
+                        memo.sel = true
                         selectedList.add(memo)
-                        if (selectedList.size == itemList.size){
+                        if (selectedList.size == itemList.size) {
                             selectAll = true
                         }
-                    }else{
+                    } else {
+                        memo.sel = false
                         selectedList.remove(memo)
-                        if (selectedList.isEmpty()){
+                        if (selectedList.isEmpty()) {
                             selectAll = false
                         }
                     }
                     toggle_checked = !toggle_checked
                 }
-            }else{
-                binding.btnMerge.visibility = View.VISIBLE
-                binding.toggleButton.visibility = View.GONE
+            } else{
+                // 아이템 클릭 리스너 초기화
                 binding.memoItem.setOnClickListener {
                     val intent = Intent(context, EditActivity::class.java)
                     intent.putExtra("memoIdx", "${memo.idx}")
@@ -119,12 +122,11 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                     context.startActivity(intent)
                 }
             }
-            if (selectAll) {
-                binding.toggleButton.isChecked = true
-                toggle_checked =true
-            }else{
-                binding.toggleButton.isChecked = false
-                toggle_checked =false
+
+            if (memo.priority!! > helper.getTopPriority(memo.ctgr) - 10) {
+                binding.memoItem.setBackgroundResource(R.drawable.memoback2)
+            } else {
+                binding.memoItem.setBackgroundResource(R.drawable.memoback)
             }
 
             if (fontSize!!.equals("ON")) {
@@ -135,22 +137,6 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
 
             binding.btnMerge.setOnClickListener {
                 //머지
-            }
-
-            binding.toggleButton.setOnClickListener {
-                binding.toggleButton.isChecked = !toggle_checked
-                if(!toggle_checked){
-                    selectedList.add(memo)
-                    if (selectedList.size == itemList.size){
-                        selectAll = true
-                    }
-                }else{
-                    selectedList.remove(memo)
-                    if (selectedList.isEmpty()){
-                        selectAll = false
-                    }
-                }
-                toggle_checked = !toggle_checked
             }
         }
     }
@@ -184,4 +170,5 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
         }
     }
+
 }

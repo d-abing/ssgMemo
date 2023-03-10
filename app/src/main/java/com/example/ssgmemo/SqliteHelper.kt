@@ -428,6 +428,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return result
 	}
 
+	@SuppressLint("Range")
 	fun updatePriority(cidx: Long?) {
 		val sql1 = "select idx from memo where ctgr = '" + cidx + "' order by priority"
 		val rd = readableDatabase
@@ -444,7 +445,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		rd.close()
 	}
 
-    fun selectCtgrName(memoCtgr: String?): String {
+    @SuppressLint("Range")
+	fun selectCtgrName(memoCtgr: String?): String {
 		var sql = "select name from ctgr where idx = '"+ memoCtgr +"'"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
@@ -474,6 +476,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 }
 
 data class Ctgr(var idx: Long?, var name: String, var datetime: Long)
-data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int, var priority: Int)
+data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int, var priority: Int, var sel :Boolean = false)
 // memo 테이블의 레코드 하나를 저장할 수 있는 데이터 클래스
 // idx는 primary key이므로 자동증가값으로 설정되어 값이 없을 수도 있으므로 null값을 허용(?)

@@ -39,8 +39,12 @@ class ItemTouchHelperCallback(private val listener: ItemTouchHelperListener) : I
     }
 
     override fun isLongPressDragEnabled(): Boolean {
-        listener.onItemDrag()
-        return super.isLongPressDragEnabled()
+        return if (mode == 0){
+            listener.onItemDrag()
+            super.isLongPressDragEnabled()
+        }else{
+            false
+        }
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {

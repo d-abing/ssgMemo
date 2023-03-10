@@ -1,15 +1,22 @@
 package com.example.ssgmemo.common
 
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
+import android.widget.RadioButton
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.R
 import com.example.ssgmemo.SqliteHelper
@@ -32,7 +39,6 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     var mode : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityViewMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -82,35 +88,43 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
 
         binding.selectBtn.setOnClickListener {
             if (!modeChange) {
+                btnChange(adapter.mode)
+                animateAllItems(adapter.mode)
                 adapter.mode = 1
                 adapter.selectedList.clear()
                 adapter.selectAll = false
-                adapter.notifyDataSetChanged()
                 binding.selectLayout.visibility = View.VISIBLE
                 modeChange = true
-                itemTouchHelperCallback.setMode(1)
             } else {
+                btnChange(adapter.mode)
+                animateAllItems(adapter.mode)
                 adapter.mode = 0
                 adapter.selectedList.clear()
                 adapter.selectAll = false
-                adapter.notifyDataSetChanged()
                 binding.selectLayout.visibility = View.INVISIBLE
                 modeChange = false
-                itemTouchHelperCallback.setMode(0)
             }
         }
 
         binding.selectAll.setOnClickListener {
-            if (adapter.selectAll == false){
-                adapter.selectAll = true
+            adapter.selectAll = !adapter.selectAll
+            if (adapter.selectAll){
+                for (i in 0 until binding.recyclerContent1.childCount) {
+                    val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
+                    val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
+                    toggleButton.isChecked = true
+                    adapter.itemList[i].sel = true
+                }
                 adapter.selectedList = memoList
-                Log.d("test다", "${adapter.selectedList}")
-            }else if(adapter.selectAll == true){
-                adapter.selectAll = false
+            }else{
+                for (i in 0 until binding.recyclerContent1.childCount) {
+                    val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
+                    val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
+                    toggleButton.isChecked = false
+                    adapter.itemList[i].sel = false
+                }
                 adapter.selectedList.clear()
-                Log.d("test다", "${adapter.selectedList}")
             }
-            adapter.notifyDataSetChanged()
         }
 
         binding.deleteSelected.setOnClickListener {
@@ -269,5 +283,67 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             binding.msgText.visibility = View.VISIBLE
         }
         adapter.notifyDataSetChanged()
+    }
+    @SuppressLint("ObjectAnimatorBinding")
+    private fun animateAllItems(mode:Int) {
+        for (i in 0 until binding.recyclerContent1.childCount) {
+            val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
+            val item = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
+            val selectbtn = viewHolder.itemView.findViewById<ImageButton>(R.id.btnMerge)
+            val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
+
+            if (mode == 0){
+                selectbtn.visibility = View.GONE
+                toggleButton.visibility = View.VISIBLE
+                itemTouchHelperCallback.setMode(1)
+                ObjectAnimator.ofFloat(item, "translationX", 150f).apply {
+                    start()
+                }
+            }else{
+                selectbtn.visibility = View.VISIBLE
+                toggleButton.visibility = View.GONE
+                itemTouchHelperCallback.setMode(0)
+                ObjectAnimator.ofFloat(item, "translationX", 0f).apply {
+                    start()
+                }
+            }
+        }
+    }
+    private fun btnChange(mode: Int){
+        for (i in 0 until binding.recyclerContent1.childCount) {
+            val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
+            val memoItem = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
+            val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
+            var toggle_checked: Boolean = adapter.itemList[i].sel
+
+            if (mode == 0) {
+                memoItem.setOnClickListener {
+                    Log.d("ttltl","${adapter.selectAll}")
+                    toggleButton.isChecked = !toggle_checked
+                    if (!toggle_checked) {
+                        adapter.itemList[i].sel = true
+                        adapter.selectedList.add(adapter.itemList[i])
+                        if (adapter.selectedList.size == adapter.itemList.size) {
+                            adapter.selectAll = true
+                        }
+                    } else {
+                        adapter.itemList[i].sel = false
+                        adapter.selectedList.remove(adapter.itemList[i])
+                        if (adapter.selectedList.isEmpty()) {
+                            adapter.selectAll = false
+                        }
+                    }
+                    toggle_checked = !toggle_checked
+                }
+            }else{
+                memoItem.setOnClickListener {
+                    val intent = Intent(this, EditActivity::class.java)
+                    intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
+                    intent.putExtra("fontSize", "${adapter.fontSize}")
+                    intent.putExtra("vibration", "${adapter.vibration}")
+                    startActivity(intent)
+                }
+            }
+        }
     }
 }
