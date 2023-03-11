@@ -38,8 +38,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	}
 	fun insertMemo(memo: Memo) {
 		val wd = writableDatabase
-		val sql = "insert into memo (title,content,datetime,ctgr,priority) values " +
-				"('${memo.title}', '${memo.content}', ${memo.datetime}, ${memo.ctgr}, ${memo.priority})"
+		val sql = "insert into memo (title,content,datetime,ctgr,priority,status) values " +
+				"('${memo.title}', '${memo.content}', ${memo.datetime}, ${memo.ctgr}, ${memo.priority}, ${memo.status})"
 		wd.execSQL(sql)
 		wd.close()
 	}
@@ -59,7 +59,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun updateMemoStatus(memoidx: Long?) {
 		val wd = writableDatabase
 		val values = ContentValues()
-		values.put("status", 1)
+		values.put("status", 2)
 		wd.update("memo", values, "idx = ${memoidx}", null)
 	}
 
@@ -149,7 +149,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun selectUnclassifiedMemoList(): MutableList<Memo> {
 		// 메모 리스트 // 분류에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
-		val sql = "select * from memo where ctgr = '0' order by priority asc"
+		val sql = "select * from memo where ctgr = '0' and status = 1 order by priority asc"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 
@@ -175,7 +175,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	fun selectMemoList(ctgr:String): MutableList<Memo> {
 		// 메모 리스트 // 보기에서 메모 불러올 때 사용
 		val list = mutableListOf<Memo>()
-		var sql = "select * from memo where ctgr = '"+ ctgr +"' order by priority desc"
+		var sql = "select * from memo where ctgr = '"+ ctgr +"' and status = 1 order by priority desc"
 		
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
@@ -340,100 +340,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return result
 	}
 
-	@SuppressLint("Range")
-	fun selectSearchList(keyword: String, where: String, orderby: String): MutableList<Memo> {
-
-		val list = mutableListOf<Memo>()
-		var condition1 = ""
-		var condition2 = ""
-
-		when (where) {
-			"제목" -> {
-				condition1 = "where title like '%$keyword%'"
-			}
-			"내용" -> {
-				condition1 = "where content like '%$keyword%'"
-			}
-			"제목+내용" -> {
-				condition1 = "where title like '%$keyword%' or content like '%$keyword%'"
-			}
-		}
-
-		condition2 = if( orderby == "최신순") {
-			"order by datetime desc"
-		} else {
-			"order by datetime asc"
-		}
-
-
-		var sql = "select * from memo $condition1 $condition2"
-		val rd = readableDatabase
-		val rs = rd.rawQuery(sql, null)
-
-		while (rs.moveToNext()) {
-			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
-			val idx = rs.getLong(rs.getColumnIndex("idx"))
-			val title = rs.getString(rs.getColumnIndex("title"))
-			val content = rs.getString(rs.getColumnIndex("content"))
-			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
-			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
-			val priority = rs.getInt(rs.getColumnIndex("priority"))
-			val status = rs.getInt(rs.getColumnIndex("status"))
-
-			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
-		}
-		rs.close()
-		rd.close()
-
-		return list
-	}
-
-	fun selectCompleteList(keyword: String, where: String, orderby: String): MutableList<Memo> {
-
-		val list = mutableListOf<Memo>()
-		var condition1 = ""
-		var condition2 = ""
-
-		when (where) {
-			"제목" -> {
-				condition1 = "where title like '%$keyword%' and status = 1 "
-			}
-			"내용" -> {
-				condition1 = "where content like '%$keyword%' and status = 1 "
-			}
-			"제목+내용" -> {
-				condition1 = "where title like '%$keyword%' or content like '%$keyword%' and status = 1 "
-			}
-		}
-
-		condition2 = if( orderby == "최신순") {
-			"order by datetime desc"
-		} else {
-			"order by datetime asc"
-		}
-
-
-		var sql = "select * from memo $condition1 $condition2"
-		val rd = readableDatabase
-		val rs = rd.rawQuery(sql, null)
-
-		while (rs.moveToNext()) {
-			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
-			val idx = rs.getLong(rs.getColumnIndex("idx"))
-			val title = rs.getString(rs.getColumnIndex("title"))
-			val content = rs.getString(rs.getColumnIndex("content"))
-			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
-			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
-			val priority = rs.getInt(rs.getColumnIndex("priority"))
-			val status = rs.getInt(rs.getColumnIndex("status"))
-
-			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
-		}
-		rs.close()
-		rd.close()
-
-		return list
-	}
 
 	@SuppressLint("Range")
 	fun checkDuplicationCtgr(title: String): Boolean{
@@ -531,8 +437,103 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		updateMemoCtgr(memo.idx, ctgr, getTopPriority(ctgr.toInt()) + 1)
 	}
 
+	@SuppressLint("Range")
+	fun selectSearchList(keyword: String, where: String, orderby: String): MutableList<Memo> { // 보기 검색
+
+		val list = mutableListOf<Memo>()
+		var condition1 = ""
+		var condition2 = ""
+
+		when (where) {
+			"제목" -> {
+				condition1 = "where title like '%$keyword%' and status = 1"
+			}
+			"내용" -> {
+				condition1 = "where content like '%$keyword%' and status = 1"
+			}
+			"제목+내용" -> {
+				condition1 = "where (title like '%$keyword%' or content like '%$keyword%') and status = 1"
+			}
+		}
+
+		condition2 = if( orderby == "최신순") {
+			"order by datetime desc"
+		} else {
+			"order by datetime asc"
+		}
+
+		var sql = "select * from memo $condition1 $condition2"
+		Log.d("test다", "$sql")
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
+
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
+		}
+		rs.close()
+		rd.close()
+
+		return list
+	}
+
+	fun selectCompleteList(keyword: String, where: String, orderby: String): MutableList<Memo> { // 완료 검색
+		val list = mutableListOf<Memo>()
+		var condition1 = ""
+		var condition2 = ""
+
+		when (where) {
+			"제목" -> {
+				condition1 = "where title like '%$keyword%' and status = 2"
+			}
+			"내용" -> {
+				condition1 = "where content like '%$keyword%' and status = 2"
+			}
+			"제목+내용" -> {
+				condition1 = "where (title like '%$keyword%' or content like '%$keyword%') and status = 2"
+			}
+		}
+
+		condition2 = if( orderby == "최신순") {
+			"order by datetime desc"
+		} else {
+			"order by datetime asc"
+		}
+
+
+		var sql = "select * from memo $condition1 $condition2"
+		Log.d("test다", "$sql")
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
+
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
+		}
+		rs.close()
+		rd.close()
+
+		return list
+	}
+
     fun getMemoListSize(idx: Long?): String {
-		var sql = "select * from memo where ctgr = '"+ idx +"'"
+		var sql = "select * from memo where ctgr = '"+ idx +"' and status = 1"
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 		var size : Int = 0

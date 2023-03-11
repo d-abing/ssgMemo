@@ -128,7 +128,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 val mContent = binding.writeContent.text.toString()
                 val mDate = System.currentTimeMillis()
                 var mPriority = if (helper.checkTopMemo(mCtgr!!) != null) { helper.checkTopMemo(mCtgr!!)!! + 1 } else 0
-                var mStatus = 0
+                var mStatus = 1
 
                 if(vibration.equals("ON")) {
                     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

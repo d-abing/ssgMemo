@@ -71,6 +71,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.helper = helper
         adapter.callbackListener = this
         adapter.itemList = helper.selectMemoList(title!!)
+        Log.d("test다", "${helper.selectMemoList(title!!)}")
 
         // 리사이클러뷰 어뎁터 붙이기
         binding.recyclerContent1.adapter = adapter
