@@ -31,42 +31,60 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 class ViewMemoActivity : AppCompatActivity(), CallbackListener{
+
+    // 지연 초기화
     private lateinit var binding: ActivityViewMemoBinding
-    val helper = SqliteHelper(this, "ssgMemo", 1)
-    lateinit var adapter: RecyclerSwipeAdapter
     private lateinit var itemTouchHelperCallback: ItemTouchHelperCallback
     private lateinit var title: String
+    lateinit var adapter: RecyclerSwipeAdapter
+
+    // 초기화
+    val helper = SqliteHelper(this, "ssgMemo", 1)
     var mode : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 바인딩
         binding = ActivityViewMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        title = intent.getStringExtra("idx").toString()
+        // 변수선언
         val ctgrName = intent.getStringExtra("ctgrname")
-        // list
         val memoList = helper.selectMemoList(title!!)
-        adapter = RecyclerSwipeAdapter(this)
-        itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerContent1.context, LinearLayoutManager(this).orientation)
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams1 = binding.recyclerContent1.layoutParams
 
-        adapter.callbackListener = this
+        // 모드 변경 변수
+        var modeChange = false
+
+        // 메모 제목 초기화
+        title = intent.getStringExtra("idx").toString()
+
+        // 어뎁터 초기화
+        adapter = RecyclerSwipeAdapter(this)
         adapter.fontSize = intent.getStringExtra("fontSize").toString()
         adapter.vibration = intent.getStringExtra("vibration").toString()
         adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
-        itemTouchHelperCallback.setClamp(150f)
-        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
-        val dividerItemDecoration = DividerItemDecoration(binding.recyclerContent1.context, LinearLayoutManager(this).orientation)
-        binding.recyclerContent1.addItemDecoration(dividerItemDecoration)
-        binding.recyclerContent1.adapter = adapter
-        binding.ctgrTitle.text = ctgrName
+        adapter.callbackListener = this
         adapter.itemList = helper.selectMemoList(title!!)
-        Log.d("test다11","${adapter.itemList}")
 
-        val display = this.applicationContext?.resources?.displayMetrics
-        val deviceHeight = display?.heightPixels
-        val layoutParams1 = binding.recyclerContent1.layoutParams
+        // 리사이클러뷰 어뎁터 붙이기
+        binding.recyclerContent1.adapter = adapter
+
+        // 터치 콜백리스터
+        itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        itemTouchHelperCallback.setClamp(150f)
+
+        // 터치 콜백리스너 리사이클러뷰에 붙이기
+        ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.recyclerContent1)
+        binding.recyclerContent1.addItemDecoration(dividerItemDecoration)
+        binding.ctgrTitle.text = ctgrName
+
+        // 레이아웃 초기화
         layoutParams1.height = deviceHeight?.times(0.82)!!.toInt()
         binding.recyclerContent1.layoutParams = layoutParams1
 
@@ -84,14 +102,13 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
 
-        var modeChange = false
-
+        // 버튼 기능 초기화
         binding.selectBtn.setOnClickListener {
+            adapter.selectedList.clear()
             if (!modeChange) {
                 btnChange(adapter.mode)
                 animateAllItems(adapter.mode)
                 adapter.mode = 1
-                adapter.selectedList.clear()
                 adapter.selectAll = false
                 binding.selectLayout.visibility = View.VISIBLE
                 modeChange = true
@@ -99,7 +116,6 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 btnChange(adapter.mode)
                 animateAllItems(adapter.mode)
                 adapter.mode = 0
-                adapter.selectedList.clear()
                 adapter.selectAll = false
                 binding.selectLayout.visibility = View.INVISIBLE
                 modeChange = false
@@ -314,36 +330,37 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
             val memoItem = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
             val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
-            var toggle_checked: Boolean = adapter.itemList[i].sel
-
-            if (mode == 0) {
-                memoItem.setOnClickListener {
-                    Log.d("ttltl","${adapter.selectAll}")
-                    toggleButton.isChecked = !toggle_checked
-                    if (!toggle_checked) {
-                        adapter.itemList[i].sel = true
-                        adapter.selectedList.add(adapter.itemList[i])
-                        if (adapter.selectedList.size == adapter.itemList.size) {
-                            adapter.selectAll = true
-                        }
-                    } else {
-                        adapter.itemList[i].sel = false
-                        adapter.selectedList.remove(adapter.itemList[i])
-                        if (adapter.selectedList.isEmpty()) {
-                            adapter.selectAll = false
-                        }
-                    }
-                    toggle_checked = !toggle_checked
-                }
-            }else{
-                memoItem.setOnClickListener {
-                    val intent = Intent(this, EditActivity::class.java)
-                    intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
-                    intent.putExtra("fontSize", "${adapter.fontSize}")
-                    intent.putExtra("vibration", "${adapter.vibration}")
-                    startActivity(intent)
-                }
-            }
+//            var toggle_checked: Boolean = this.itemlist[i].sel
+//            Log.d("toggle_checked","$toggle_checked")
+//
+//            if (mode == 0) {
+//                memoItem.setOnClickListener {
+//                    Log.d("ttltl","${adapter.selectAll}")
+//                    toggleButton.isChecked = !toggle_checked
+//                    if (!toggle_checked) {
+//                        adapter.itemList[i].sel = true
+//                        adapter.selectedList.add(adapter.itemList[i])
+//                        if (adapter.selectedList.size == adapter.itemList.size) {
+//                            adapter.selectAll = true
+//                        }
+//                    } else {
+//                        adapter.itemList[i].sel = false
+//                        adapter.selectedList.remove(adapter.itemList[i])
+//                        if (adapter.selectedList.isEmpty()) {
+//                            adapter.selectAll = false
+//                        }
+//                    }
+//                    toggle_checked = !toggle_checked
+//                }
+//            }else{
+//                memoItem.setOnClickListener {
+//                    val intent = Intent(this, EditActivity::class.java)
+//                    intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
+//                    intent.putExtra("fontSize", "${adapter.fontSize}")
+//                    intent.putExtra("vibration", "${adapter.vibration}")
+//                    startActivity(intent)
+//                }
+//            }
         }
     }
 }
