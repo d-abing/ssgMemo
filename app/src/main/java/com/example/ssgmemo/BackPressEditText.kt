@@ -7,6 +7,7 @@ import android.view.KeyEvent
 
 class BackPressEditText : androidx.appcompat.widget.AppCompatEditText {
     private var _listener: OnBackPressListener? = null
+    private var indexListener: OnGetIndexListener? = null
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -14,8 +15,7 @@ class BackPressEditText : androidx.appcompat.widget.AppCompatEditText {
         context,
         attrs,
         defStyle
-    ) {
-    }
+    )
 
     override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && _listener != null) {
@@ -24,11 +24,22 @@ class BackPressEditText : androidx.appcompat.widget.AppCompatEditText {
         return super.onKeyPreIme(keyCode, event)
     }
 
+    override fun setOnClickListener(l: OnClickListener?) {
+        indexListener!!.getIndex()
+        super.setOnClickListener(l)
+    }
+
     fun setOnBackPressListener(`$listener`: OnBackPressListener?) {
         _listener = `$listener`
+    }
+    fun setGetIndexListener(listener: () -> Unit){
+        indexListener = listener
     }
 
     interface OnBackPressListener {
         fun onBackPress()
+    }
+    interface OnGetIndexListener{
+        fun getIndex()
     }
 }

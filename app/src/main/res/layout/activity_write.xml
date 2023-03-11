@@ -47,24 +47,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 
-    <com.example.ssgmemo.BackPressEditText
-        android:id="@+id/writeContent"
+    <LinearLayout
+        android:id="@+id/inputContent"
         android:layout_width="352dp"
         android:layout_height="533dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:background="#1AEDC089"
-        android:cursorVisible="true"
-        android:gravity="top"
-        android:lineSpacingExtra="5sp"
-        android:padding="10dp"
-        android:textColorHint="#FFFFFF"
-        android:textSize="20dp"
-        android:visibility="visible"
+        android:orientation="vertical"
+        android:weightSum="9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/writeTitle">
+
+        <com.example.ssgmemo.BackPressEditText
+            android:id="@+id/writeContent"
+            android:layout_width="352dp"
+            android:layout_height="533dp"
+            android:background="@null"
+            android:cursorVisible="true"
+            android:gravity="top"
+            android:lineSpacingExtra="5sp"
+            android:padding="10dp"
+            android:textColorHint="#FFFFFF"
+            android:textSize="20dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/date"
@@ -249,5 +262,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
     </com.google.android.gms.ads.AdView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
