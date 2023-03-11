@@ -49,6 +49,9 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         binding = ActivityViewMemoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 메모 제목 초기화
+        title = intent.getStringExtra("idx").toString()
+
         // 변수선언
         val ctgrName = intent.getStringExtra("ctgrname")
         val memoList = helper.selectMemoList(title!!)
@@ -59,9 +62,6 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
 
         // 모드 변경 변수
         var modeChange = false
-
-        // 메모 제목 초기화
-        title = intent.getStringExtra("idx").toString()
 
         // 어뎁터 초기화
         adapter = RecyclerSwipeAdapter(this)
@@ -330,37 +330,37 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
             val memoItem = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
             val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
-//            var toggle_checked: Boolean = this.itemlist[i].sel
-//            Log.d("toggle_checked","$toggle_checked")
-//
-//            if (mode == 0) {
-//                memoItem.setOnClickListener {
-//                    Log.d("ttltl","${adapter.selectAll}")
-//                    toggleButton.isChecked = !toggle_checked
-//                    if (!toggle_checked) {
-//                        adapter.itemList[i].sel = true
-//                        adapter.selectedList.add(adapter.itemList[i])
-//                        if (adapter.selectedList.size == adapter.itemList.size) {
-//                            adapter.selectAll = true
-//                        }
-//                    } else {
-//                        adapter.itemList[i].sel = false
-//                        adapter.selectedList.remove(adapter.itemList[i])
-//                        if (adapter.selectedList.isEmpty()) {
-//                            adapter.selectAll = false
-//                        }
-//                    }
-//                    toggle_checked = !toggle_checked
-//                }
-//            }else{
-//                memoItem.setOnClickListener {
-//                    val intent = Intent(this, EditActivity::class.java)
-//                    intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
-//                    intent.putExtra("fontSize", "${adapter.fontSize}")
-//                    intent.putExtra("vibration", "${adapter.vibration}")
-//                    startActivity(intent)
-//                }
-//            }
+            var toggle_checked: Boolean = adapter.itemList[i].sel
+            Log.d("toggle_checked","$toggle_checked")
+
+            if (mode == 0) {
+                memoItem.setOnClickListener {
+                    Log.d("ttltl","${adapter.selectAll}")
+                    toggleButton.isChecked = !toggle_checked
+                    if (!toggle_checked) {
+                        adapter.itemList[i].sel = true
+                        adapter.selectedList.add(adapter.itemList[i])
+                        if (adapter.selectedList.size == adapter.itemList.size) {
+                            adapter.selectAll = true
+                        }
+                    } else {
+                        adapter.itemList[i].sel = false
+                        adapter.selectedList.remove(adapter.itemList[i])
+                        if (adapter.selectedList.isEmpty()) {
+                            adapter.selectAll = false
+                        }
+                    }
+                    toggle_checked = !toggle_checked
+                }
+            }else{
+                memoItem.setOnClickListener {
+                    val intent = Intent(this, EditActivity::class.java)
+                    intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
+                    intent.putExtra("fontSize", "${adapter.fontSize}")
+                    intent.putExtra("vibration", "${adapter.vibration}")
+                    startActivity(intent)
+                }
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import android.view.KeyEvent
 
 class BackPressEditText : androidx.appcompat.widget.AppCompatEditText {
     private var _listener: OnBackPressListener? = null
-    private var indexListener: OnGetIndexListener? = null
+//    private var indexListener: OnGetIndexListener? = null
 
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -24,22 +24,23 @@ class BackPressEditText : androidx.appcompat.widget.AppCompatEditText {
         return super.onKeyPreIme(keyCode, event)
     }
 
-    override fun setOnClickListener(l: OnClickListener?) {
-        indexListener!!.getIndex()
-        super.setOnClickListener(l)
-    }
+//    override fun setOnClickListener(l: OnClickListener?) {
+//        indexListener!!.getIndex()
+//        super.setOnClickListener(l)
+//    }
 
     fun setOnBackPressListener(`$listener`: OnBackPressListener?) {
         _listener = `$listener`
     }
-    fun setGetIndexListener(listener: () -> Unit){
-        indexListener = listener
-    }
+//    fun setGetIndexListener(listener: () -> Unit){
+//        indexListener = listener
+//    }
 
     interface OnBackPressListener {
         fun onBackPress()
     }
-    interface OnGetIndexListener{
-        fun getIndex()
-    }
+//    interface OnGetIndexListener{
+//        fun getIndex()
+//    }
 }
+// 위 주석은 클릭 이벤트 발생시 엑션을 위함.

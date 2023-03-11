@@ -279,7 +279,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 }
                 false
             }
-            checkList.setGetIndexListener {}
+//            checkList.setGetIndexListener {}
             checkList.setOnClickListener { view ->
                 // clickedIndex 인덱스 정보를 저장한 변수
                 val clickedIndex = inputContent.indexOfChild(view)
