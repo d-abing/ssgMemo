@@ -36,7 +36,6 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     var selectAll = false
     var selectedList : MutableList<Memo> = mutableListOf()
 
-
     override fun onBindViewHolder(holder: Holder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
     }
@@ -63,7 +62,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             // 아이템 초기화
             binding.searchTitle2.text = memo.title
             binding.searchContent2.text = memo.content
-            binding.btnMerge.visibility = View.VISIBLE
+            binding.btnComplete.visibility = View.VISIBLE
             binding.toggleButton.visibility = View.GONE
             binding.searchDate2.text = str_date
             // 토글 버튼 클릭 리스너 초기화
@@ -92,7 +91,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             // 선택 모드일 때 재사용하는 아이템들 초기화
             if(mode == 1){
                 binding.memoItem.translationX = 150f
-                binding.btnMerge.visibility = View.GONE
+                binding.btnComplete.visibility = View.GONE
                 binding.toggleButton.visibility = View.VISIBLE
                 // 아이템 클릭 리스너 초기화
                 binding.memoItem.setOnClickListener {
@@ -113,6 +112,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                     toggle_checked = !toggle_checked
                 }
             } else{
+                binding.btnComplete.visibility = View.VISIBLE
+                binding.toggleButton.visibility = View.GONE
                 // 아이템 클릭 리스너 초기화
                 binding.memoItem.setOnClickListener {
                     val intent = Intent(context, EditActivity::class.java)
@@ -135,8 +136,8 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
                 binding.searchDate2.textSize = 20f
             }
 
-            binding.btnMerge.setOnClickListener {
-                //머지
+            binding.btnComplete.setOnClickListener {
+                helper.updateMemoStatus(memo.idx)
             }
         }
     }
@@ -170,5 +171,4 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             vibrator?.vibrate(VibrationEffect.createOneShot(200, 50))
         }
     }
-
 }

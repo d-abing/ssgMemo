@@ -70,7 +70,7 @@ class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
                 if (ctgrSelected) {
                     listener.deleteCtgr(ctgridx!!)
                 } else if (memoSelected) {
-                    listener.deleteMemoFromCtgr(ctgridx!!)
+                    listener.moveCtgrList(ctgridx!!.toLong(), -1)
                 } else {
                     Toast.makeText(activity, "하나를 선택해 주세요.", Toast.LENGTH_SHORT).show()
                 }

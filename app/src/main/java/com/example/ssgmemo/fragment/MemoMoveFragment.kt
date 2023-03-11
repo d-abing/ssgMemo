@@ -50,9 +50,6 @@ class MemoMoveFragment(var listener: CallbackListener) : DialogFragment() {
         val memoidx: String? = bundle?.getString("memoidx") // 해당 메모의 idx 리스트라면 = 첫번째 idx 값만을 가져옴
         val isList: Boolean? = bundle?.getBoolean("isList") // 리스트인지 아닌지.
 
-        var ctgrSelected:Boolean = false
-        var memoSelected:Boolean = false
-
         // 버튼 기본 값
         binding.dialogMemoMoveNo.setOnClickListener {
             dismiss()
@@ -78,7 +75,13 @@ class MemoMoveFragment(var listener: CallbackListener) : DialogFragment() {
 
         ctgrList.removeAt(currentIndex)
 
-        binding.category2.adapter = SpinnerAdapter(requireContext(), R.layout.item_spinner, ctgrList)
+        if( ctgrList.isNotEmpty()) {
+            binding.category2.adapter =
+                SpinnerAdapter(requireContext(), R.layout.item_spinner, ctgrList)
+        } else {
+            binding.moveMemoMsg.setText("이동할 카테고리가 없습니다")
+            binding.category2.visibility = View.GONE
+        }
 
         binding.category2.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}

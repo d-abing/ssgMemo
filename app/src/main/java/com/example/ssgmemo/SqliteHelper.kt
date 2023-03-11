@@ -13,9 +13,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 	override fun onCreate(db: SQLiteDatabase?) {
 		// 앱이 설치되어 SQLiteOpenHelper 클래스가 최초로 사용되는 순간 호출됨
 		// 전체 앱에서 가장 처음 한 번만 수행되며, 대부분 테이블을 생성하는 코드를 작성
-		val sql = "create table ctgr (idx integer primary key, name text, datetime integer)"
+		val sql = "create table ctgr (idx integer primary key, name text, datetime integer, status integer)"
 		db?.execSQL(sql)
-		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, priority integer, FOREIGN KEY (ctgr) references ctgr(idx) ON UPDATE CASCADE ON DELETE CASCADE)"
+		val sql1 = "create table memo (idx integer primary key, title text default '빈 제목', content text not null, datetime integer, ctgr integer, priority integer, status integer, FOREIGN KEY (ctgr) references ctgr(idx) ON UPDATE CASCADE ON DELETE CASCADE)"
 		db?.execSQL(sql1)
 	}
 	override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) { }
@@ -28,8 +28,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 		if (!rs.moveToNext()) {
 			val wd = writableDatabase
-			val sql2 = "insert into ctgr (name, datetime) values " +
-					"('${ctgr.name}', ${ctgr.datetime})"
+			val sql2 = "insert into ctgr (name, datetime, status) values " +
+					"('${ctgr.name}', ${ctgr.datetime}, ${ctgr.status})"
 			wd.execSQL(sql2)
 			wd.close()
 		}
@@ -54,6 +54,13 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		val wd = writableDatabase
 		wd.update("memo", values, "idx = ${memoidx}", null)
 		wd.close()
+	}
+
+	fun updateMemoStatus(memoidx: Long?) {
+		val wd = writableDatabase
+		val values = ContentValues()
+		values.put("status", 1)
+		wd.update("memo", values, "idx = ${memoidx}", null)
 	}
 
 	// memo 테이블에 기존 레코드를 받아온 새로운 레코드로 변경하는 함수
@@ -129,7 +136,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val idx = rs.getLong(rs.getColumnIndex("idx"))
 			val name = rs.getString(rs.getColumnIndex("name"))
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
-			list.add(Ctgr(idx, name, datetime))
+			val status = rs.getInt(rs.getColumnIndex("status"))
+			list.add(Ctgr(idx, name, datetime, status))
 		}
 		rs.close()
 		rd.close()
@@ -153,8 +161,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
 			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
 			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
 
-			list.add(Memo(idx, title, content, datetime, ctgr, priority))
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
 		}
 		rs.close()
 		rd.close()
@@ -179,8 +188,9 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
 			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
 			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
 
-			list.add(Memo(idx, title, content, datetime, ctgr, priority))
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
 		}
 		rs.close()
 		rd.close()
@@ -204,7 +214,8 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
 			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
 			val priority = rs.getInt(rs.getColumnIndex("priority"))
-			memo = Memo(idx, title, content, datetime, ctgr, priority)
+			val status = rs.getInt(rs.getColumnIndex("status"))
+			memo = Memo(idx, title, content, datetime, ctgr, priority, status)
 		}
 		rs.close()
 		rd.close()
@@ -367,8 +378,56 @@ class SqliteHelper(context: Context, name: String, version: Int):
 			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
 			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
 			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
 
-			list.add(Memo(idx, title, content, datetime, ctgr, priority))
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
+		}
+		rs.close()
+		rd.close()
+
+		return list
+	}
+
+	fun selectCompleteList(keyword: String, where: String, orderby: String): MutableList<Memo> {
+
+		val list = mutableListOf<Memo>()
+		var condition1 = ""
+		var condition2 = ""
+
+		when (where) {
+			"제목" -> {
+				condition1 = "where title like '%$keyword%' and status = 1 "
+			}
+			"내용" -> {
+				condition1 = "where content like '%$keyword%' and status = 1 "
+			}
+			"제목+내용" -> {
+				condition1 = "where title like '%$keyword%' or content like '%$keyword%' and status = 1 "
+			}
+		}
+
+		condition2 = if( orderby == "최신순") {
+			"order by datetime desc"
+		} else {
+			"order by datetime asc"
+		}
+
+
+		var sql = "select * from memo $condition1 $condition2"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+
+		while (rs.moveToNext()) {
+			// moveToNext() : 자바의 next()와 동일한 메소드로 커서를 다음 레코드로 내리면서 데이터 존재여부를 리턴
+			val idx = rs.getLong(rs.getColumnIndex("idx"))
+			val title = rs.getString(rs.getColumnIndex("title"))
+			val content = rs.getString(rs.getColumnIndex("content"))
+			val datetime = rs.getLong(rs.getColumnIndex("datetime"))
+			val ctgr = rs.getInt(rs.getColumnIndex("ctgr"))
+			val priority = rs.getInt(rs.getColumnIndex("priority"))
+			val status = rs.getInt(rs.getColumnIndex("status"))
+
+			list.add(Memo(idx, title, content, datetime, ctgr, priority, status))
 		}
 		rs.close()
 		rd.close()
@@ -462,7 +521,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
     }
 
 	fun moveContent(memo: Memo, ctgr: Long) {
-
 		if (memo.ctgr != null){
 			val wd1 = writableDatabase
 			val sql1 = "UPDATE memo set priority = priority-1 where ctgr = '" + memo.ctgr + "' and priority>'" + memo.priority + "'"
@@ -473,9 +531,23 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		updateMemoCtgr(memo.idx, ctgr, getTopPriority(ctgr.toInt()) + 1)
 	}
 
+    fun getMemoListSize(idx: Long?): String {
+		var sql = "select * from memo where ctgr = '"+ idx +"'"
+		val rd = readableDatabase
+		val rs = rd.rawQuery(sql, null)
+		var size : Int = 0
+
+		while (rs.moveToNext()) {
+			size++
+		}
+		rs.close()
+		rd.close()
+
+		return size.toString()
+    }
 }
 
-data class Ctgr(var idx: Long?, var name: String, var datetime: Long)
-data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int, var priority: Int, var sel :Boolean = false)
+data class Ctgr(var idx: Long?, var name: String, var datetime: Long, var status: Int)
+data class Memo(var idx: Long?, var title: String, var content: String, var datetime: Long, var ctgr: Int, var priority: Int, var status: Int, var sel :Boolean = false)
 // memo 테이블의 레코드 하나를 저장할 수 있는 데이터 클래스
 // idx는 primary key이므로 자동증가값으로 설정되어 값이 없을 수도 있으므로 null값을 허용(?)

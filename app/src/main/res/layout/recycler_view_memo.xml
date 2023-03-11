@@ -13,14 +13,14 @@
         tools:ignore="MissingConstraints">
 
         <ImageButton
-            android:id="@+id/btnMerge"
+            android:id="@+id/btnComplete"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="start|center_vertical"
             android:layout_marginLeft="8dp"
             android:background="#00FFFFFF"
             android:scaleType="fitXY"
-            android:src="@drawable/merge" />
+            android:src="@drawable/complete" />
 
         <RadioButton
             android:id="@+id/toggleButton"

@@ -90,7 +90,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         recyclerAdapter!!.callbackListener = this
         recyclerAdapter!!.fontSize = fontSize
         recyclerAdapter!!.helper = helper
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
         recyclerAdapter!!.listData.addAll(helper.selectCtgrList())                            // ctgrList를 recyclerAdapter에 추가
         recyclerAdapter!!.listData.add(ctgrAddBtn)
         binding.recyclerCtgr1.adapter = recyclerAdapter                                     // recyclerCtgr1에 recyclerAdapter 등록
@@ -185,8 +185,8 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     }
 
     override fun addCtgr(ctgrName: String) {
-        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis(), 0)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
 
         if (!helper.checkDuplicationCtgr(ctgrName)){
             helper.insertCtgr(ctgr)

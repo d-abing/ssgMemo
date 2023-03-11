@@ -138,7 +138,7 @@
         android:layout_height="56dp"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -185,7 +185,8 @@
             android:background="#00FFFFFF"
             android:paddingLeft="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/square" />
+            android:src="@drawable/square"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/left_align"
@@ -232,11 +233,12 @@
 
         <Spinner
             android:id="@+id/fontSize"
-            android:layout_width="100dp"
+            android:layout_width="95dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00FFFFFF"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:textAlignment="center" />
 
         <ImageButton
             android:id="@+id/sizeup"
@@ -256,12 +258,12 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="#FFFFFF"
+        android:visibility="gone"
         app:adSize="BANNER"
         app:adUnitId="@string/banner_ad_unit_id_for_test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </com.google.android.gms.ads.AdView>
+        app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
 
 
 

@@ -67,7 +67,7 @@
         android:gravity="center"
         android:maxLength="10"
         android:singleLine="true"
-        android:text="카테고링 이름"
+        android:text="카테고리 이름"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
         app:layout_constraintEnd_toEndOf="@+id/ctgr_btn"
@@ -75,6 +75,17 @@
         app:layout_constraintStart_toStartOf="@+id/ctgr_btn"
         app:layout_constraintTop_toTopOf="@+id/ctgr_btn"
         app:layout_constraintVertical_bias="0.41" />
+
+    <TextView
+        android:id="@+id/memoCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="1"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/ctgr_btn"
+        app:layout_constraintEnd_toEndOf="@+id/ctgr_btn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

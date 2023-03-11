@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                     goMenu<WriteActivity>(v, v.x, v.y, deviceWidth!!, 480, 1164, 640, WriteActivity::class.java)
                     goMenu<ClassifyActivity>(v, v.x, v.y, 120, -420, 1164, 640, ClassifyActivity::class.java)
                     goMenu<ViewCtgrActivity>(v, v.x, v.y, 570, 60, deviceHeight!!, 1080, ViewCtgrActivity::class.java)
-                    // goMenu<SearchActivity>(v, v.x, v.y, 550, 70, 670, 0, SearchActivity::class.java)
+                    goMenu<CompleteActivity>(v, v.x, v.y, 550, 70, 670, 0, CompleteActivity::class.java)
                 }
             }
             true

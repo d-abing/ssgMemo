@@ -2,18 +2,21 @@ package com.example.ssgmemo.common
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
-import android.text.style.AlignmentSpan
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +26,7 @@ import androidx.core.widget.doOnTextChanged
 import com.example.ssgmemo.*
 import com.example.ssgmemo.adapter.SpinnerAdapter
 import com.example.ssgmemo.callback.CallbackListener
+import com.example.ssgmemo.databinding.ActivityClassifyBinding.inflate
 import com.example.ssgmemo.databinding.ActivityWriteBinding
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -31,20 +35,18 @@ import com.google.android.gms.ads.MobileAds
 
 class WriteActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityWriteBinding
-    val helper = SqliteHelper(this, "ssgMemo", 1)
-    lateinit var mAdView : AdView
-    private val ctgrList = ArrayList<SpinnerModel>()
-    private val fontSizeList = listOf("20", "22", "24", "26", "28", "30")
+    private val helper = SqliteHelper(this, "ssgMemo", 1)
+    private lateinit var mAdView : AdView
     private val backKeyHandler = BackKeyHandler(this)
-    var backFlag = false
 
-    var ischecked = false
-    var isBold = false
-    var isItalic = false
-    var isUnderline = false
-    var isLeftAlign = false
-    var isCenterAlign = false
-    var isRightAlign = false
+    private val ctgrList = ArrayList<SpinnerModel>()
+    private lateinit var fontSizeList: List<String>
+
+    private var backFlag = false
+    private var isBold = false
+    private var isItalic = false
+    private var isUnderline = false
+    private var ischecked = false
 
     @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +54,8 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         binding = ActivityWriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        // fontSize용 변수
         var selectedIndex : Int = 0
         var textFontSize : Int = 20
         
@@ -59,28 +63,25 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         val fontSize = intent.getStringExtra("fontSize")
         val vibration = intent.getStringExtra("vibration")
 
-        // view
-        val content = findViewById<TextView>(R.id.writeContent)
-        val inputContent = binding.inputContent
-
-        // spinner
-        var ctgr = 0
+        // category spinner
+        var mCtgr = 0
         ctgrList.add(0, SpinnerModel(R.drawable.closed_box, "미분류"))
         for (i in helper.selectCtgrMap().values.toMutableList()) {
             val spinnerModel = SpinnerModel(R.drawable.closed_box, i)
             ctgrList.add(spinnerModel)
         }
 
-
         fun <K, V> getKey(map: Map<K, V>, target: V): K { return map.keys.first { target == map[it] } }
 
         // 설정 반영
         if (fontSize.equals("ON")) {
             binding.writeTitle.textSize = 24f
-            content.textSize = 24f
-            binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner2, ctgrList)
+            binding.writeContent.textSize = 24f
+            binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner2, ctgrList) // -----------------반영이 안됨
+            fontSizeList = listOf("24", "26", "28", "30", "32", "34")
         } else {
             binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner, ctgrList)
+            fontSizeList = listOf("20", "22", "24", "26", "28", "30")
         }
 
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
@@ -88,13 +89,14 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val category = binding.category.getItemAtPosition(position) as SpinnerModel
                 if( category.name != "미분류") {
-                    ctgr = getKey(helper.selectCtgrMap(), category.name)
+                    mCtgr = getKey(helper.selectCtgrMap(), category.name)
                 } else {
-                    ctgr = 0
+                    mCtgr = 0
                 }
             }
         }
 
+        // fontSize spinner
         binding.fontSize.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, fontSizeList.toMutableList())
         binding.fontSize.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -105,48 +107,39 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             }
         }
 
-        binding.sizedown.setOnClickListener {
+        // fontSize spinner 옆 사이즈 조절 버튼
+        binding.sizedown.setOnClickListener { // 사이즈 다운
             if ( selectedIndex != 0 ) {
                 binding.fontSize.setSelection(selectedIndex - 1)
             }
         }
 
-        binding.sizeup.setOnClickListener {
+        binding.sizeup.setOnClickListener { // 사이즈 업
             if ( selectedIndex != fontSizeList.size - 1 ) {
                 binding.fontSize.setSelection(selectedIndex + 1)
             }
         }
 
-        // 저장
+        // 저장 (saveMemo) ----------------글 스타일 설정 같이 저장되도록 변경해야 함
         binding.saveMemo.setOnClickListener {
-            if (content.text.toString().isNotEmpty()) {
-                var memo: Memo
-                var mTitle = ""
-                if (binding.writeTitle.text.toString() == "") mTitle = "빈 제목"
-                else mTitle = binding.writeTitle.text.toString()
-                var priority = 0
+            if (binding.writeContent.text.toString().isNotEmpty()) {
+                val memo: Memo
+                val mTitle = if (binding.writeTitle.text.toString() == "") "빈 제목" else binding.writeTitle.text.toString()
+                val mContent = binding.writeContent.text.toString()
+                val mDate = System.currentTimeMillis()
+                var mPriority = if (helper.checkTopMemo(mCtgr!!) != null) { helper.checkTopMemo(mCtgr!!)!! + 1 } else 0
+                var mStatus = 0
 
                 if(vibration.equals("ON")) {
                     val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                     vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
                 }
 
-                // 카테고리가 있으며 첫 글이 아닌 경우 (마지막 우선순위 +1) 부여
-                if (helper.checkTopMemo(ctgr!!) !=null){
-                    priority = helper.checkTopMemo(ctgr!!)!! + 1
-                }
-
-                memo = Memo(
-                    null,
-                    mTitle,
-                    content.text.toString(),
-                    System.currentTimeMillis(),
-                    ctgr,
-                    priority
-                )
+                memo = Memo(null, mTitle, mContent, mDate, mCtgr, mPriority, mStatus)
                 helper.insertMemo(memo)
+
                 binding.writeTitle.setText("")
-                content.text = ""
+                binding.writeContent.setText("")
                 binding.category.setSelection(0)
 
                 binding.saveMemo.setImageResource(R.drawable.save2)
@@ -155,15 +148,12 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             }
         }
 
-        //
-
-
         // onbackpressed 플래그 조절
-        content.addTextChangedListener(object : TextWatcher {
+        binding.writeContent.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(arg0: Editable) {
-                if ( !content.text.toString().trim().equals("") && content.text.isNotEmpty() ) {
+                if ( !binding.writeContent.text.toString().trim().equals("") && binding.writeContent.text!!.isNotEmpty() ) {
                     backFlag = true
                 } else {
                     backFlag = false
@@ -171,8 +161,8 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             }
         })
 
+        // writeContent의 크기를 유동적으로 설정
         var startKeyboardHeight: Int = 0
-
         binding.writeLayout.viewTreeObserver.addOnGlobalLayoutListener {
             // 현재 레이아웃의 크기
             val rect = Rect()
@@ -185,9 +175,9 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             startKeyboardHeight = if(startKeyboardHeight < keyboardHeight) keyboardHeight else startKeyboardHeight
 
             // EditText의 크기 조정
-            val layoutParams = content.layoutParams
-            layoutParams.height = screenHeight - keyboardHeight - content.y.toInt() - 300
-            content.layoutParams = layoutParams
+            val layoutParams = binding.writeContent.layoutParams
+            layoutParams.height = screenHeight - keyboardHeight - binding.writeContent.y.toInt() - 300
+            binding.writeContent.layoutParams = layoutParams
 
             if (startKeyboardHeight > keyboardHeight) {
                 binding.adView.visibility = View.VISIBLE
@@ -198,27 +188,29 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             }
         }
 
-        content.doOnTextChanged { _, _, _, _ ->
-            // EditText의 텍스트가 변경될 때마다 실행
-            // 스크롤 변경
-            val cursorPosition = content.selectionStart
-            val cursorLineIndex = content.layout.getLineForOffset(cursorPosition)
-            val lastLineIndex = content.layout.getLineForOffset(content.length())
-            var x = cursorLineIndex - 9
-            var scrollY = 64 + 76 * x
+        // writeContent의 텍스트가 변경될 때마다 스크롤 변경
+        binding.writeContent.doOnTextChanged { _, _, _, _ ->
 
-            if ( cursorLineIndex > 8 && cursorLineIndex == lastLineIndex) {
-                val scrollAmount = content.layout.getLineBottom(content.lineCount - 1) - content.height + 65
-                content.scrollTo(0, scrollAmount)
-            } else if ( cursorLineIndex > 8 && !(content.scrollY >= scrollY && content.scrollY <= scrollY + 608)) {
-                val scrollAmount = content.layout.getLineBottom(cursorLineIndex - 1) - content.height + 110
-                content.scrollTo(0, scrollY)
+            val cursorPosition = binding.writeContent.selectionStart
+            val cursorLineIndex = binding.writeContent.layout.getLineForOffset(cursorPosition)
+            val lastLineIndex = binding.writeContent.layout.getLineForOffset(binding.writeContent.length())
+
+
+            when (textFontSize) {
+                20 -> scrollChange(cursorLineIndex, lastLineIndex, 9, 86, 82)
+                22 -> scrollChange(cursorLineIndex, lastLineIndex, 8, 60, 88)
+                24 -> scrollChange(cursorLineIndex, lastLineIndex, 8, 116, 94)
+                26 -> scrollChange(cursorLineIndex, lastLineIndex, 7, 85, 102)
+                28 -> scrollChange(cursorLineIndex, lastLineIndex, 7, 135, 108)
+                30 -> scrollChange(cursorLineIndex, lastLineIndex, 6, 70, 114)
+                32 -> scrollChange(cursorLineIndex, lastLineIndex, 6, 125, 122)
+                34 -> scrollChange(cursorLineIndex, lastLineIndex, 6, 169, 128)
             }
         }
 
-
+        // writeContent의 텍스트가 변경될 때마다 스타일 적용
         val textWatcher = object : TextWatcher {
-            //
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -231,13 +223,22 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 if (isUnderline) {
                     s?.setSpan(UnderlineSpan(), s.length - 1, s.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
-
-                // s?.setSpan(AbsoluteSizeSpan(dpToPx(textFontSize.toInt())),  s.length - 1, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
+        binding.writeContent.addTextChangedListener(textWatcher)
 
-        content.addTextChangedListener(textWatcher)
+        // 텍스트를 지울 때 span 에러가 발생하지 않도록 처리
+        binding.writeContent.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                isBold = false
+                isItalic = false
+                isUnderline = false
+                return@setOnKeyListener false
+            }
+            false
+        }
 
+        // font Style 버튼 클릭 이벤트
         binding.bold.setOnClickListener {
             fontStyleChange("bold")
         }
@@ -251,17 +252,16 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         }
 
         binding.leftAlign.setOnClickListener {
-            alignChange("leftAlign")
+            binding.writeContent.gravity = Gravity.LEFT
         }
 
         binding.centerAlign.setOnClickListener {
-            alignChange("centerAlign")
+            binding.writeContent.gravity = Gravity.CENTER_HORIZONTAL
         }
 
         binding.rightAlign.setOnClickListener {
-            alignChange("rightAlign")
+            binding.writeContent.gravity = Gravity.RIGHT
         }
-
 
         // 체크박스...
         // 외부에서 뷰를 초기호 하면 추가할 때 같은 객체를 추가하기 때문에 에러발생
@@ -282,14 +282,14 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 //            checkList.setGetIndexListener {}
             checkList.setOnClickListener { view ->
                 // clickedIndex 인덱스 정보를 저장한 변수
-                val clickedIndex = inputContent.indexOfChild(view)
+                val clickedIndex = binding.inputContent.indexOfChild(view)
                 Log.d("0123","${clickedIndex}")
             }
             if(ischecked){
-                inputContent.addView(checkBoxItem,0)
+                binding.inputContent.addView(checkBoxItem,0)
 
             }else{
-                inputContent.removeViewAt(0)
+                binding.inputContent.removeViewAt(0)
             }
         }
 
@@ -300,7 +300,23 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         mAdView.loadAd(adRequest)
     }
 
+    fun scrollChange(cursorLineIndex:Int, lastLineIndex: Int, maxline: Int, base: Int, multi: Int) {
+        // 글 입력 시 스크롤 변경
+        var x = cursorLineIndex - maxline
+        var scrollY = base + multi * x
+
+        if ( cursorLineIndex > (maxline - 1) && cursorLineIndex == lastLineIndex) {
+            val scrollAmount = binding.writeContent.layout.getLineBottom(binding.writeContent.lineCount - 1) - binding.writeContent.height + 65
+            binding.writeContent.scrollTo(0, scrollAmount)
+        } else if ( cursorLineIndex > (maxline - 1) && !(binding.writeContent.scrollY >= scrollY && binding.writeContent.scrollY <= scrollY + multi * (maxline - 1))) {
+            binding.writeContent.scrollTo(0, scrollY)
+        } else if ( cursorLineIndex <= (maxline - 1)) {
+            binding.writeContent.scrollTo(0, 0)
+        }
+    }
+
     fun fontStyleChange(fontKind: String) {
+        // B, I, U 폰트 스타일 변경
         val start =  binding.writeContent.selectionStart
         val end =  binding.writeContent.selectionEnd
 
@@ -312,7 +328,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
     }
 
     fun setNextFontStyle(fontKind: String) {
-        // 드래그하지 않은 경우
+        // 드래그하지 않은 경우 폰트 스타일
         when (fontKind) {
             "bold" ->
                 if (!isBold) {
@@ -341,11 +357,11 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
     }
 
     fun setSeletedFontStyle(fontKind: String, start: Int, end: Int) {
-        // 드래그한 경우
+        // 드래그한 경우 폰트 스타일
         val spans = binding.writeContent.text!!.getSpans(start, end, StyleSpan::class.java)
         val underlines = binding.writeContent.text!!.getSpans(start, end, UnderlineSpan::class.java)
 
-        if (spans.isNotEmpty() && underlines.isNotEmpty()) {
+        if (spans.isNotEmpty() && underlines.isNotEmpty()) { // B,I : O / U : O
             for (span in spans) {
                 for (underline in underlines) {
                     when (fontKind) {
@@ -360,7 +376,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                     }
                 }
             }
-        } else if (spans.isNotEmpty()) {
+        } else if (spans.isNotEmpty()) { // B,I : O / U : X
             for (span in spans) {
                 when (fontKind) {
                     "bold" ->
@@ -374,7 +390,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
                 }
             }
-        } else if (underlines.isNotEmpty()) {
+        } else if (underlines.isNotEmpty()) { // B,I : X / U : O
             for (underline in underlines) {
                 when (fontKind) {
                     "bold" ->
@@ -385,7 +401,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                         binding.writeContent.text!!.removeSpan(underline)
                 }
             }
-        } else {
+        } else { // B,I : X / U : X
             when (fontKind) {
                 "bold" ->
                     binding.writeContent.text!!.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -399,7 +415,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
-    fun checkStyle(span: StyleSpan, start: Int, end: Int, style: Int) {
+    fun checkStyle(span: StyleSpan, start: Int, end: Int, style: Int) { // 이미 B,I 속성이 설정되어 있을 때 속성 확인 후 bold_italic 적용 여부 선택
         binding.writeContent.text!!.removeSpan(span)
         if (span.style == Typeface.BOLD_ITALIC){ // 현재 스타일이 bold_italic일때
             when (style) {
@@ -411,79 +427,35 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
-    fun setNextSelection(){
+    fun setNextSelection(){ // 드래그 하지 않은 경우 폰트 스타일을 바꾸기 위해서 공백문자열을 삽입해야 함
         val start = binding.writeContent.length()
         binding.writeContent.append(" ")
         binding.writeContent.setSelection(start, start + 1)
     }
 
-    fun alignChange(alignKind: String) {
-        // 현재 커서 위치를 가져옵니다.
-        val selectionStart = binding.writeContent.selectionStart
-        val layout = binding.writeContent.layout
-        val line = layout.getLineForOffset(selectionStart)
-
-        // 현재 커서 위치의 줄의 시작점과 끝점을 가져옵니다.
-        val lineStart = layout.getLineStart(line)
-        val lineEnd = layout.getLineEnd(line)
-
-        // 현재 커서가 위치한 줄이 비어 있는 경우 공백 문자로 채워줍니다.
-        if (lineStart == lineEnd) {
-            binding.writeContent.text!!.insert(lineStart, " ")
-            binding.writeContent.setSelection(lineStart + 1)
-        }
-
-        when (alignKind) {
-            "leftAlign" ->
-                binding.writeContent.text!!.setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
-                    lineStart,
-                    lineEnd,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                )
-            "centerAlign" ->
-                binding.writeContent.text!!.setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    lineStart,
-                    lineEnd,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            "rightAlign" ->
-                binding.writeContent.text!!.setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE),
-                    lineStart,
-                    lineEnd,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-        }
-        binding.writeContent.setSelection(selectionStart)
-    }
-
     fun changeFontSize(fontSize: String) {
+        // font size 변경
         val start =  binding.writeContent.selectionStart
         val end =  binding.writeContent.selectionEnd
 
-        if (start == end) { // 드래그하지 않은 경우
-            setNextFontSize(fontSize)
+        if (start == end) { // 드래그 안한 경우
+            binding.writeContent.textSize = fontSize.toFloat()
         } else { // 드래그한 경우
             setSeletedFontSize(fontSize, start, end)
         }
     }
 
-    fun setNextFontSize(fontSize: String) {
-       setNextSelection()
-    }
-
     fun setSeletedFontSize(fontSize: String, start: Int, end: Int) {
+        // 드래그 하지 않은 경우 폰트 사이즈
         val originalSpans = binding.writeContent.text!!.getSpans(start, end, AbsoluteSizeSpan::class.java)
 
-        // 선택한 텍스트에서 기존에 AbsoluteSizeSpan 스팬을 찾아서 제거합니다.
+        // 선택한 텍스트에서 기존에 AbsoluteSizeSpan 스팬을 찾아서 제거
         for (span in originalSpans) {
             binding.writeContent.text!!.removeSpan(span)
         }
 
-        // 새로운 AbsoluteSizeSpan 스팬을 적용합니다.
-        binding.writeContent.text!!.setSpan(AbsoluteSizeSpan(dpToPx(fontSize.toInt())), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // 새로운 AbsoluteSizeSpan 스팬을 적용
+        binding.writeContent.text!!.setSpan(AbsoluteSizeSpan(dpToPx(fontSize.toInt())), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
     fun dpToPx(dp: Int) : Int {
@@ -495,7 +467,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
 
     override fun onBackPressed() {
        if(backFlag) {
-           backKeyHandler.onBackPressed()
+           backKeyHandler.onBackPressed() // 텍스트가 있는 경우 [저장하지 않은 메모는 사라집니다] 출력
        } else {
            super.onBackPressed()
        }

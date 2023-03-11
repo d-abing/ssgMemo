@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ssgmemo.BackPressEditText
 import com.example.ssgmemo.Memo
 import com.example.ssgmemo.SpinnerModel
@@ -31,6 +32,7 @@ import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.internal.ViewUtils.dpToPx
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,7 +48,7 @@ class EditActivity : AppCompatActivity(), CallbackListener {
     private lateinit var binding: ActivityWriteBinding
     private val ctgrList = ArrayList<SpinnerModel>()
     var memoIdx: String = "1"
-    var memo = Memo(null,"","",1111111,0,0)
+    var memo = Memo(null,"","",1111111,0,0, 0)
     var ctgr: Int = 0
     var priority: Int = 0
 
@@ -258,12 +260,14 @@ class EditActivity : AppCompatActivity(), CallbackListener {
             layoutParams.height = screenHeight - keyboardHeight - content.y.toInt() - 310
             content.layoutParams = layoutParams
 
-            if (startKeyboardHeight > keyboardHeight) {
-                binding.adView.visibility = View.VISIBLE
-                binding.fontBar.visibility = View.GONE
-            } else {
-                binding.adView.visibility = View.GONE
-                binding.fontBar.visibility = View.VISIBLE
+            if (memo.ctgr != -1) {
+                if (startKeyboardHeight > keyboardHeight) {
+                    binding.adView.visibility = View.VISIBLE
+                    binding.fontBar.visibility = View.GONE
+                } else {
+                    binding.adView.visibility = View.GONE
+                    binding.fontBar.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -340,54 +344,73 @@ class EditActivity : AppCompatActivity(), CallbackListener {
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
 
+
+        if(memo.ctgr == -1) {
+            binding.btnCopy.visibility = View.GONE
+            binding.btnShare.visibility = View.GONE
+            binding.date.visibility = View.GONE
+            binding.fontBar.visibility = View.GONE
+            binding.writeTitle.isFocusableInTouchMode = false
+            binding.writeContent.isClickable = false
+            binding.writeContent.isFocusable = false
+            binding.category.margin(top = 16F)
+            binding.saveMemo.setImageResource(com.example.ssgmemo.R.drawable.reset)
+            binding.saveMemo.setOnClickListener {
+                moveCtgr(memo.idx, ctgr.toLong())
+            }
+            binding.writeContent.setOnClickListener {  }
+        }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        var mTitle = memo.title
-        var mContent = memo.content
-        var checkdiff1 = false
-        var checkdiff2 = false
-        var checkdiff3 = false
+        if (memo.ctgr != -1) {
+            var mTitle = memo.title
+            var mContent = memo.content
+            var checkdiff1 = false
+            var checkdiff2 = false
+            var checkdiff3 = false
 
-        if (binding.writeTitle.text.toString() != mTitle) {
-            mTitle = if (binding.writeTitle.text.toString() == "") {
-                "빈 제목"
-            } else {
-                binding.writeTitle.text.toString()
+            if (binding.writeTitle.text.toString() != mTitle) {
+                mTitle = if (binding.writeTitle.text.toString() == "") {
+                    "빈 제목"
+                } else {
+                    binding.writeTitle.text.toString()
+                }
+                checkdiff1 = true
             }
-            checkdiff1 = true
-        }
-        if (binding.writeContent.text.toString() != mContent) {
-            mContent = binding.writeContent.text.toString()
-            checkdiff2 = true
-        }
-        // 카테고리가 변경되었을 때 우선순위 +1 부여
-        if (ctgr != memo.ctgr) {
-            priority = if (helper.checkTopMemo(ctgr!!) != null) {
-                helper.checkTopMemo(ctgr!!)!! + 1
-            } else {
-                0
+            if (binding.writeContent.text.toString() != mContent) {
+                mContent = binding.writeContent.text.toString()
+                checkdiff2 = true
             }
-            checkdiff3 = true
-        }
+            // 카테고리가 변경되었을 때 우선순위 +1 부여
+            if (ctgr != memo.ctgr) {
+                priority = if (helper.checkTopMemo(ctgr!!) != null) {
+                    helper.checkTopMemo(ctgr!!)!! + 1
+                } else {
+                    0
+                }
+                checkdiff3 = true
+            }
 
-        // 제목, 내용, 카테고리 하나라도 변경되었으면 db업뎃
-        if (checkdiff1 || checkdiff2 || checkdiff3) {
+            // 제목, 내용, 카테고리 하나라도 변경되었으면 db업뎃
+            if (checkdiff1 || checkdiff2 || checkdiff3) {
 
-            val memo_after = Memo(
-                memo.idx,
-                mTitle,
-                mContent,
-                System.currentTimeMillis(),
-                ctgr,
-                priority
-            )
-            helper.updateMemo(memo_after, checkdiff3, memo.ctgr!!, memo.priority as Int)
-        }
+                val memo_after = Memo(
+                    memo.idx,
+                    mTitle,
+                    mContent,
+                    System.currentTimeMillis(),
+                    ctgr,
+                    priority,
+                    0
+                )
+                helper.updateMemo(memo_after, checkdiff3, memo.ctgr!!, memo.priority as Int)
+            }
 
-        if (checkdiff3) {
-            helper.updatePriority(memo.ctgr.toLong())
+            if (checkdiff3) {
+                helper.updatePriority(memo.ctgr.toLong())
+            }
         }
     }
 
@@ -633,7 +656,6 @@ class EditActivity : AppCompatActivity(), CallbackListener {
 
     override fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean) {
         super.fragmentOpen(memoCtgr, memoidx, isList)
-        // 리스트 인지 하나인지 미분류인지 아닌지...
         val deleteFragment = MemoDeleteFragment(this)
         val bundle:Bundle = Bundle()
         bundle.putString("memoCtgr",memoCtgr)
@@ -641,5 +663,13 @@ class EditActivity : AppCompatActivity(), CallbackListener {
         bundle.putBoolean("isList",isList)
         deleteFragment.arguments = bundle
         deleteFragment.show(supportFragmentManager, "memoDelete")
+    }
+
+    override fun moveCtgr(memoidx: Long?, ctgr: Long) {
+        super.moveCtgr(memoidx, ctgr)
+        val memo:Memo = helper.selectMemo(memoidx.toString())
+        helper.updateMemoCtgr(memoidx, ctgr, helper.getTopPriority(ctgr.toInt()) + 1)
+        helper.updatePriority(memo.ctgr.toLong())
+        this.finish()
     }
 }

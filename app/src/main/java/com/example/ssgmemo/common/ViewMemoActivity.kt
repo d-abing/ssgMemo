@@ -305,7 +305,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         for (i in 0 until binding.recyclerContent1.childCount) {
             val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
             val item = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
-            val selectbtn = viewHolder.itemView.findViewById<ImageButton>(R.id.btnMerge)
+            val selectbtn = viewHolder.itemView.findViewById<ImageButton>(R.id.btnComplete)
             val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
 
             if (mode == 0){

@@ -59,10 +59,11 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 	}
 
 	override fun onBindViewHolder(holder: Holder, position: Int) {
+		holder.setIsRecyclable(false)
 		if(parentName.equals("recyclerCtgr1")){
 			val ctgr: Ctgr = listData[position] as Ctgr
 			holder.setCtgr(ctgr)
-		}else if (parentName.equals("recyclerCtgr2")){
+		} else if (parentName.equals("recyclerCtgr2")){
 			val layout = holder.itemView.findViewById<ConstraintLayout>(R.id.ctgr_item)
 			val delete = holder.itemView.findViewById<ImageButton>(R.id.delete)
 			val txtCtgr2 = holder.itemView.findViewById<BackPressEditText>(R.id.txtCtgr2)
@@ -170,33 +171,39 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				binding.delete.visibility = View.INVISIBLE
 				binding.txtCtgr2.visibility = View.INVISIBLE
 				binding.txtCtgr3.visibility = View.VISIBLE
+				binding.memoCount.text = helper!!.getMemoListSize(ctgr.idx)
 
-				if (ctgr.name == "미분류" || ctgr.name == "+") {
+				if (ctgr.name == "미분류" || ctgr.name == "+" || ctgr.name == "휴지통") {
 					itemView.setOnLongClickListener {return@setOnLongClickListener false}
 				}
 
 				if (ctgr.name == "+"){
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback2)
+					binding.memoCount.visibility = View.INVISIBLE
 				} else if (ctgr.name == "미분류") {
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback3)
+				} else if (ctgr.name == "휴지통") {
+					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback4)
 				} else {
 					binding.ctgrBtn.setBackgroundResource(R.drawable.ctgrback1)
 				}
 				binding.delete.setOnClickListener {
-					// 해당 crgr에 메모가 존재하는지 판다.
+					// 해당 crgr에 메모가 존재하는지 판단.
 					if(helper?.isCtgrMemoExist(ctgr.idx.toString()) == true){
 						callbackListener.fragmentOpen("delete@#",ctgr.idx.toString())
 
 					}else{
 						// 아니면 바로 삭제
-						val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
-						val ctgrAddBtn = Ctgr(null,"+",11111111)
+						val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+						val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+						val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
 						helper?.deleteCtgr(ctgr.idx.toString())
 						listData = helper?.selectCtgrList() as MutableList<Any>
 						if (helper?.isUnknownMemoExist()!!){
 							listData.add(0,unclassifyCtgr)
 						}
 						listData.add(ctgrAddBtn)
+						listData.add(deleteBtn)
 						notifyDataSetChanged()
 					}
 					binding.delete.visibility = View.INVISIBLE
@@ -208,7 +215,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					override fun onBackPress() {
 						// 중복 체크 미분류, +
 						val ctgrName = binding.txtCtgr2.text.toString().trim()
-						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+" && ctgrName != "휴지통"){
 							if (!helper!!.checkDuplicationCtgr(ctgrName)) {
 								// 이름 업데이트
 								helper?.updateCtgrName(
@@ -244,7 +251,7 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 				binding.txtCtgr2.setOnKeyListener { view, i, keyEvent ->
 					if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
 						val ctgrName = binding.txtCtgr2.text.toString().trim()
-						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+						if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+" && ctgrName != "휴지통"){
 							if (!helper!!.checkDuplicationCtgr(ctgrName)){
 								binding.delete.visibility = View.INVISIBLE
 								// 이름 업데이트

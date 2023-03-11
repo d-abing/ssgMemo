@@ -44,8 +44,9 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.callbackListener = this
         adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
         adapter.listData = helper.selectCtgrList().toMutableList()
         adapter.fontSize = intent.getStringExtra("fontSize")
         adapter.vibration = intent.getStringExtra("vibration")
@@ -54,6 +55,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             adapter.listData.add(0,unclassifyCtgr)
         }
         adapter.listData.add(ctgrAddBtn)
+        adapter.listData.add(deleteBtn)
 
 
         // helper.selectMemo()의 리턴값인 리스트를 통째로 listData 리스트에 넣음
@@ -117,11 +119,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         binding.recyclerSearch.layoutParams = layoutParams1
         binding.emptyText4.layoutParams = layoutParams2
 
-        binding.keyword.setOnBackPressListener(object : BackPressEditText.OnBackPressListener{
-            override fun onBackPress() {
-                // keyword에서 포커스 제거 binding.keyword.isFocusableInTouchMode = false
-            }
-        })
 
         binding.btnFilter.setOnClickListener {
             if (flag == false) {
@@ -150,7 +147,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         }
 
         binding.viewCtgrLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            if (binding.keyword.hasFocus()) {
+            if (binding.keyword.text!!.isNotEmpty()) {
                 binding.recyclerSearch.visibility = View.VISIBLE
                 binding.recyclerCtgr2.visibility = View.INVISIBLE
             } else {
@@ -166,7 +163,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             showDataList(recyclerAdapter, keyword, where, orderby)
             false
         }
-
 
         // 광고
         MobileAds.initialize(this) {}
@@ -187,8 +183,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     override fun fragmentOpen(item: String, ctgridx: String?) {
         if(item == "+"){
             CtgrAddFragment(this).show(supportFragmentManager, "CtgrAdd")
-        }else if(item == "delete@#"){
-            Log.d("d이게맞나?","ㅁㄴㅇ")
+        } else if (item == "delete@#"){
             val ctgrDeleteFragment = CtgrDeleteFragment(this)
             val bundle:Bundle = Bundle()
             bundle.putString("Ctgridx",ctgridx)
@@ -197,12 +192,13 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         }
     }
     override fun addCtgr(ctgrName: String) {
-        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis())
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis(), 0)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
 
         // 첫 Ctgr의 이름이 "미분류" 라면 미분류와 + 버튼 사이에 존재 아니라면 0번째 부터
-        if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+"){
+        if(ctgrName != "미분류" && ctgrName != "delete@#" && ctgrName != "+" && ctgrName != "휴지통"){
             if (!helper.checkDuplicationCtgr(ctgrName)){
                 helper.insertCtgr(ctgr)
                 adapter.listData = helper.selectCtgrList() as MutableList<Any>
@@ -210,6 +206,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
                     adapter.listData.add(0,unclassifyCtgr)
                 }
                 adapter.listData.add(ctgrAddBtn)
+                adapter.listData.add(deleteBtn)
                 adapter.notifyDataSetChanged()
             }else{
                 val text = "이미 사용중 입니다."
@@ -227,8 +224,9 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
 
     override fun deleteCtgr(ctgridx: String) {
         super.deleteCtgr(ctgridx)
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
 
         helper.deleteCtgr(ctgridx)
         adapter.listData = helper.selectCtgrList() as MutableList<Any>
@@ -236,26 +234,33 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             adapter.listData.add(0,unclassifyCtgr)
         }
         adapter.listData.add(ctgrAddBtn)
+        adapter.listData.add(deleteBtn)
         adapter.notifyDataSetChanged()
     }
 
-    override fun deleteMemoFromCtgr(cidx: String) {
-        super.deleteMemoFromCtgr(cidx)
-        helper.deleteMemoFromCtgr(cidx)
-        deleteCtgr(cidx)
+    override fun moveCtgrList(oldctgr: Long, ctgr: Long){
+        var sortedList = helper.selectMemoList(oldctgr.toString()).sortedBy { it.priority }
+        for( memo in sortedList){
+            helper.moveContent(memo, ctgr)
+        }
+        deleteCtgr(oldctgr.toString())
+        adapter.notifyDataSetChanged()
     }
 
     override fun onRestart() {
         super.onRestart()
-        val ctgrAddBtn = Ctgr(null,"+",11111111)
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
         if (!helper.isUnknownMemoExist()){
             adapter.listData = helper.selectCtgrList().toMutableList()
             adapter.listData.add(ctgrAddBtn)
+            adapter.listData.add(deleteBtn)
         } else{
             adapter.listData = helper.selectCtgrList().toMutableList()
             adapter.listData.add(ctgrAddBtn)
             adapter.listData.add(0,unclassifyCtgr)
+            adapter.listData.add(deleteBtn)
         }
         adapter.notifyDataSetChanged()
 

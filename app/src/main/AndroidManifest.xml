@@ -17,9 +17,16 @@
         android:theme="@style/Theme.SsgMemo"
         tools:targetApi="31">
         <activity
-            android:name=".common.EditActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:name=".CompleteActivity"
             android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".common.EditActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -34,33 +41,31 @@
         <activity
             android:name=".common.ViewCtgrActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustNothing"
-            >
+            android:windowSoftInputMode="adjustNothing">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".common.WriteActivity"
-            android:windowSoftInputMode="adjustResize"
             android:exported="false"
-           >
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".common.SearchActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false">
+            android:name=".common.CompleteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".common.ClassifyActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false">
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -77,10 +82,11 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
     </application>
+
 </manifest>
