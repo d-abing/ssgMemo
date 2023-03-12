@@ -278,7 +278,7 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		return result
 	}
 
-	fun deleteContent(memo: Memo) {
+	fun deleteMemo(memo: Memo) {
 		// 삭제 할 데이터 보다 우선순위가 큰 경우 -1
 		if (memo.ctgr != null){
 			val wd1 = writableDatabase

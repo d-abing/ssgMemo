@@ -46,7 +46,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
     private var isBold = false
     private var isItalic = false
     private var isUnderline = false
-    private var ischecked = false
+    // private var isChecked = false
 
     @SuppressLint("MissingInflatedId", "WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +54,15 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
         binding = ActivityWriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // fontSize용 변수
-        var selectedIndex : Int = 0
-        var textFontSize : Int = 20
+        var selectedIndex = 0
+        var textFontSize = 20
         
         // 설정 state
         val fontSize = intent.getStringExtra("fontSize")
         val vibration = intent.getStringExtra("vibration")
 
-        // category spinner
+        // ctgrList
         var mCtgr = 0
         ctgrList.add(0, SpinnerModel(R.drawable.closed_box, "미분류"))
         for (i in helper.selectCtgrMap().values.toMutableList()) {
@@ -71,19 +70,18 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             ctgrList.add(spinnerModel)
         }
 
-        fun <K, V> getKey(map: Map<K, V>, target: V): K { return map.keys.first { target == map[it] } }
-
         // 설정 반영
         if (fontSize.equals("ON")) {
             binding.writeTitle.textSize = 24f
             binding.writeContent.textSize = 24f
-            binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner2, ctgrList) // -----------------반영이 안됨
+            binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner2, ctgrList)
             fontSizeList = listOf("24", "26", "28", "30", "32", "34")
         } else {
             binding.category.adapter = SpinnerAdapter(this, R.layout.item_spinner, ctgrList)
             fontSizeList = listOf("20", "22", "24", "26", "28", "30")
         }
 
+        // category spinner
         binding.category.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -94,6 +92,7 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                     mCtgr = 0
                 }
             }
+            fun <K, V> getKey(map: Map<K, V>, target: V): K { return map.keys.first { target == map[it] } }
         }
 
         // fontSize spinner
@@ -263,15 +262,14 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
             binding.writeContent.gravity = Gravity.RIGHT
         }
 
-        // 체크박스...
-        // 외부에서 뷰를 초기호 하면 추가할 때 같은 객체를 추가하기 때문에 에러발생
+        /*// 외부에서 뷰를 초기화 하면 추가할 때 같은 객체를 추가하기 때문에 에러발생
         binding.checklist.setOnClickListener {
-            ischecked = !ischecked
+            isChecked = !isChecked
             val checkBoxItem = LayoutInflater.from(this).inflate(R.layout.item_edittext_checkbox, null)
             val checkList = checkBoxItem.findViewById<BackPressEditText>(R.id.checkList)
             // 체크리스트에서 엔터를 눌렀을 경우
             checkList.setOnKeyListener { view, i, keyEvent ->
-                if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP && ischecked){
+                if (i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP && isChecked){
                     val mainLayout = binding.inputContent
                     val newLayout = LayoutInflater.from(this).inflate(R.layout.item_edittext_checkbox, null)
                     mainLayout.addView(newLayout,0)
@@ -285,13 +283,13 @@ class WriteActivity : AppCompatActivity(), CallbackListener {
                 val clickedIndex = binding.inputContent.indexOfChild(view)
                 Log.d("0123","${clickedIndex}")
             }
-            if(ischecked){
+            if(isChecked){
                 binding.inputContent.addView(checkBoxItem,0)
 
             }else{
                 binding.inputContent.removeViewAt(0)
             }
-        }
+        }*/
 
         // 광고
         MobileAds.initialize(this) {}

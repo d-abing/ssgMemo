@@ -40,10 +40,10 @@ class SettingFragment() : Fragment(),  MainActivity.onBackPressedListener {
         }
 
         // 앱 설정 확인 후 switch에 적용
-        if(mainActivity.getVibrationState().equals("ON")) {
+        if(mainActivity.vibration.equals("ON")) {
             binding.switchVibrate.isChecked = true
         }
-        if(mainActivity.getFontSizeSetting().equals("ON")) {
+        if(mainActivity.fontSize.equals("ON")) {
             binding.switchFontSize.isChecked = true
         }
 

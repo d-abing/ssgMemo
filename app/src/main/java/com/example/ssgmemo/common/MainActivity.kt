@@ -141,18 +141,10 @@ class MainActivity : AppCompatActivity() {
         vibration = vibrationState
     }
 
-    fun getVibrationState(): String{
-        return vibration
-    }
-
     // 폰트 사이즈 state Setter, Getter
     fun setFontSizeState(fontSizeState: String) {
         // 앱 설정에 등록
         MyApplication.prefs.setString("fontSize", "$fontSizeState")
         fontSize = fontSizeState
-    }
-
-    fun getFontSizeSetting(): String{
-        return fontSize
     }
 }

@@ -118,7 +118,6 @@ class CompleteActivity : AppCompatActivity() {
             false
         }
 
-
         // 광고
         MobileAds.initialize(this) {}
         mAdView = findViewById<AdView>(R.id.adView)
