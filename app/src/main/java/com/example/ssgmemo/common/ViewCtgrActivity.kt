@@ -31,48 +31,73 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
+    // 바인딩 및 어댑터 지연 초기화
     private lateinit var binding: ActivityViewCtgrBinding
-    val helper = SqliteHelper(this, "ssgMemo", 1)
     lateinit var adapter: RecyclerAdapter
+    val helper = SqliteHelper(this, "ssgMemo", 1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityViewCtgrBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+    // 변수 선언
+        // ctgr 관련 변수
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
+
+        // 검색 및 정렬 어댑터 관련 변수
+        val recyclerAdapter = RecyclerAdapter(this)
+
+        // 검색 및 정렬 관련 변수
+        var where = "제목+내용"          // sql where 조건
+        var orderby = "최신순"          // sql orderby 조건
+        var keyword = ""               // sql where의 keyword
+        var conditionList1: MutableList<String> = arrayListOf("제목+내용", "제목", "내용")
+        val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
+
+        // display 조정 변수
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerSearch.context, LinearLayoutManager(this).orientation)
+        val display = this.applicationContext?.resources?.displayMetrics
+        val deviceHeight = display?.heightPixels
+        val layoutParams1 = binding.recyclerSearch.layoutParams
+        val layoutParams2 = binding.emptyText4.layoutParams
+
+        // 기타
+        var flag = false
+        var fontSize = intent.getStringExtra("fontSize")
+
+        // 검색 관련 어댑터 초기화
+        recyclerAdapter.helper = helper
+        binding.recyclerSearch.addItemDecoration(dividerItemDecoration)
+        binding.recyclerSearch.adapter = recyclerAdapter
+        showDataList(recyclerAdapter, keyword, where, orderby)
+        layoutParams1.height = deviceHeight?.times(0.81)!!.toInt()
+        layoutParams2.height = deviceHeight?.times(0.81)!!.toInt()
+        binding.recyclerSearch.layoutParams = layoutParams1
+        binding.emptyText4.layoutParams = layoutParams2
+
+        // ctgr뷰 어댑터 초기화
         adapter = RecyclerAdapter(this)
         adapter.callbackListener = this
         adapter.vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         adapter.helper = helper
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
-        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
-        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
         adapter.listData = helper.selectCtgrList().toMutableList()
         adapter.fontSize = intent.getStringExtra("fontSize")
         adapter.vibration = intent.getStringExtra("vibration")
-
+        recyclerAdapter.fontSize = fontSize
         if (helper.isUnknownMemoExist()){
             adapter.listData.add(0,unclassifyCtgr)
         }
         adapter.listData.add(ctgrAddBtn)
         adapter.listData.add(deleteBtn)
 
-
         // helper.selectMemo()의 리턴값인 리스트를 통째로 listData 리스트에 넣음
         binding.recyclerCtgr2.adapter = adapter
+
         // 화면에서 보여줄 RecyclerView인 recyclerMemo의 어댑터로 위에서 만든 adapter를 지정
         binding.recyclerCtgr2.layoutManager = GridLayoutManager(this, 2)
-
-        val recyclerAdapter = RecyclerAdapter(this)
-        var fontSize = intent.getStringExtra("fontSize")
-        recyclerAdapter.fontSize = fontSize
-        var where = "제목+내용"          // sql where 조건
-        var orderby = "최신순"          // sql orderby 조건
-        var keyword = ""               // sql where의 keyword
-        var flag = false
-
-        var conditionList1: MutableList<String> = arrayListOf("제목+내용", "제목", "내용")
-        val conditionList2: MutableList<String> = arrayListOf("최신순", "오래된순")
 
         // <"제목", "내용", "제목+내용">
         if(fontSize.equals("ON")) {
@@ -87,7 +112,6 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             }
         }
 
-
         // <"최신순", "오래된순">
         if(fontSize.equals("ON"))  binding.spinner5.adapter = ArrayAdapter(this, R.layout.spinner_layout, conditionList2)
         else binding.spinner5.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, conditionList2)
@@ -101,25 +125,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
 
             }
         }
-
-        val dividerItemDecoration = DividerItemDecoration(binding.recyclerSearch.context, LinearLayoutManager(this).orientation)
-        binding.recyclerSearch.addItemDecoration(dividerItemDecoration)
-
-        recyclerAdapter.helper = helper
-        showDataList(recyclerAdapter, keyword, where, orderby)
-        binding.recyclerSearch.adapter = recyclerAdapter
-
-
-        val display = this.applicationContext?.resources?.displayMetrics
-        val deviceHeight = display?.heightPixels
-        val layoutParams1 = binding.recyclerSearch.layoutParams
-        val layoutParams2 = binding.emptyText4.layoutParams
-        layoutParams1.height = deviceHeight?.times(0.81)!!.toInt()
-        layoutParams2.height = deviceHeight?.times(0.81)!!.toInt()
-        binding.recyclerSearch.layoutParams = layoutParams1
-        binding.emptyText4.layoutParams = layoutParams2
-
-
+        // 리스너
         binding.btnFilter.setOnClickListener {
             if (flag == false) {
                 binding.spinner5.visibility = View.VISIBLE
@@ -171,13 +177,22 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         mAdView.loadAd(adRequest)
     }
 
-    override fun openKeyBoard(view: View) {
-        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(view,0)
-    }
-    override fun closeKeyBoard() {
-        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    override fun onRestart() {
+        super.onRestart()
+        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
+        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
+        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
+        if (!helper.isUnknownMemoExist()){
+            adapter.listData = helper.selectCtgrList().toMutableList()
+            adapter.listData.add(ctgrAddBtn)
+            adapter.listData.add(deleteBtn)
+        } else{
+            adapter.listData = helper.selectCtgrList().toMutableList()
+            adapter.listData.add(ctgrAddBtn)
+            adapter.listData.add(0,unclassifyCtgr)
+            adapter.listData.add(deleteBtn)
+        }
+        adapter.notifyDataSetChanged()
     }
 
     override fun fragmentOpen(item: String, ctgridx: String?) {
@@ -191,6 +206,8 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
             ctgrDeleteFragment.show(supportFragmentManager, "DeleteFragment1")
         }
     }
+
+    // ctgr 추가
     override fun addCtgr(ctgrName: String) {
         val ctgr = Ctgr(null,ctgrName,System.currentTimeMillis(), 0)
         val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
@@ -222,6 +239,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         }
     }
 
+    // ctgr 삭제
     override fun deleteCtgr(ctgridx: String) {
         super.deleteCtgr(ctgridx)
         val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
@@ -238,6 +256,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.notifyDataSetChanged()
     }
 
+    // ctgr 이동
     override fun moveCtgrList(oldctgr: Long, ctgr: Long){
         var sortedList = helper.selectMemoList(oldctgr.toString()).sortedBy { it.priority }
         for( memo in sortedList){
@@ -247,31 +266,22 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
         adapter.notifyDataSetChanged()
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        val ctgrAddBtn = Ctgr(null,"+",11111111, 0)
-        val unclassifyCtgr = Ctgr(0, "미분류", 11111111, 0)
-        val deleteBtn = Ctgr(-1,"휴지통",11111111, 0)
-        if (!helper.isUnknownMemoExist()){
-            adapter.listData = helper.selectCtgrList().toMutableList()
-            adapter.listData.add(ctgrAddBtn)
-            adapter.listData.add(deleteBtn)
-        } else{
-            adapter.listData = helper.selectCtgrList().toMutableList()
-            adapter.listData.add(ctgrAddBtn)
-            adapter.listData.add(0,unclassifyCtgr)
-            adapter.listData.add(deleteBtn)
-        }
-        adapter.notifyDataSetChanged()
-
-    }
-
+    // 키보드 관련
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         return true
     }
+    override fun openKeyBoard(view: View) {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view,0)
+    }
+    override fun closeKeyBoard() {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
 
+    // 검색 결과
     fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
         val data = helper.selectSearchList(keyword, where, orderby)
         recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))

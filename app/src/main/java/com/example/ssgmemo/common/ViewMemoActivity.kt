@@ -96,6 +96,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             binding.selectBtn.visibility = View.INVISIBLE
         }
 
+        // 클램프 지정 초기화
         binding.recyclerContent1.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = adapter
@@ -105,7 +106,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
 
-        // 버튼 기능 초기화
+        // 선택 버튼 리스너
         binding.selectBtn.setOnClickListener {
             adapter.selectedList.clear()
             if (!modeChange) {
@@ -121,11 +122,11 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                 animateAllItems(adapter.mode)
                 adapter.mode = 0
                 adapter.selectAll = false
-//                binding.selectLayout.visibility = View.INVISIBLE
                 modeChange = false
             }
         }
 
+        // 전체선택 버튼 리스너
         binding.selectAll.setOnClickListener {
             adapter.selectAll = !adapter.selectAll
             if (adapter.selectAll){
@@ -147,6 +148,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
 
+        // 삭제 버튼 리스너
         binding.deleteSelected.setOnClickListener {
             if (adapter.selectedList.size == 1){
                 val memoidx = adapter.selectedList[0].idx.toString()
@@ -158,6 +160,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
 
+        // 이동 버튼 리스너
         binding.moveSelected.setOnClickListener {
             if (adapter.selectedList.size == 1){
                 val memoidx = adapter.selectedList[0].idx.toString()
@@ -189,9 +192,9 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.notifyDataSetChanged()
     }
 
+    // 프레그먼트 오프너 삭제 시
     override fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean) {
         super.fragmentOpen(memoCtgr, memoidx, isList)
-        // 리스트 인지 하나인지 미분류인지 아닌지...
         val deleteFragment = MemoDeleteFragment(this)
         val bundle:Bundle = Bundle()
         bundle.putString("memoCtgr",memoCtgr)
@@ -201,12 +204,12 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         deleteFragment.show(supportFragmentManager, "memoDelete")
     }
 
+    // 프레그먼트 오프너 이동 시
     fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean, move: Int) {
         super.fragmentOpen(memoCtgr, memoidx, isList)
-        // 리스트 인지 하나인지 미분류인지 아닌지...
         val moveFragment = MemoMoveFragment(this)
-        moveFragment.helper = helper
         val bundle:Bundle = Bundle()
+        moveFragment.helper = helper
         bundle.putString("memoCtgr",memoCtgr)
         bundle.putString("memoidx",memoidx)
         bundle.putBoolean("isList",isList)
@@ -214,6 +217,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         moveFragment.show(supportFragmentManager, "memoMove")
     }
 
+    // 메모 삭제
     override fun deleteMemo(memoidx: String) {
         super.deleteMemo(memoidx)
         val memo:Memo = helper.selectMemo(memoidx)
@@ -230,6 +234,19 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.notifyDataSetChanged()
     }
 
+    // 메모 삭제 리스트인 경우
+    override fun deleteMemoList(){
+        for(selectedList in adapter.selectedList){
+            helper.deleteContent(selectedList)
+        }
+        adapter.itemList = helper.selectMemoList(title)
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    // 메모 ctgr 삭제
     override fun deleteCtgr(memoidx: String) {
         super.deleteCtgr(memoidx)
         val memo:Memo = helper.selectMemo(memoidx)
@@ -245,6 +262,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
         adapter.notifyDataSetChanged()
     }
+
+    // 메모 ctgr 삭제 리스트인 경우
     override fun deleteCtgrList() {
         super.deleteCtgrList()
         var sortedList = adapter.selectedList.sortedBy { it.priority }
@@ -264,17 +283,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
         adapter.notifyDataSetChanged()
     }
-    override fun deleteMemoList(){
-        for(selectedList in adapter.selectedList){
-            helper.deleteContent(selectedList)
-        }
-        adapter.itemList = helper.selectMemoList(title)
-        if(adapter.itemList.isEmpty()){
-            binding.msgText.visibility = View.VISIBLE
-        }
-        adapter.notifyDataSetChanged()
-    }
 
+    // 메모 ctgr 이동
     override fun moveCtgr(memoidx: Long?, ctgr: Long) {
         super.moveCtgr(memoidx, ctgr)
         val memo:Memo = helper.selectMemo(memoidx.toString())
@@ -292,6 +302,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         adapter.notifyDataSetChanged()
     }
 
+    // 메모 ctgr 이동 리스트인 경우
     override fun moveCtgrList(oldctgr: Long, ctgr: Long){
         var sortedList = adapter.selectedList.sortedBy { it.priority }
         for( memo in sortedList){
@@ -304,6 +315,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         }
         adapter.notifyDataSetChanged()
     }
+
+    // 애니메이션 선택모드 시
     @SuppressLint("ObjectAnimatorBinding")
     private fun animateAllItems(mode:Int) {
         for (i in 0 until binding.recyclerContent1.childCount) {
@@ -334,6 +347,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
     }
+
+    // 애니메이션 선택모드 시 하단 바
     @SuppressLint("ObjectAnimatorBinding")
     private fun animateBottom(mode:Int) {
         if (mode == 0){
@@ -346,6 +361,8 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }
         }
     }
+
+    // 리스너 변경
     private fun btnChange(mode: Int){
         for (i in 0 until binding.recyclerContent1.childCount) {
             val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
@@ -372,6 +389,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             }else{
                 adapter.itemList[i].sel =false
                 toggleButton.isChecked = false
+
                 memoItem.setOnClickListener {
                     val intent = Intent(this, EditActivity::class.java)
                     intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")
