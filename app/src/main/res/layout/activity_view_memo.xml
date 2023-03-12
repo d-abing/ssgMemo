@@ -21,15 +21,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:nestedScrollingEnabled="false"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:id="@+id/recyclerContent1"
         android:layout_width="366dp"
         android:layout_height="596dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="24dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,8 +75,7 @@
         app:adUnitId="@string/banner_ad_unit_id_for_test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </com.google.android.gms.ads.AdView>
+        app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
 
     <LinearLayout
         android:id="@+id/selectLayout"
@@ -84,7 +83,8 @@
         android:layout_height="50dp"
         android:backgroundTint="@color/black"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:translationY="50dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/sizeup"
         app:layout_constraintStart_toStartOf="parent">

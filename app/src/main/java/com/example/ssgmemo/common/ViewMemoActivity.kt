@@ -1,5 +1,7 @@
 package com.example.ssgmemo.common
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -60,6 +62,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         val deviceHeight = display?.heightPixels
         val layoutParams1 = binding.recyclerContent1.layoutParams
 
+
         // 모드 변경 변수
         var modeChange = false
 
@@ -107,17 +110,18 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             adapter.selectedList.clear()
             if (!modeChange) {
                 btnChange(adapter.mode)
+                animateBottom(adapter.mode)
                 animateAllItems(adapter.mode)
                 adapter.mode = 1
                 adapter.selectAll = false
-                binding.selectLayout.visibility = View.VISIBLE
                 modeChange = true
             } else {
                 btnChange(adapter.mode)
+                animateBottom(adapter.mode)
                 animateAllItems(adapter.mode)
                 adapter.mode = 0
                 adapter.selectAll = false
-                binding.selectLayout.visibility = View.INVISIBLE
+//                binding.selectLayout.visibility = View.INVISIBLE
                 modeChange = false
             }
         }
@@ -316,12 +320,29 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
                     start()
                 }
             }else{
-                selectbtn.visibility = View.VISIBLE
-                toggleButton.visibility = View.GONE
+
                 itemTouchHelperCallback.setMode(0)
                 ObjectAnimator.ofFloat(item, "translationX", 0f).apply {
                     start()
+                    addListener(object: AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            selectbtn.visibility = View.VISIBLE
+                            toggleButton.visibility = View.GONE
+                        }
+                    })
                 }
+            }
+        }
+    }
+    @SuppressLint("ObjectAnimatorBinding")
+    private fun animateBottom(mode:Int) {
+        if (mode == 0){
+            ObjectAnimator.ofFloat(binding.selectLayout, "translationY", 0f).apply {
+                start()
+            }
+        }else{
+            ObjectAnimator.ofFloat(binding.selectLayout, "translationY", 150f).apply {
+                start()
             }
         }
     }
@@ -330,29 +351,27 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             val viewHolder = binding.recyclerContent1.getChildViewHolder(binding.recyclerContent1.getChildAt(i))
             val memoItem = viewHolder.itemView.findViewById<ConstraintLayout>(R.id.memoItem)
             val toggleButton = viewHolder.itemView.findViewById<RadioButton>(R.id.toggleButton)
-            var toggle_checked: Boolean = adapter.itemList[i].sel
-            Log.d("toggle_checked","$toggle_checked")
 
             if (mode == 0) {
                 memoItem.setOnClickListener {
-                    Log.d("ttltl","${adapter.selectAll}")
-                    toggleButton.isChecked = !toggle_checked
-                    if (!toggle_checked) {
-                        adapter.itemList[i].sel = true
+                    toggleButton.isChecked = !adapter.itemList[i].sel
+                    if (!adapter.itemList[i].sel){
                         adapter.selectedList.add(adapter.itemList[i])
                         if (adapter.selectedList.size == adapter.itemList.size) {
                             adapter.selectAll = true
                         }
                     } else {
-                        adapter.itemList[i].sel = false
                         adapter.selectedList.remove(adapter.itemList[i])
-                        if (adapter.selectedList.isEmpty()) {
+                        if (adapter.selectedList.size != adapter.itemList.size) {
                             adapter.selectAll = false
                         }
                     }
-                    toggle_checked = !toggle_checked
+                    adapter.itemList[i].sel = !adapter.itemList[i].sel
+                    Log.d("이게뭐야","${adapter.selectedList}")
                 }
             }else{
+                adapter.itemList[i].sel =false
+                toggleButton.isChecked = false
                 memoItem.setOnClickListener {
                     val intent = Intent(this, EditActivity::class.java)
                     intent.putExtra("memoIdx", "${adapter.itemList[i].idx}")

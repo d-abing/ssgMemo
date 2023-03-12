@@ -46,7 +46,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.setIsRecyclable(false)
-        holder.bind(itemList[position])
+        holder.bind(itemList[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -54,7 +54,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     }
 
     inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
-        fun bind(memo: Memo) {
+        fun bind(memo: Memo, position: Int) {
             // 변수 선언
             val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
@@ -69,12 +69,14 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             binding.toggleButton.setOnClickListener {
                 binding.toggleButton.isChecked = !toggle_checked
                 if (!toggle_checked) {
+                    itemList[position].sel = true
                     memo.sel = true
                     selectedList.add(memo)
                     if (selectedList.size == itemList.size) {
                         selectAll = true
                     }
                 } else {
+                    itemList[position].sel = false
                     memo.sel = false
                     selectedList.remove(memo)
                     if (selectedList.isEmpty()) {

@@ -26,6 +26,7 @@ class SpinnerAdapter(
 
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view: View = convertView ?: LayoutInflater.from(context).inflate(resId, parent, false)
         val binding = ItemSpinnerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val model = values[position]
         try {
