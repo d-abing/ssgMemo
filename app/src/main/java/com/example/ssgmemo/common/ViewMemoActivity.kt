@@ -221,7 +221,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     override fun deleteMemo(memoidx: String) {
         super.deleteMemo(memoidx)
         val memo:Memo = helper.selectMemo(memoidx)
-        helper.deleteContent(memo)
+        helper.deleteMemo(memo)
         adapter.itemList = helper.selectMemoList(memo.ctgr.toString())
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE
@@ -237,7 +237,7 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
     // 메모 삭제 리스트인 경우
     override fun deleteMemoList(){
         for(selectedList in adapter.selectedList){
-            helper.deleteContent(selectedList)
+            helper.deleteMemo(selectedList)
         }
         adapter.itemList = helper.selectMemoList(title)
         if(adapter.itemList.isEmpty()){
