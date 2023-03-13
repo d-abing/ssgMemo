@@ -118,7 +118,6 @@ class CompleteActivity : AppCompatActivity() {
             false
         }
 
-
         // 광고
         MobileAds.initialize(this) {}
         mAdView = findViewById<AdView>(R.id.adView)
@@ -134,7 +133,6 @@ class CompleteActivity : AppCompatActivity() {
 
     fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
         val data = helper.selectCompleteList(keyword, where, orderby)
-        Log.d("test다", "${data}")
         recyclerAdapter.listData.addAll(helper.selectCompleteList(keyword, where, orderby))
         if(data.isEmpty()) {
             binding.recyclerSearch.visibility = View.INVISIBLE

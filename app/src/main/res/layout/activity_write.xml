@@ -47,7 +47,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 
-    <LinearLayout
+    <com.example.ssgmemo.BackPressEditText
+        android:id="@+id/writeContent"
+        android:layout_width="352dp"
+        android:layout_height="533dp"
+        android:background="#1AEDC089"
+        android:cursorVisible="true"
+        android:gravity="top"
+        android:lineSpacingExtra="5sp"
+        android:padding="10dp"
+        android:textSize="20dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
+
+    <!--<LinearLayout
         android:id="@+id/inputContent"
         android:layout_width="352dp"
         android:layout_height="533dp"
@@ -59,24 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/writeTitle">
 
-        <com.example.ssgmemo.BackPressEditText
-            android:id="@+id/writeContent"
-            android:layout_width="352dp"
-            android:layout_height="533dp"
-            android:background="@null"
-            android:cursorVisible="true"
-            android:gravity="top"
-            android:lineSpacingExtra="5sp"
-            android:padding="10dp"
-            android:textColorHint="#FFFFFF"
-            android:textSize="20dp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.489"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/writeTitle" />
-
-    </LinearLayout>
+    </LinearLayout>-->
 
 
     <TextView
@@ -94,43 +93,49 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_copy"
+        android:id="@+id/btn_Delete"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/saveMemo"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/copy" />
-
-    <ImageButton
-        android:id="@+id/btn_Share"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="12dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/btn_copy"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/share" />
-
-    <ImageButton
-        android:id="@+id/btn_Delete"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="12dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/btn_Share"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/delete2" />
+
+    <LinearLayout
+        android:id="@+id/moreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginTop="8dp"
+        android:background="#00F4F4F4"
+        android:backgroundTint="#FFFFFF"
+        android:orientation="vertical"
+        android:translationY="-46dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/saveMemo"
+        app:layout_constraintTop_toBottomOf="@+id/saveMemo">
+
+        <ImageButton
+            android:id="@+id/btn_Share"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="5dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/share" />
+
+        <ImageButton
+            android:id="@+id/btn_copy"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            android:translationY="-47dp"
+            app:srcCompat="@drawable/copy" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fontBar"
@@ -265,6 +270,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
 
+    <ImageButton
+        android:id="@+id/btnMode"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btn_Delete"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/read" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

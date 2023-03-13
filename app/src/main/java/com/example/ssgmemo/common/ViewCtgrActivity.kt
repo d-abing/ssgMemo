@@ -284,6 +284,7 @@ class ViewCtgrActivity : AppCompatActivity(), CallbackListener {
     // 검색 결과
     fun showDataList(recyclerAdapter: RecyclerAdapter, keyword: String, where: String, orderby: String) {
         val data = helper.selectSearchList(keyword, where, orderby)
+        Log.d("test다", "$data")
         recyclerAdapter.listData.addAll(helper.selectSearchList(keyword, where, orderby))
         if(data.isEmpty()) {
             binding.recyclerSearch.visibility = View.INVISIBLE
