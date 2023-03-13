@@ -26,6 +26,7 @@ import com.example.ssgmemo.adapter.RecyclerSwipeAdapter
 import com.example.ssgmemo.callback.CallbackListener
 import com.example.ssgmemo.callback.ItemTouchHelperCallback
 import com.example.ssgmemo.databinding.ActivityViewMemoBinding
+import com.example.ssgmemo.fragment.CompleteFragment
 import com.example.ssgmemo.fragment.MemoDeleteFragment
 import com.example.ssgmemo.fragment.MemoMoveFragment
 import com.google.android.gms.ads.AdRequest
@@ -203,6 +204,15 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
         deleteFragment.arguments = bundle
         deleteFragment.show(supportFragmentManager, "memoDelete")
     }
+    // 프레그먼트 오프너 완료시
+    override fun fragmentOpen(idx: Long) {
+        super.fragmentOpen(idx)
+        val completeFragment = CompleteFragment(this)
+        val bundle:Bundle = Bundle()
+        bundle.putLong("idx",idx)
+        completeFragment.arguments = bundle
+        completeFragment.show(supportFragmentManager, "memoComplete")
+    }
 
     // 프레그먼트 오프너 이동 시
     fun fragmentOpen(memoCtgr: String, memoidx: String, isList:Boolean, move: Int) {
@@ -309,6 +319,17 @@ class ViewMemoActivity : AppCompatActivity(), CallbackListener{
             helper.moveContent(memo, ctgr)
         }
         helper.updatePriority(oldctgr)
+        adapter.itemList = helper.selectMemoList(title)
+        if(adapter.itemList.isEmpty()){
+            binding.msgText.visibility = View.VISIBLE
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    // 메모 완료시
+    override fun completeMemo(idx:Long) {
+        super.completeMemo(idx)
+        adapter.helper.updateMemoStatus(idx)
         adapter.itemList = helper.selectMemoList(title)
         if(adapter.itemList.isEmpty()){
             binding.msgText.visibility = View.VISIBLE

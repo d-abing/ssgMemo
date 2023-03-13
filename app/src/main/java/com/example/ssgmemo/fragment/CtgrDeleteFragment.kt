@@ -34,7 +34,6 @@ class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("as1d23","1da56")
         val bundle: Bundle? = arguments
         val ctgridx: String? = bundle?.getString("Ctgridx")
         var ctgrSelected: Boolean = false // ctgr만 지울 것인가

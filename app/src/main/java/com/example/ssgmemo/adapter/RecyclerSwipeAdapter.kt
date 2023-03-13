@@ -139,7 +139,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
             }
 
             binding.btnComplete.setOnClickListener {
-                helper.updateMemoStatus(memo.idx)
+                callbackListener.fragmentOpen(memo.idx!!)
             }
         }
     }
