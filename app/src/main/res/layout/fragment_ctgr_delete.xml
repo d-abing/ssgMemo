@@ -6,7 +6,8 @@
     android:backgroundTint="@color/white"
     android:elevation="20dp"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:outlineProvider="none">
 
     <TextView
         android:id="@+id/delete_msg"

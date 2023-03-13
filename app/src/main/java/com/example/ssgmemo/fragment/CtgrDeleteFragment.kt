@@ -29,6 +29,7 @@ class CtgrDeleteFragment (var listener:CallbackListener) : DialogFragment() {
     ): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+//        dialog?.window?.setDimAmount(0.5f)
         binding = FragmentCtgrDeleteBinding.inflate(inflater, container, false)
         return binding.root
     }

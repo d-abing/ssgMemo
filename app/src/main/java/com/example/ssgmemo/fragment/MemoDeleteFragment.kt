@@ -33,6 +33,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentMemoDeleteBinding.inflate(inflater, container, false)
         return binding.root

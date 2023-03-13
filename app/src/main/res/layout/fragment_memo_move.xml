@@ -5,7 +5,8 @@
     android:background="@drawable/fragment_decoration"
     android:elevation="20dp"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:outlineProvider="none">
 
     <TextView
         android:id="@+id/move_memo_msg"
