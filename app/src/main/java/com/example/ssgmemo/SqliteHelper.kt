@@ -463,7 +463,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 		}
 
 		var sql = "select * from memo $condition1 $condition2"
-		Log.d("test다", "$sql")
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 
@@ -510,7 +509,6 @@ class SqliteHelper(context: Context, name: String, version: Int):
 
 
 		var sql = "select * from memo $condition1 $condition2"
-		Log.d("test다", "$sql")
 		val rd = readableDatabase
 		val rs = rd.rawQuery(sql, null)
 

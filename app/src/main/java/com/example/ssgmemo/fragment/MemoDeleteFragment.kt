@@ -60,7 +60,6 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
             dismiss()
         }
 
-        // 선택된 메모가 미분류 라면 선택지 제한
         binding.dialogMemoDeleteYes.setOnClickListener {
             if (memoCtgr!!.toInt() == -1 ) {
                 if (isList!!) {
@@ -81,6 +80,7 @@ class MemoDeleteFragment(var listener: CallbackListener) : DialogFragment() {
 
                 } else {
                     // 리스트가 아니라면 해당 메모만 삭제
+                    Log.d("test다", "${memoidx}")
                     listener.moveCtgr(memoidx!!.toLong(), -1)
                     dismiss()
                 }

@@ -151,7 +151,6 @@ class RecyclerAdapter(val context: Context): RecyclerView.Adapter<RecyclerAdapte
 					) // cidx값을 액티비티로 전송
 				}
 
-
 				if (ctgr.name == "+"){
 					binding.txtCtgr.visibility = View.INVISIBLE
 					binding.box.setImageResource(R.drawable.add_ctgr)

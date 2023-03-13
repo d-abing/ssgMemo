@@ -23,6 +23,7 @@
         android:layout_height="333dp"
         android:layout_marginTop="12dp"
         android:scrollbars="vertical"
+        android:singleLine="true"
         android:text="쓰기를 이용해 메모를 작성해 보세요"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"

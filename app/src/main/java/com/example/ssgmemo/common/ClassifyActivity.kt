@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
     private var memoList2: MutableList<Memo>? = null    // 분류로 인해 변경된 memoList
     private var midx: Long? = null                      // 현재 보고 있는 메모의 midx 값
     private var tmp_position: Int = 0                   // viewpager의 현재 위치
+
     private var vibration: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +42,7 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
 
         // 설정 state
         val fontSize = intent.getStringExtra("fontSize")
+        vibration = intent.getStringExtra("vibration")
 
         // < 메모 list >
         pagerAdapter = ViewPagerAdapter()
@@ -114,50 +117,18 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
         ctgrDeleteFragment.show(supportFragmentManager, "memoDelete")
     }
 
-    override fun deleteMemo(memoidx: String) {
-        super.deleteMemo(memoidx)
-        val memo = helper.selectMemo(memoidx)
-        helper.deleteMemo(memo)
-        pagerAdapter!!.listData.clear()
-        memoList2 = helper.selectUnclassifiedMemoList()                                 // 삭제로 인해 변경된 memoList 가져오기
-        pagerAdapter!!.listData.addAll(memoList2!!)
-        pagerAdapter!!.notifyDataSetChanged()
-
-        if(memoList2 != null && memoList2!!.isNotEmpty()) {                             // 삭제 후에도 분류할 memoList가 남아있으면
-            if (memoList2!!.size > tmp_position) { // 마지막 메모가 아니라면
-                // Log.d("midx", "마지막메모x")
-            } else { // 마지막 메모라면
-                tmp_position = 0
-                // Log.d("midx", "마지막메모o")
-            }
-            midx = memoList2!![tmp_position].idx
-            // Log.d("midx", "tmp_position : $tmp_position")
-            // Log.d("midx", "midx : $midx")
-        } else {                                                                        // 삭제후 분류할 메모리스트가 남아있지 않을 경우
-            // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
-            binding.viewpager.visibility = View.INVISIBLE
-            binding.emptyText.visibility = View.VISIBLE
-            memoList!!.clear()
-        }
-    }
-
-    override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수
-        if (vibration!!.equals("ON")) {
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
-        }
-
-        if (memoList!!.isNotEmpty()) { // memoList가 비어있지 않을 때만 수행
-            var priority = if (helper.checkTopMemo(cidx.toInt()) != null)  {helper.checkTopMemo(cidx.toInt())?.plus(1)} else {0}
-            helper.updateMemoCtgr(midx, cidx, priority)                                     // 현재 보고 있는 memo의 ctgr값 업데이트 (분류)
-            helper.updatePriority(0)
+    override fun moveCtgr(memoidx: Long?, ctgr: Long) { // 카테고리 이동
+        super.moveCtgr(memoidx, ctgr)
+        if (memoList!!.isNotEmpty()) {
+            val memo:Memo = helper.selectMemo(memoidx.toString())
+            helper.updateMemoCtgr(memoidx, ctgr, helper.getTopPriority(ctgr.toInt()) + 1)
+            helper.updatePriority(memo.ctgr.toLong())
             pagerAdapter!!.listData.clear()
-            memoList2 = helper.selectUnclassifiedMemoList()                                 // 분류로 인해 변경된 memoList 가져오기
+            memoList2 = helper.selectUnclassifiedMemoList()                                 // 삭제로 인해 변경된 memoList 가져오기
             pagerAdapter!!.listData.addAll(memoList2!!)
             pagerAdapter!!.notifyDataSetChanged()
-            // Log.d("midx", "changed midx : $midx")
 
-            if(memoList2 != null && memoList2!!.isNotEmpty()) {                             // 분류후에도 분류할 memoList가 남아있으면
+            if(memoList2 != null && memoList2!!.isNotEmpty()) {                             // 삭제 후에도 분류할 memoList가 남아있으면
                 if (memoList2!!.size > tmp_position) { // 마지막 메모가 아니라면
                     // Log.d("midx", "마지막메모x")
                 } else { // 마지막 메모라면
@@ -167,13 +138,21 @@ class ClassifyActivity : AppCompatActivity(), CallbackListener {
                 midx = memoList2!![tmp_position].idx
                 // Log.d("midx", "tmp_position : $tmp_position")
                 // Log.d("midx", "midx : $midx")
-            } else {                                                                        // 분류후 분류할 메모리스트가 남아있지 않을 경우
+            } else {                                                                        // 삭제후 분류할 메모리스트가 남아있지 않을 경우
                 // memoList가 비어있을 경우 "분류할 메모가 없습니다" 출력
                 binding.viewpager.visibility = View.INVISIBLE
                 binding.emptyText.visibility = View.VISIBLE
                 memoList!!.clear()
             }
         }
+    }
+
+    override fun callback(cidx: Long) {                                                     // RecyclerAdapter에서 호출되는 callback 함수
+        if (vibration!!.equals("ON")) {
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(200, 50))
+        }
+        moveCtgr(midx, cidx)
     }
 
     override fun addCtgr(ctgrName: String) {

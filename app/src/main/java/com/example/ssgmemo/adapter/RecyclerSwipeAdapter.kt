@@ -56,7 +56,7 @@ class RecyclerSwipeAdapter(val context: Context): RecyclerView.Adapter<RecyclerS
     inner class Holder(val binding: RecyclerViewMemoBinding): RecyclerView.ViewHolder(binding?.root!!) {
         fun bind(memo: Memo) {
             // 변수 선언
-            val t_dateFormat = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
+            val t_dateFormat = SimpleDateFormat("yy년 M월 d일\nHH:mm:ss", Locale("ko", "KR"))
             val str_date = t_dateFormat.format(Date(memo.datetime))
             var toggle_checked: Boolean = false
             // 아이템 초기화
