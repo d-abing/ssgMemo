@@ -113,6 +113,7 @@
         android:background="#00F4F4F4"
         android:backgroundTint="#FFFFFF"
         android:orientation="vertical"
+        android:translationY="-46dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/saveMemo"
         app:layout_constraintTop_toBottomOf="@+id/saveMemo">
@@ -132,6 +133,7 @@
             android:layout_height="40dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
+            android:translationY="-47dp"
             app:srcCompat="@drawable/copy" />
     </LinearLayout>
 

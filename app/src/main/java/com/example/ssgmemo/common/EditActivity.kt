@@ -1,5 +1,8 @@
 package com.example.ssgmemo.common
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -163,10 +166,45 @@ class EditActivity : AppCompatActivity(), CallbackListener {
         binding.saveMemo.setOnClickListener {
             if (more) {
                 more = false
-                binding.moreButton.visibility = View.INVISIBLE
+                ObjectAnimator.ofFloat(binding.btnCopy,"translationY", -96f).apply {
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            // 애니메이션이 시작될 때 호출되는 콜백 메서드
+                            binding.btnCopy.visibility = View.INVISIBLE
+                        }
+                    })
+                    start()
+                }
+                ObjectAnimator.ofFloat(binding.moreButton,"translationY", -96f).apply {
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            // 애니메이션이 종료될 때 호출되는 콜백 메서드
+                            binding.moreButton.visibility = View.INVISIBLE
+                        }
+                    })
+                    start()
+                }
+
             } else {
                 more = true
-                binding.moreButton.visibility = View.VISIBLE
+                ObjectAnimator.ofFloat(binding.moreButton,"translationY", 0f).apply {
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationStart(animation: Animator?) {
+                            // 애니메이션이 시작될 때 호출되는 콜백 메서드
+                            binding.moreButton.visibility = View.VISIBLE
+                        }
+                    })
+                    start()
+                }
+                ObjectAnimator.ofFloat(binding.btnCopy,"translationY", 0f).apply {
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationStart(animation: Animator?) {
+                            // 애니메이션이 시작될 때 호출되는 콜백 메서드
+                            binding.btnCopy.visibility = View.VISIBLE
+                        }
+                    })
+                    start()
+                }
             }
         }
 
